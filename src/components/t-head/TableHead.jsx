@@ -29,8 +29,8 @@ const Thead = ({ thead, handleChange }) => {
     return (
       <thead className="thead">
         <tr className={"thead-tr"}>
-          {thead.map((value, index) => (
-            <th key={index} className={handleSize(value)}>
+          {thead.map((value) => (
+            <th key={value} className={handleSize(value)}>
               {value.toUpperCase()}
             </th>
           ))}
@@ -38,10 +38,10 @@ const Thead = ({ thead, handleChange }) => {
         <tr className="thead-search">
           {pathName
             ? null
-            : thead.map((value, index) => {
+            : thead.map((value) => {
                 if (value !== "nr" && value !== "#") {
                   return (
-                    <th key={index}>
+                    <th key={value}>
                       <input
                         type="text"
                         placeholder={value}
@@ -53,7 +53,7 @@ const Thead = ({ thead, handleChange }) => {
                     </th>
                   );
                 } else {
-                  return <th key={index}></th>;
+                  return <th key={value}></th>;
                 }
               })}
         </tr>

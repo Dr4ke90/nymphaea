@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Tbody from "../t-body/TableBody";
 import Thead from "../t-head/TableHead";
 import "./table-display.css";
-import { useState, useEffect } from "react";
 import Table from "../Table/Table";
 
 const TableDisplay = ({ thead, tbody, removeItem }) => {
