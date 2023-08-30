@@ -1,0 +1,14 @@
+.customers-page .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 47px;
+  margin-top: 5px;
+}
+
+.customers-page .title h2 {
+  position: relative;
+  right: 50%;
+}
+
+

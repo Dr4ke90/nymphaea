@@ -1,0 +1,19 @@
+.new-customer-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 4px;
+  }
+  
+  .new-customer-form input {
+    padding: 10px;
+  }
+  
+  .new-customer-form button {
+    width: 100px;
+  }
+
+  .customers-page .modal-overlay .modal-content {
+    height: 350px;
+}

@@ -1,0 +1,15 @@
+.new-employee-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 4px;
+  }
+  
+  .new-employee-form input {
+    padding: 10px;
+  }
+  
+  .new-employee-form button {
+    width: 100px;
+  }

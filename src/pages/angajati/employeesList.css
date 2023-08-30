@@ -1,0 +1,12 @@
+.employees-page .title {
+  display: flex;
+  justify-content: space-between; /* Plasează elementele la capetele containerului */
+  align-items: center; /* Centrează vertical elementele în container */
+  height: 47px;
+  margin-top: 5px;
+}
+
+.employees-page .title h2 {
+  position: relative;
+  right: 50%;
+}

@@ -1,0 +1,12 @@
+.custom-link {
+    display: inline-block;
+    width: fit-content; 
+    height: fit-content; /* sau o valoare specifică, dacă este necesar */
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .custom-link button {
+    width: 10em;
+  }
+

@@ -1,0 +1,14 @@
+.row {
+  width: 100%;
+  display: flex;
+}
+
+td.icon {
+  text-align: center !important;
+  font-size: 20px;
+}
+
+td.icon > svg {
+  margin: 0 10px 0 10px;
+  cursor: pointer;
+}

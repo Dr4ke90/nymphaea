@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import Header from "./components/Header/Header";
+import MainMenu from "./components/main-manu/MainMenu";
+import PagePreview from "./components/PagePreview/PagePreview";
+import EmployeesList from "./pages/angajati/EmployeesList";
+import ServicesList from "./pages/servicii/ServicesList";
+import Inventory from "./pages/stocuri/Inventory";
+import Customers from "./pages/clienti/Customers";
+import Appointments from "./pages/programari/Appointments";
+import Sales from "./pages/vanzari/Sales";
+import Invoices from "./pages/facturi/Invoices";
+import CashRegister from "./pages/casa/CashRegister";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="app-container">
+        <Header className="header" name="Studio Nymphaea" />
+        <PagePreview className="page-preview">
+          <MainMenu />
+          <Routes>
+            <Route path="/angajati" element={<EmployeesList />}></Route>
+            <Route path="/servicii" element={<ServicesList />}></Route>
+            <Route path="/stocuri" element={<Inventory />}></Route>
+            <Route path="/clienti" element={<Customers />}></Route>
+            <Route path="/programari" element={<Appointments />}></Route>
+            <Route path="/vanzari" element={<Sales />}></Route>
+            <Route path="/facturi" element={<Invoices />}></Route>
+            <Route path="/casa" element={<CashRegister />}></Route>
+            <Route path="/" element={<Dashboard />}></Route>
+            <Route path="/dashboard" element={<Dashboard />}></Route>
+          </Routes>
+        </PagePreview>
+      </div>
     </div>
   );
 }

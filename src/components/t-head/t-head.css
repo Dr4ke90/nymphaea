@@ -1,0 +1,30 @@
+.thead-search input {
+  width: 96%;
+}
+
+.table-display .thead-tr th {
+  text-align: center;
+}
+
+.thead-tr .small {
+  width: 80px;
+}
+
+.thead-tr .medium {
+ width: 160px;
+}
+
+.thead-tr .large {
+  width: 400px;
+}
+
+.thead {
+    position: sticky;
+    top: 0;
+    z-index: 1; 
+}
+
+.thead th {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
