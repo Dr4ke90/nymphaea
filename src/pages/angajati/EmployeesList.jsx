@@ -30,6 +30,10 @@ export default function EmployeesList() {
     const nr = parseInt(employees[employees.length - 1].cod) + 1;
     const paddedNr = nr.toString().padStart(3, "0");
     code = paddedNr;
+  } else {
+    const nr = employees.length + 1;
+    const paddedNr = nr.toString().padStart(3, "0");
+    code = paddedNr;
   }
 
   return (
@@ -40,7 +44,7 @@ export default function EmployeesList() {
         </Button>
         <h2>{name}</h2>
       </div>
-      {modal && <FormEmployees closeModal={toggleModal} cod={code}/>}
+      {modal && <FormEmployees closeModal={toggleModal} cod={code} />}
       <TableDisplay thead={thead} tbody={employees} removeItem={null} />
     </div>
   );

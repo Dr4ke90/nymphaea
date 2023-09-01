@@ -5,9 +5,9 @@ import Input from "../../../components/Input/Input";
 import { Button } from "@mui/material";
 import "./formServicii.css";
 
-export default function FormServicii({ closeModal }) {
+export default function FormServicii({ closeModal, cod }) {
   const initialState = {
-    cod: "",
+    cod: cod,
     departament: "",
     tip: "",
     pret: "",
