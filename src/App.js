@@ -8,7 +8,7 @@ import ServicesList from "./pages/servicii/ServicesList";
 import Inventory from "./pages/stocuri/Inventory";
 import Customers from "./pages/clienti/Customers";
 import Appointments from "./pages/programari/Appointments";
-import Sales from "./pages/vanzari/Sales";
+import Sales from "./pages/incasari/Sales";
 import Invoices from "./pages/facturi/Invoices";
 import CashRegister from "./pages/casa/CashRegister";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -26,7 +26,7 @@ function App() {
             <Route path="/stocuri" element={<Inventory />}></Route>
             <Route path="/clienti" element={<Customers />}></Route>
             <Route path="/programari" element={<Appointments />}></Route>
-            <Route path="/vanzari" element={<Sales />}></Route>
+            <Route path="/incasari" element={<Sales />}></Route>
             <Route path="/facturi" element={<Invoices />}></Route>
             <Route path="/casa" element={<CashRegister />}></Route>
             <Route path="/" element={<Dashboard />}></Route>

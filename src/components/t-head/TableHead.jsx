@@ -1,10 +1,6 @@
 import "./t-head.css";
-import { useLocation } from "react-router";
 
 const Thead = ({ thead, handleChange }) => {
-  const location = useLocation();
-  const pathName = location.pathname.substring(1).includes("create");
-
   const handleDisable = (value) => {
     let disabled = false;
     if (value === "nr" || value === "#") {
@@ -18,9 +14,15 @@ const Thead = ({ thead, handleChange }) => {
     if (
       value.toLowerCase() === "cod" ||
       value.toLowerCase() === "nr" ||
+      value.toLowerCase() === "inventar" ||
+      value.toLowerCase() === "fise" ||
       value.toLowerCase() === "#"
     )
       classname = "small";
+
+    if (value.toLowerCase() === "programari") {
+      classname = "medium"
+    }
 
     return classname;
   };
@@ -36,26 +38,24 @@ const Thead = ({ thead, handleChange }) => {
           ))}
         </tr>
         <tr className="thead-search">
-          {pathName
-            ? null
-            : thead.map((value) => {
-                if (value !== "nr" && value !== "#") {
-                  return (
-                    <th key={value}>
-                      <input
-                        type="text"
-                        placeholder={value}
-                        onChange={handleChange}
-                        name={value}
-                        disabled={handleDisable(value)}
-                        className={handleSize(value)}
-                      />
-                    </th>
-                  );
-                } else {
-                  return <th key={value}></th>;
-                }
-              })}
+          {thead.map((value) => {
+            if (value !== "nr" && value !== "#") {
+              return (
+                <th key={value}>
+                  <input
+                    type="text"
+                    placeholder={value}
+                    onChange={handleChange}
+                    name={value}
+                    disabled={handleDisable(value)}
+                    className={handleSize(value)}
+                  />
+                </th>
+              );
+            } else {
+              return <th key={value}></th>;
+            }
+          })}
         </tr>
       </thead>
     );

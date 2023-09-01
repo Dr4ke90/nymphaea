@@ -1,0 +1,15 @@
+.appointments-page .modal-overlay .modal-content {
+    height: 220px;
+}
+
+
+.appointments-page .modal-overlay .modal-content .new-appointment-form .buttons-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.appointments-page .modal-overlay .modal-content .new-appointment-form  input {
+    width: 95%;
+    margin-bottom: 5px;
+    padding: 5px;
+  }

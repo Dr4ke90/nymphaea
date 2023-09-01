@@ -1,4 +1,4 @@
-.services-page .title {
+.appointments-page .title {
   display: flex;
   justify-content: space-between; /* Plasează elementele la capetele containerului */
   align-items: center; /* Centrează vertical elementele în container */
@@ -6,7 +6,9 @@
   margin-top: 5px;
 }
 
-.services-page .title h2 {
+.appointments-page .title h2 {
   position: relative;
-  right: 50%;
+  right: 40%;
 }
+
+

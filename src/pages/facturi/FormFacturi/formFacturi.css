@@ -1,0 +1,71 @@
+.invoices-page .modal-overlay .modal-content {
+  height: 600px;
+  width: 1200px;
+}
+
+.invoices-page .modal-overlay .modal-content .forms-container {
+  display: flex;
+  gap: 10px;
+}
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-factura {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-factura input {
+  width: 45%;
+  margin-left: 9px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-factura .error p {
+  margin: 0;
+  color: red;
+}
+
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-produse {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-produse input {
+  width: 44%;
+  margin-left: 9px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-factura #total {
+  position: relative;
+  left: 20%;
+  text-align: center;
+}
+
+.invoices-page .modal-overlay .modal-content .forms-container .form-produse #total {
+  position: relative;
+  left: 20%;
+  text-align: center;
+}
+
+
+
+.invoices-page .modal-overlay .modal-content .table-display-container {
+  height: 60%;
+  overflow: auto;
+  margin-bottom: 10px;
+}
+
+
+.invoices-page .modal-overlay .modal-content .footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

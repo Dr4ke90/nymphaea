@@ -1,5 +1,5 @@
 .thead-search input {
-  width: 96%;
+  width: 93%;
 }
 
 .table-display .thead-tr th {
@@ -11,7 +11,7 @@
 }
 
 .thead-tr .medium {
- width: 160px;
+ width: 100px;
 }
 
 .thead-tr .large {

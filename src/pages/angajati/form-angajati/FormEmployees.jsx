@@ -4,9 +4,15 @@ import PagePreview from "../../../components/PagePreview/PagePreview";
 import Form from "../../../components/Formular/Form";
 import "./formEmployees.css";
 import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addEmployee } from "../../../redux/slices/employeesSlice";
 
-export default function FormEmployees({ closeModal }) {
+export default function FormEmployees({ closeModal, cod }) {
+const dispatch = useDispatch()
+
+
   const initialState = {
+    cod: cod,
     nume: "",
     prenume: "",
     telefon: "",
@@ -22,16 +28,38 @@ export default function FormEmployees({ closeModal }) {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
+    let newValue = value.toLocaleLowerCase();
+
+    newValue = newValue.charAt(0).toUpperCase() + newValue.slice(1);
+
     setNewAngajat({
       ...newAngajat,
-      [name]: value,
+      [name]: newValue,
     });
   };
 
   const handleAdauga = (e) => {
     e.preventDefault();
-    console.log(newAngajat);
+    dispatch(addEmployee(newAngajat))
     closeModal();
+  };
+
+  const handlePlaceholder = (key) => {
+    let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
+    if (key === "cnp") {
+      placeholder = "CNP";
+    }
+
+    return placeholder;
+  };
+
+  const handleInputType = (key) => {
+    let type = "text";
+    if (key === "data_nasterii") {
+      type = "date";
+    }
+
+    return type;
   };
 
   return (
@@ -39,38 +67,37 @@ export default function FormEmployees({ closeModal }) {
       <div className="modal-content">
         <Form className="new-employee-form">
           {Object.entries(initialState).map(([key, value]) => {
-            const placeholder =
-              key.substring(0, 1).toUpperCase() + key.slice(1);
             if (key !== "programari") {
-              if (key === "data_nasterii") {
-                const datePlaceholder = "Data Nasterii";
-                return (
-                  <Input
-                    key={key}
-                    type="date"
-                    name={key}
-                    placeholder={datePlaceholder}
-                    onChange={handleChange}
-                  />
-                );
-              }
               return (
                 <Input
                   key={key}
-                  type="text"
+                  type={handleInputType(key)}
                   name={key}
-                  placeholder={key === 'cnp' ? "CNP" : placeholder}
+                  placeholder={handlePlaceholder(key)}
                   onChange={handleChange}
+                  disabled={key === 'cod'}
+                  value={newAngajat[key]}
                 />
               );
             } else {
               return null;
             }
           })}
-          <Input type="submit" onClick={handleAdauga} />
-          <Button variant="outlined" onClick={closeModal}>
-            Close
-          </Button>
+          <PagePreview className="buttons-wrapper">
+            <Button variant="contained" color="info" onClick={closeModal}>
+              Close
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleAdauga}
+              disabled={Object.values(newAngajat).some(
+                (value) => typeof value === "string" && value.trim() === ""
+              )}
+            >
+              Adauga
+            </Button>
+          </PagePreview>
         </Form>
       </div>
     </PagePreview>

@@ -7,7 +7,7 @@ import "./customers.css";
 import FromCustomer from "./FormClienti/FormCustomer";
 
 export default function Customers() {
-  const thead = ["cod", "nume", "prenume", "telefon"];
+  const thead = ["cod", "nume", "prenume", "telefon", 'fise'];
   const employees = useSelector((state) => state.servicii);
   const location = useLocation();
   const title =

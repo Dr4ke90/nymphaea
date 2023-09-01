@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import "./t-body.css";
 import { Dropdown } from "antd";
 import ContextMenu from "../context-menu/ContextMenu";
 import { FiXOctagon } from "react-icons/fi";
 
 const Tbody = ({ tbody, removeItem }) => {
-
-
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
   const pathName = location.pathname.includes("create");
@@ -21,6 +18,13 @@ const Tbody = ({ tbody, removeItem }) => {
   const handleContextMenu = (e, id) => {
     e.preventDefault();
     if (!pathName && !pathDetalii) setSelectedRow(id);
+  };
+
+  const handlePathname = () => {
+    const pathname = location.pathname;
+    if (!pathname.includes("angajati")) {
+      return false;
+    }
   };
 
   if (tbody !== undefined && tbody !== null) {
@@ -45,11 +49,13 @@ const Tbody = ({ tbody, removeItem }) => {
                   key !== "programari"
                 ) {
                   return <td key={key}>{`${value}`}</td>;
+                } else if (key === "programari") {
+                  return <td key={key}>{`${value.length}`}</td>;
                 } else {
                   return null;
                 }
               })}
-              {pathName && (
+              {handlePathname() && (
                 <td className="icon">
                   <FiXOctagon onClick={() => removeItem(item.nr)} />
                 </td>

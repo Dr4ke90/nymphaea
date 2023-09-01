@@ -1,4 +1,8 @@
-.new-employee-form {
+.employees-page .modal-overlay .modal-content {
+  height: 390px;
+}
+
+.employees-page .modal-overlay .modal-content .new-employee-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,10 +10,15 @@
     gap: 4px;
   }
   
-  .new-employee-form input {
+  .employees-page .modal-overlay .modal-content .new-employee-form input {
     padding: 10px;
   }
   
-  .new-employee-form button {
+  .employees-page .modal-overlay .modal-content .new-employee-form button {
     width: 100px;
+  }
+
+  .employees-page .modal-overlay .modal-content .new-employee-form .buttons-wrapper {
+    display: flex;
+    justify-content: space-between;
   }

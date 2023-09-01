@@ -3,53 +3,76 @@ import PagePreview from "../../../components/PagePreview/PagePreview";
 import Form from "../../../components/Formular/Form";
 import Input from "../../../components/Input/Input";
 import { Button } from "@mui/material";
-import "./formCustomer.css";
+import "./formAppointments.css";
 
-export default function FromCustomer({ closeModal }) {
+export default function FormAppointment({ closeModal }) {
   const initialState = {
-    cod: "",
-    nume: "",
-    prenume: "",
-    telefon: "",
-    data_nasterii: "",
-    adresa: "",
-    fise: [],
+    nr: "1",
+    data: "",
+    ora: "",
+    timp: "",
+    client: "",
+    angajat: "",
   };
-
-  const [newClient, setNewClient] = useState(initialState);
+  const [newAppointment, setNewAppointment] = useState(initialState);
 
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-    setNewClient({
-      ...newClient,
-      [name]: value,
+    setNewAppointment({
+        ...newAppointment,
+        [name]:value
     });
   };
 
   const handleAdauga = (e) => {
     e.preventDefault();
-    console.log(newClient);
+    console.log(newAppointment);
     closeModal();
   };
 
+  const handleInputType = (key) => {
+    let type = 'text'
+    if (key === "data") {
+        type = "date"
+    }
+
+    if (key === 'ora') {
+        type = "time"
+    }
+
+    return type
+  }
+
+  const handlePlaceholder = (key) => {
+    let placeholder =
+              key.substring(0, 1).toUpperCase() + key.slice(1);
+    if (key === "angajat") {
+        placeholder = "Programat la"
+    }
+
+    if (key === 'timp') {
+        placeholder = "Timp ( Ore )"
+    }
+
+    return placeholder
+  }
+  
+
   return (
     <PagePreview className="modal-overlay">
-      <div className="modal-content">
-        <Form className="new-customer-form">
+      <PagePreview className="modal-content">
+        <Form className="new-appointment-form">
           {Object.keys(initialState).map((key) => {
-            const placeholder =
-              key.substring(0, 1).toUpperCase() + key.slice(1);
-            if (key !== "fise") {
+            
+            if (key !== "nr") {
               return (
                 <Input
                   key={key}
-                  type={key === "data_nasterii" ? "date" : "text"}
+                  type={handleInputType(key)}
                   name={key}
-                  placeholder={placeholder}
+                  placeholder={handlePlaceholder(key)}
                   onChange={handleChange}
-                  value={newClient[key]}
-                  disabled={key === "cod"}
                 />
               );
             } else {
@@ -57,6 +80,7 @@ export default function FromCustomer({ closeModal }) {
             }
           })}
           <PagePreview className="buttons-wrapper">
+            
             <Button variant="contained" color="info" onClick={closeModal}>
               Close
             </Button>
@@ -64,7 +88,7 @@ export default function FromCustomer({ closeModal }) {
               variant="contained"
               color="success"
               onClick={handleAdauga}
-              disabled={Object.values(newClient).some(
+              disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
               )}
             >
@@ -72,7 +96,7 @@ export default function FromCustomer({ closeModal }) {
             </Button>
           </PagePreview>
         </Form>
-      </div>
+      </PagePreview>
     </PagePreview>
   );
 }

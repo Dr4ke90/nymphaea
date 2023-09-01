@@ -15,5 +15,10 @@
   }
 
   .customers-page .modal-overlay .modal-content {
-    height: 350px;
+    height: 300px;
+}
+
+.customers-page .modal-overlay .modal-content .new-customer-form .buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
 }
