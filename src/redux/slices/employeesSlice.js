@@ -9,6 +9,12 @@ const employeesSlice = createSlice({
     builder.addCase(fetchAllEmployees.fulfilled, (state, action) => {
       return action.payload;
     });
+    builder.addCase(addEmployee.fulfilled, (state, action) => {
+      return [...state, action.payload];
+    });
+    builder.addCase(deleteEmployee.fulfilled, (state, action) => {
+      return state.filter((item) => item.cod !== action.payload.cod);
+    });
   },
 });
 
@@ -32,12 +38,15 @@ export const updateEmployee = createAsyncThunk(
   async (employee) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/employees/${employee._id}`,
+        `http://localhost:3000/api/nymphaea/employees/${employee.cod}`,
         employee
       );
       console.log(response.data.success);
     } catch (error) {
-      throw new Error("Eroare la actualizarea Angajatului " + employee.id, error);
+      throw new Error(
+        "Eroare la actualizarea Angajatului " + employee.cod,
+        error
+      );
     }
   }
 );
@@ -46,32 +55,30 @@ export const addEmployee = createAsyncThunk(
   "employees/addEployee",
   async (employee) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3000/api/nymphaea/employees",
         employee
       );
-      return response.data;
+      return employee;
     } catch (error) {
       throw new Error("Eroare la adaugarea Angajatului " + employee.id, error);
     }
   }
 );
 
-
 export const deleteEmployee = createAsyncThunk(
   "employees/deleteEmployee",
   async (employee) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/employees/${employee._id}`
+        `http://localhost:3000/api/nymphaea/employees/${employee.cod}`
       );
-      console.log(response.data.success); 
+      console.log(response.data.success);
       return employee;
     } catch (error) {
-      throw new Error("Eroare la ștergerea Angajatului " + employee.id, error); 
+      throw new Error("Eroare la ștergerea Angajatului " + employee.cod, error);
     }
   }
 );
-
 
 export default employeesSlice.reducer;

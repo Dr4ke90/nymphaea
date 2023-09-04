@@ -5,19 +5,17 @@ import { Dropdown } from "antd";
 import ContextMenu from "../context-menu/ContextMenu";
 import { FiXOctagon } from "react-icons/fi";
 
-const Tbody = ({ tbody, removeItem }) => {
+const Tbody = ({ tbody, removeItem, editItem }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
-  const pathName = location.pathname.includes("create");
-  const pathDetalii = location.pathname.includes("detalii");
 
   const handleSelectRow = (id) => {
-    if (!pathName && !pathDetalii) setSelectedRow(id);
+    setSelectedRow(id);
   };
 
   const handleContextMenu = (e, id) => {
     e.preventDefault();
-    if (!pathName && !pathDetalii) setSelectedRow(id);
+    setSelectedRow(id);
   };
 
   const handlePathname = () => {
@@ -32,7 +30,13 @@ const Tbody = ({ tbody, removeItem }) => {
       <tbody>
         {tbody.map((item, index) => (
           <Dropdown
-            overlay={<ContextMenu item={item} removeItem={removeItem} />}
+            overlay={
+              <ContextMenu
+                item={item}
+                removeItem={removeItem}
+                editItem={editItem}
+              />
+            }
             trigger={["contextMenu"]}
             key={item._id ? item._id : index}
           >
@@ -46,6 +50,7 @@ const Tbody = ({ tbody, removeItem }) => {
                   key !== "_id" &&
                   key !== "adresa" &&
                   key !== "data_nasterii" &&
+                  key !== "cnp" &&
                   key !== "programari"
                 ) {
                   return <td key={key}>{`${value}`}</td>;

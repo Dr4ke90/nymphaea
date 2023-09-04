@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../../components/Input/Input";
 import PagePreview from "../../../components/PagePreview/PagePreview";
 import Form from "../../../components/Formular/Form";
 import "./formEmployees.css";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addEmployee } from "../../../redux/slices/employeesSlice";
+import {
+  addEmployee,
+  updateEmployee,
+} from "../../../redux/slices/employeesSlice";
 
-export default function FormEmployees({ closeModal, cod }) {
-const dispatch = useDispatch()
-
+export default function FormEmployees({ closeModal, cod, item, setItem }) {
+  const dispatch = useDispatch();
 
   const initialState = {
     cod: cod,
@@ -25,6 +27,18 @@ const dispatch = useDispatch()
 
   const [newAngajat, setNewAngajat] = useState(initialState);
 
+  useEffect(() => {
+    if (item !== null) {
+      setNewAngajat(item);
+    }
+  }, [item]);
+
+  const handleCloseModal = () => {
+    setNewAngajat(initialState);
+    setItem(null);
+    closeModal();
+  };
+
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -38,10 +52,18 @@ const dispatch = useDispatch()
     });
   };
 
+
+
   const handleAdauga = (e) => {
     e.preventDefault();
-    dispatch(addEmployee(newAngajat))
-    closeModal();
+    dispatch(addEmployee(newAngajat));
+    handleCloseModal();
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    dispatch(updateEmployee(newAngajat));
+    handleCloseModal();
   };
 
   const handlePlaceholder = (key) => {
@@ -58,7 +80,6 @@ const dispatch = useDispatch()
     if (key === "data_nasterii") {
       type = "date";
     }
-
     return type;
   };
 
@@ -66,7 +87,7 @@ const dispatch = useDispatch()
     <PagePreview className="modal-overlay">
       <div className="modal-content">
         <Form className="new-employee-form">
-          {Object.entries(initialState).map(([key, value]) => {
+          {Object.keys(initialState).map((key) => {
             if (key !== "programari") {
               return (
                 <Input
@@ -75,7 +96,7 @@ const dispatch = useDispatch()
                   name={key}
                   placeholder={handlePlaceholder(key)}
                   onChange={handleChange}
-                  disabled={key === 'cod'}
+                  disabled={key === "cod"}
                   value={newAngajat[key]}
                 />
               );
@@ -84,18 +105,18 @@ const dispatch = useDispatch()
             }
           })}
           <PagePreview className="buttons-wrapper">
-            <Button variant="contained" color="info" onClick={closeModal}>
+            <Button variant="contained" color="info" onClick={handleCloseModal}>
               Close
             </Button>
             <Button
               variant="contained"
               color="success"
-              onClick={handleAdauga}
+              onClick={item !== null ? handleUpdate : handleAdauga}
               disabled={Object.values(newAngajat).some(
                 (value) => typeof value === "string" && value.trim() === ""
               )}
             >
-              Adauga
+              {item !== null ? "Update" : "Adauga"}
             </Button>
           </PagePreview>
         </Form>

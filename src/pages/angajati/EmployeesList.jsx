@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import TableDisplay from "../../components/table-display/TableDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllEmployees } from "../../redux/slices/employeesSlice";
+import {
+  deleteEmployee,
+  fetchAllEmployees,
+} from "../../redux/slices/employeesSlice";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router";
 import "./employeesList.css";
@@ -15,6 +18,7 @@ export default function EmployeesList() {
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const [modal, setModal] = useState(false);
+  const [receivedEmployee, setReceivedEmployee] = useState(null);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,6 +40,19 @@ export default function EmployeesList() {
     code = paddedNr;
   }
 
+  const handleDeleteEmployee = (item) => {
+    const confirm = window.confirm(
+      `Esti sigur ca vrei sa stergi Angajatul ${item.cod}`
+    );
+    if (!confirm) return;
+    dispatch(deleteEmployee(item));
+  };
+
+  const handleEditEmployee = (item) => {
+    setReceivedEmployee(item)
+    setModal(true)
+  };
+
   return (
     <div className="employees-page">
       <div className="title">
@@ -44,8 +61,13 @@ export default function EmployeesList() {
         </Button>
         <h2>{name}</h2>
       </div>
-      {modal && <FormEmployees closeModal={toggleModal} cod={code} />}
-      <TableDisplay thead={thead} tbody={employees} removeItem={null} />
+      {modal && <FormEmployees closeModal={toggleModal} cod={code} item={receivedEmployee} setItem={setReceivedEmployee}/>}
+      <TableDisplay
+        thead={thead}
+        tbody={employees}
+        removeItem={handleDeleteEmployee}
+        editItem={handleEditEmployee}
+      />
     </div>
   );
 }

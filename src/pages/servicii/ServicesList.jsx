@@ -16,7 +16,6 @@ export default function ServicesList() {
     location.pathname.substring(1).slice(1);
   const [modal, setModal] = useState(false);
 
-  console.log(servicii);
 
   const dispatch = useDispatch();
   useEffect(() => {
