@@ -15,14 +15,16 @@ const appointmentsSlice = createSlice({
     builder.addCase(deleteAppointment.fulfilled, (state, action) => {
       return state.filter((item) => item._id !== action.payload._id);
     });
-  }
+  },
 });
 
 export const fetchAllAppointments = createAsyncThunk(
   "appointments/fetchAllAppointments",
   async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/nymphaea/appointments");
+      const response = await axios.get(
+        "http://localhost:3000/api/nymphaea/appointments"
+      );
       return response.data;
     } catch (error) {
       throw new Error("Eroare la upload-ul fiselor de retur", error);
@@ -33,15 +35,19 @@ export const fetchAllAppointments = createAsyncThunk(
 export const addAppointment = createAsyncThunk(
   "appointments/addAppointment",
   async (appointment) => {
+    appointment.status = "Active"
     try {
       const response = await axios.post(
         "http://localhost:3000/api/nymphaea/appointments",
         appointment
       );
-      console.log(response.data);
-      return response.data
+      console.log(response.data.success);
+      return appointment;
     } catch (error) {
-      throw new Error("Eroare la adaugarea Programarii " + appointment._id, error);
+      throw new Error(
+        "Eroare la adaugarea Programarii " + appointment.nr,
+        error
+      );
     }
   }
 );
@@ -49,7 +55,7 @@ export const addAppointment = createAsyncThunk(
 export const updateAppointment = createAsyncThunk(
   "appointments/updateAppointment",
   async (appointment) => {
-    const updates = { ...appointment};
+    const updates = { ...appointment };
     delete updates._id;
     try {
       const response = await axios.put(
@@ -58,7 +64,10 @@ export const updateAppointment = createAsyncThunk(
       );
       console.log(response.data);
     } catch (error) {
-      throw new Error("Eroare la actualizarea Programarii " + appointment._id, error);
+      throw new Error(
+        "Eroare la actualizarea Programarii " + appointment._id,
+        error
+      );
     }
   }
 );
@@ -73,10 +82,12 @@ export const deleteAppointment = createAsyncThunk(
       console.log(response.data);
       return appointments;
     } catch (error) {
-      throw new Error("Eroare la stergerea Programarii " + appointments._id, error);
+      throw new Error(
+        "Eroare la stergerea Programarii " + appointments._id,
+        error
+      );
     }
   }
 );
-
 
 export default appointmentsSlice.reducer;
