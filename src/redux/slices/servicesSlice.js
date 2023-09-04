@@ -46,12 +46,18 @@ export const addService = createAsyncThunk(
   "services/addService",
   async (service) => {
     try {
+      const serviceToSave = {
+        ...service,
+        data_update: "N/A",
+        ora_update: "N/A",
+      };
+
       const response = await axios.post(
         "http://localhost:3000/api/nymphaea/services",
-        service
+        serviceToSave
       );
-      console.log(response.data.success)
-      return service;
+      console.log(response.data.success);
+      return serviceToSave;
     } catch (error) {
       throw new Error("Eroare la adaugarea Serviciului", error);
     }

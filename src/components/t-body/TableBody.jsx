@@ -18,12 +18,13 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
     setSelectedRow(id);
   };
 
-  const handlePathname = () => {
+  const handlePathname = (name) => {
     const pathname = location.pathname;
-    if (!pathname.includes("angajati")) {
+    if (!pathname.includes(name)) {
       return false;
     }
   };
+
 
   if (tbody !== undefined && tbody !== null) {
     return (
@@ -50,17 +51,22 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
                   key !== "_id" &&
                   key !== "adresa" &&
                   key !== "data_nasterii" &&
+                  key !== "data_creat" &&
+                  key !== "data_update" &&
+                  key !== "ora_creat" &&
+                  key !== "ora_update" &&
                   key !== "cnp" &&
+                  key !== "fise" &&
                   key !== "programari"
                 ) {
                   return <td key={key}>{`${value}`}</td>;
-                } else if (key === "programari") {
+                } else if (key === "programari" || key === "fise") {
                   return <td key={key}>{`${value.length}`}</td>;
                 } else {
                   return null;
                 }
               })}
-              {handlePathname() && (
+              {handlePathname("angajati") && (
                 <td className="icon">
                   <FiXOctagon onClick={() => removeItem(item.nr)} />
                 </td>

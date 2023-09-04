@@ -13,7 +13,8 @@ import {
 export default function FormEmployees({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
 
-  const date = new Date().toLocaleDateString("ro", "RO")
+  const date = new Date().toLocaleDateString("ro", "RO");
+  const ora = new Date().toLocaleTimeString("ro", "RO");
 
   const initialState = {
     cod: cod,
@@ -24,7 +25,10 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
     data_nasterii: "",
     cnp: "",
     adresa: "",
-    creat: date,
+    data_creat: date,
+    ora_creat: ora,
+    data_update: date,
+    ora_update: ora,
     programari: [],
   };
 
@@ -54,8 +58,6 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
       [name]: newValue,
     });
   };
-
-
 
   const handleAdauga = (e) => {
     e.preventDefault();
@@ -91,7 +93,11 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
       <div className="modal-content">
         <Form className="new-employee-form">
           {Object.keys(initialState).map((key) => {
-            if (key !== "programari" && key !== "creat") {
+            if (
+              key !== "programari" &&
+              !key.includes("creat") &&
+              !key.includes("update")
+            ) {
               return (
                 <Input
                   key={key}

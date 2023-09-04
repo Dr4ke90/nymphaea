@@ -1,22 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PagePreview from "../../../components/PagePreview/PagePreview";
 import Form from "../../../components/Formular/Form";
 import Input from "../../../components/Input/Input";
 import { Button } from "@mui/material";
 import "./formCustomer.css";
+import { useDispatch } from "react-redux";
+import {
+  addCustomer,
+  updateCustomer,
+} from "../../../redux/slices/customersSlice";
 
-export default function FromCustomer({ closeModal }) {
+export default function FromCustomer({ closeModal, cod, item, setItem }) {
+  const date = new Date().toLocaleDateString("ro", "RO");
+  const ora = new Date().toLocaleTimeString("ro", "RO");
+  const dispatch = useDispatch();
+
   const initialState = {
-    cod: "",
+    cod: cod,
     nume: "",
     prenume: "",
     telefon: "",
-    data_nasterii: "",
-    adresa: "",
+    nascut: "",
+    data_creat: date,
+    ora_creat: ora,
+    data_update: date,
+    ora_update: ora,
     fise: [],
   };
 
   const [newClient, setNewClient] = useState(initialState);
+
+  useEffect(() => {
+    if (item !== null) {
+      setNewClient(item);
+    }
+  }, [item]);
+
+  const handleCloseModal = () => {
+    setNewClient(initialState);
+    setItem(null);
+    closeModal();
+  };
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -30,7 +54,27 @@ export default function FromCustomer({ closeModal }) {
   const handleAdauga = (e) => {
     e.preventDefault();
     console.log(newClient);
-    closeModal();
+    dispatch(addCustomer(newClient));
+    handleCloseModal();
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    dispatch(updateCustomer(newClient));
+    handleCloseModal();
+  };
+
+  const handlePlaceHolder = (key) => {
+    const placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
+    return placeholder;
+  };
+
+  const handleInputType = (key) => {
+    let type = "text";
+    if (key === "nascut") {
+      type = "date";
+    }
+    return type;
   };
 
   return (
@@ -38,15 +82,17 @@ export default function FromCustomer({ closeModal }) {
       <div className="modal-content">
         <Form className="new-customer-form">
           {Object.keys(initialState).map((key) => {
-            const placeholder =
-              key.substring(0, 1).toUpperCase() + key.slice(1);
-            if (key !== "fise") {
+            if (
+              key !== "fise" &&
+              !key.includes("creat") &&
+              !key.includes("update")
+            ) {
               return (
                 <Input
                   key={key}
-                  type={key === "data_nasterii" ? "date" : "text"}
+                  type={handleInputType(key)}
                   name={key}
-                  placeholder={placeholder}
+                  placeholder={handlePlaceHolder(key)}
                   onChange={handleChange}
                   value={newClient[key]}
                   disabled={key === "cod"}
@@ -57,18 +103,18 @@ export default function FromCustomer({ closeModal }) {
             }
           })}
           <PagePreview className="buttons-wrapper">
-            <Button variant="contained" color="info" onClick={closeModal}>
+            <Button variant="contained" color="info" onClick={handleCloseModal}>
               Close
             </Button>
             <Button
               variant="contained"
               color="success"
-              onClick={handleAdauga}
+              onClick={item !== null ? handleUpdate : handleAdauga}
               disabled={Object.values(newClient).some(
                 (value) => typeof value === "string" && value.trim() === ""
               )}
             >
-              Adauga
+              {item !== null ? "Update" : "Adauga"}
             </Button>
           </PagePreview>
         </Form>

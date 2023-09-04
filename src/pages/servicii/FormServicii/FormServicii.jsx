@@ -10,14 +10,19 @@ import { addService, updateService } from "../../../redux/slices/servicesSlice";
 export default function FormServicii({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
   const date = new Date().toLocaleDateString("ro", "RO");
+  const ora = new Date().toLocaleTimeString("ro", "RO");
 
   const initialState = {
     cod: cod,
     departament: "",
     tip: "",
     pret: "",
-    creat: date,
+    data_creat: date,
+    ora_creat: ora,
+    data_update: date,
+    ora_update: ora,
   };
+  
   const [newService, setNewService] = useState(initialState);
 
   useEffect(() => {
@@ -76,7 +81,12 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
       <PagePreview className="modal-content">
         <Form className="new-service-form">
           {Object.keys(initialState).map((key) => {
-            if (key !== "creat") {
+            if (
+              key !== "data_creat" &&
+              key !== "ora_creat" &&
+              key !== "data_update" &&
+              key !== "ora_update"
+            ) {
               return (
                 <Input
                   key={key}

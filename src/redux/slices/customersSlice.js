@@ -12,6 +12,9 @@ const customersSlice = createSlice({
     builder.addCase(deleteCustomer.fulfilled, (state, action) => {
       return state.filter((item) => item._id !== action.payload._id);
     });
+    builder.addCase(addCustomer.fulfilled, (state, action) => {
+      return [...state, action.payload];
+    });
   },
 });
 
@@ -20,10 +23,10 @@ export const fetchAllCustomers = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/nympahea/customers"
+        "http://localhost:3000/api/nymphaea/customers"
       );
-      console.log(response.data.succes)
-      return response.data.response;
+      console.log('Clientii au fost incarcati cu succes')
+      return response.data;
     } catch (error) {
       throw new Error("Eroare la incarcarea Clientilor", error);
     }
@@ -38,9 +41,10 @@ export const addCustomer = createAsyncThunk(
         "http://localhost:3000/api/nymphaea/customers",
         customer
       );
-      console.log(response.data.succes);
+      console.log(response.data.success);
+      return customer
     } catch (error) {
-      throw new Error("Eroare la adaugarea Clientului" + customer._id, error);
+      throw new Error("Eroare la adaugarea Clientului" + customer.cod, error);
     }
   }
 );
@@ -52,12 +56,12 @@ export const updateCustomer = createAsyncThunk(
     delete updates._id;
     try {
       const response = await axios.put(
-        `http://localhost:3000/coral/it/predare/${customer._id}`,
+        `http://localhost:3000/api/nymphaea/customers/${customer.cod}`,
         updates
       );
-      console.log(response.data.succes);
+      console.log(response.data.success);
     } catch (error) {
-      throw new Error("Eroare la actualizarea Clientului " + customer._id, error);
+      throw new Error("Eroare la actualizarea Clientului " + customer.cod, error);
     }
   }
 );
@@ -67,12 +71,12 @@ export const deleteCustomer = createAsyncThunk(
   async (customer) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/customers/` + customer._id
+        `http://localhost:3000/api/nymphaea/customers/${customer.cod}`
       );
-      console.log(response.data.succes);
+      console.log(response.data.success);
       return customer;
     } catch (error) {
-      throw new Error("Eroare la stergerea Clientului " + customer._id, error);
+      throw new Error("Eroare la stergerea Clientului " + customer.cod, error);
     }
   }
 );
