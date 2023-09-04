@@ -49,8 +49,8 @@ export default function EmployeesList() {
   };
 
   const handleEditEmployee = (item) => {
-    setReceivedEmployee(item)
-    setModal(true)
+    setReceivedEmployee(item);
+    setModal(true);
   };
 
   return (
@@ -61,7 +61,14 @@ export default function EmployeesList() {
         </Button>
         <h2>{name}</h2>
       </div>
-      {modal && <FormEmployees closeModal={toggleModal} cod={code} item={receivedEmployee} setItem={setReceivedEmployee}/>}
+      {modal && (
+        <FormEmployees
+          closeModal={toggleModal}
+          cod={code}
+          item={receivedEmployee}
+          setItem={setReceivedEmployee}
+        />
+      )}
       <TableDisplay
         thead={thead}
         tbody={employees}

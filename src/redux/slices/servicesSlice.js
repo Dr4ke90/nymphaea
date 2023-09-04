@@ -15,6 +15,16 @@ const servicesSlice = createSlice({
     builder.addCase(deleteService.fulfilled, (state, action) => {
       return state.filter((item) => item._id !== action.payload._id);
     });
+    builder.addCase(updateService.fulfilled, (state, action) => {
+      const updatedService = action.payload;
+
+      const index = state.findIndex(
+        (service) => service.cod === updatedService.cod
+      );
+      if (index !== -1) {
+        state[index] = updatedService;
+      }
+    });
   },
 });
 
@@ -40,10 +50,10 @@ export const addService = createAsyncThunk(
         "http://localhost:3000/api/nymphaea/services",
         service
       );
-      return response.data;
+      console.log(response.data.success)
+      return service;
     } catch (error) {
       throw new Error("Eroare la adaugarea Serviciului", error);
-      
     }
   }
 );
@@ -53,12 +63,12 @@ export const deleteService = createAsyncThunk(
   async (service) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/services/${service._id}`
+        `http://localhost:3000/api/nymphaea/services/${service.cod}`
       );
       console.log(response.data.success);
       return service;
     } catch (error) {
-      throw new Error("Eroare la ștergerea serviciului " + service.id, error);
+      throw new Error("Eroare la ștergerea serviciului " + service.cod, error);
     }
   }
 );
@@ -68,13 +78,14 @@ export const updateService = createAsyncThunk(
   async (service) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/services/${service._id}`,
+        `http://localhost:3000/api/nymphaea/services/${service.cod}`,
         service
       );
       console.log(response.data.success);
+      return service;
     } catch (error) {
       throw new Error(
-        "Eroare la actualizarea Serviciului " + service.id,
+        "Eroare la actualizarea Serviciului " + service.cod,
         error
       );
     }

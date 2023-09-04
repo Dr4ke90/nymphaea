@@ -5,7 +5,10 @@ import TableDisplay from "../../components/table-display/TableDisplay";
 import { Button } from "@mui/material";
 import "./servicesList.css";
 import FormServicii from "./FormServicii/FormServicii";
-import { fetchAllServices } from "../../redux/slices/servicesSlice";
+import {
+  deleteService,
+  fetchAllServices,
+} from "../../redux/slices/servicesSlice";
 
 export default function ServicesList() {
   const thead = ["cod", "departament", "tip", "pret"];
@@ -15,7 +18,7 @@ export default function ServicesList() {
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const [modal, setModal] = useState(false);
-
+  const [receivedService, setReceivedService] = useState(null);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -37,6 +40,19 @@ export default function ServicesList() {
     setModal(!modal);
   };
 
+  const handleDeleteService = (item) => {
+    const confirm = window.confirm(
+      `Esti sigur ca vrei sa stergi Angajatul ${item.cod}`
+    );
+    if (!confirm) return;
+    dispatch(deleteService(item));
+  };
+
+  const handleEditService = (item) => {
+    setReceivedService(item);
+    setModal(true);
+  };
+
   return (
     <div className="services-page">
       <div className="title">
@@ -45,8 +61,20 @@ export default function ServicesList() {
         </Button>
         <h2>{title}</h2>
       </div>
-      {modal && <FormServicii closeModal={toggleModal} cod={code} />}
-      <TableDisplay thead={thead} tbody={servicii} removeItem={null} />
+      {modal && (
+        <FormServicii
+          closeModal={toggleModal}
+          cod={code}
+          item={receivedService}
+          setItem={setReceivedService}
+        />
+      )}
+      <TableDisplay
+        thead={thead}
+        tbody={servicii}
+        removeItem={handleDeleteService}
+        editItem={handleEditService}
+      />
     </div>
   );
 }
