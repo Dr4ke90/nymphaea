@@ -8,50 +8,134 @@ import FormAppointment from "./FormAppointments/FormAppointments";
 import {
   deleteAppointment,
   fetchAllAppointments,
+  updateAppointment,
 } from "../../redux/slices/appointmentsSlice";
-
+import PagePreview from "../../components/PagePreview/PagePreview";
 
 export default function Appointments() {
-  const thead = ["nr", "data", "ora", "timp", "client", "programat la", "#"];
-  const appointments = useSelector((state) => state.programari);
+  const thead = [
+    "nr",
+    "data",
+    "ora",
+    "timp (ore)",
+    "client",
+    "programat la",
+    "status",
+    "#",
+  ];
   const location = useLocation();
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const [modal, setModal] = useState(false);
   const [receivedAppointemnt, setReceivedAppointemnt] = useState(null);
+  const appointments = useSelector((state) => state.programari);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const ora = new Date().toLocaleTimeString("ro", "RO")
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllAppointments());
   }, [dispatch]);
 
+  useEffect(() => {
+    setFilteredAppointments(
+      appointments.filter((item) => item.status === "Activ")
+    );
+  }, [appointments]);
+
   let code = 0;
-  if (appointments.length !== 0) {
-    const nr = parseInt(appointments[appointments.length - 1].cod) + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  } else {
-    const nr = appointments.length + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  }
+  const nr = appointments.length + 1;
+  const paddedNr = nr.toString().padStart(3, "0");
+  code = "A" + paddedNr;
 
   const toggleModal = () => {
     setModal(!modal);
   };
 
-  const handleDeleteService = (item) => {
+  const handleDeleteAppointment = (item) => {
     const confirm = window.confirm(
-      `Esti sigur ca vrei sa stergi Angajatul ${item.cod}`
+      `Esti sigur ca vrei sa stergi Programarea ${item.nr}`
     );
     if (!confirm) return;
     dispatch(deleteAppointment(item));
   };
 
-  const handleEditService = (item) => {
+  const handleEditAppointment = (item) => {
     setReceivedAppointemnt(item);
     setModal(true);
+  };
+
+  const handleStartAppointment = (item) => {
+    const confirm = window.confirm(
+      `Incepi Programarea ${item.nr} - ${item.client} ??`
+    );
+    if (!confirm) return;
+    const status = "In curs";
+    const tip_update = `Modificare status: ${status}`;
+    dispatch(
+      updateAppointment({
+        ...item,
+        status: status,
+        tip_update: tip_update,
+        inceput: ora
+      })
+    );
+  };
+
+  const handleCancelAppointment = (item) => {
+    const confirm = window.confirm(
+      `Esti sigur ca vrei sa anulezi Programarea ${item.nr} - ${item.client}`
+    );
+    if (!confirm) return;
+    const status = "Anulat";
+    const tip_update = `Modificare status: ${status}`;
+    dispatch(
+      updateAppointment({
+        ...item,
+        status: status,
+        tip_update: tip_update,
+      })
+    );
+  };
+
+  const handleFinishAppointment = (item) => {
+    const confirm = window.confirm(
+      `Ai terminat Programarea ${item.nr} - ${item.client}??`
+    );
+    if (!confirm) return;
+    const status = "Terminat";
+    const tip_update = `Modificare status: ${status}`;
+    dispatch(
+      updateAppointment({
+        ...item,
+        status: status,
+        tip_update: tip_update,
+        terminat: ora
+      })
+    );
+  };
+
+  const handleFilterAll = () => {
+    setFilteredAppointments(appointments);
+  };
+
+  const handleFilterActive = () => {
+    setFilteredAppointments(
+      appointments.filter((item) => item.status === "Activ")
+    );
+  };
+
+  const handleFilterInCurs = () => {
+    setFilteredAppointments(
+      appointments.filter((item) => item.status === "In curs")
+    );
+  };
+
+  const handleFilterCancel = () => {
+    setFilteredAppointments(
+      appointments.filter((item) => item.status === "Anulat")
+    );
   };
 
   return (
@@ -60,10 +144,25 @@ export default function Appointments() {
         <Button variant="contained" color="info" onClick={toggleModal}>
           Adauga
         </Button>
-        <Button variant="outlined">Toate</Button>
-        <Button variant="outlined">Active</Button>
-        <Button variant="outlined">Anulate</Button>
+
         <h2>{title}</h2>
+        <PagePreview className="buttons-wrapper">
+          <Button
+            variant="outlined"
+            onClick={handleFilterActive}
+          >
+            Active
+          </Button>
+          <Button variant="outlined" onClick={handleFilterInCurs}>
+            In curs
+          </Button>
+          <Button variant="outlined" onClick={handleFilterCancel}>
+            Anulate
+          </Button>
+          <Button variant="outlined" onClick={handleFilterAll}>
+            Toate
+          </Button>
+        </PagePreview>
       </div>
       {modal && (
         <FormAppointment
@@ -75,9 +174,12 @@ export default function Appointments() {
       )}
       <TableDisplay
         thead={thead}
-        tbody={appointments}
-        removeItem={handleDeleteService}
-        editItem={handleEditService}
+        tbody={filteredAppointments}
+        removeItem={handleDeleteAppointment}
+        editItem={handleEditAppointment}
+        cancel={handleCancelAppointment}
+        finish={handleFinishAppointment}
+        start={handleStartAppointment}
       />
     </div>
   );

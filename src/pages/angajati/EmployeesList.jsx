@@ -30,15 +30,9 @@ export default function EmployeesList() {
   };
 
   let code = 0;
-  if (employees.length !== 0) {
-    const nr = parseInt(employees[employees.length - 1].cod) + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  } else {
-    const nr = employees.length + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  }
+  const nr = employees.length + 1;
+  const paddedNr = nr.toString().padStart(3, "0");
+  code = "E" + paddedNr;
 
   const handleDeleteEmployee = (item) => {
     const confirm = window.confirm(
@@ -56,7 +50,7 @@ export default function EmployeesList() {
   return (
     <div className="employees-page">
       <div className="title">
-        <Button variant="outlined" onClick={toggleModal}>
+        <Button variant="contained" color="info" onClick={toggleModal}>
           Adauga
         </Button>
         <h2>{name}</h2>

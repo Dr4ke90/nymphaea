@@ -12,3 +12,10 @@ td.icon > svg {
   margin: 0 10px 0 10px;
   cursor: pointer;
 }
+
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}

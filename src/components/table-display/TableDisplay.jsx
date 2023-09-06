@@ -4,7 +4,15 @@ import Thead from "../t-head/TableHead";
 import "./table-display.css";
 import Table from "../Table/Table";
 
-const TableDisplay = ({ thead, tbody, removeItem, editItem }) => {
+const TableDisplay = ({
+  thead,
+  tbody,
+  removeItem,
+  editItem,
+  cancel,
+  finish,
+  start
+}) => {
   const [filteredItems, setFilteredItems] = useState(null);
 
   useEffect(() => {
@@ -34,7 +42,14 @@ const TableDisplay = ({ thead, tbody, removeItem, editItem }) => {
     <div className="table-display-container">
       <Table className="table-display">
         <Thead thead={thead} handleChange={handleSearchChange} />
-        <Tbody tbody={filteredItems} removeItem={removeItem} editItem={editItem}/>
+        <Tbody
+          tbody={filteredItems}
+          removeItem={removeItem}
+          editItem={editItem}
+          cancel={cancel}
+          finish={finish}
+          start={start}
+        />
       </Table>
     </div>
   );

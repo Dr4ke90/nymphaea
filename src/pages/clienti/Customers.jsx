@@ -27,17 +27,11 @@ export default function Customers() {
   }, [dispatch]);
 
   let code = 0;
-  if (customers.length !== 0) {
-    const nr = parseInt(customers[customers.length - 1].cod) + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  } else {
-    const nr = customers.length + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  }
+  const nr = customers.length + 1;
+  const paddedNr = nr.toString().padStart(3, "0");
+  code = "C" + paddedNr;
 
-  const toggeleModal = () => {
+  const toggleModal = () => {
     setModal(!modal);
   };
 
@@ -57,14 +51,14 @@ export default function Customers() {
   return (
     <div className="customers-page">
       <div className="title">
-        <Button variant="outlined" onClick={toggeleModal}>
+        <Button variant="contained" color="info" onClick={toggleModal}>
           Adauga
         </Button>
         <h2>{title}</h2>
       </div>
       {modal && (
         <FromCustomer
-          closeModal={toggeleModal}
+          closeModal={toggleModal}
           cod={code}
           item={receivedCustomer}
           setItem={setReceivedCustomer}

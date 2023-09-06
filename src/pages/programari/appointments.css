@@ -1,7 +1,7 @@
 .appointments-page .title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   height: 47px;
   margin-top: 5px;
 }
@@ -11,4 +11,7 @@
   right: 45%;
 }
 
-
+.appointments-page .title .buttons-wrapper {
+  display: flex;
+  gap: 10px;
+}

@@ -9,14 +9,25 @@ const appointmentsSlice = createSlice({
     builder.addCase(fetchAllAppointments.fulfilled, (state, action) => {
       return action.payload;
     });
-    builder.addCase(addAppointment, (state, action) => {
+    builder.addCase(addAppointment.fulfilled, (state, action) => {
       return [...state, action.payload];
     });
     builder.addCase(deleteAppointment.fulfilled, (state, action) => {
       return state.filter((item) => item._id !== action.payload._id);
     });
+    builder.addCase(updateAppointment.fulfilled, (state, action) => {
+      const index = state.findIndex(
+        (appointemnt) => appointemnt.nr === action.payload.nr
+      );
+      if (index !== -1) {
+        state[index] = action.payload;
+      }
+    });
   },
 });
+
+const date = new Date().toLocaleDateString("ro", "RO");
+const ora = new Date().toLocaleTimeString("ro", "RO");
 
 export const fetchAllAppointments = createAsyncThunk(
   "appointments/fetchAllAppointments",
@@ -35,14 +46,40 @@ export const fetchAllAppointments = createAsyncThunk(
 export const addAppointment = createAsyncThunk(
   "appointments/addAppointment",
   async (appointment) => {
-    appointment.status = "Active"
+    const updates = {
+      ...appointment,
+      data_creat: date,
+      ora_creat: ora,
+    };
+
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/nymphaea/appointments",
-        appointment
+      const getEmployyeRespons = await axios.get(
+        `http://localhost:3000/api/nymphaea/employees/${appointment.angajat}`
       );
-      console.log(response.data.success);
-      return appointment;
+      if (Object.keys(getEmployyeRespons.data.response).length === 0) {
+        return;
+      }
+
+      const appointemntUpdate = {
+        programari: [
+          ...getEmployyeRespons.data.response.programari,
+          appointment,
+        ],
+      };
+
+      const putEmployyeRespons = await axios.put(
+        `http://localhost:3000/api/nymphaea/employees/${appointment.angajat}`,
+        appointemntUpdate
+      );
+
+      if (putEmployyeRespons.data.response !== 0) {
+        const appointmentRes = await axios.post(
+          "http://localhost:3000/api/nymphaea/appointments",
+          updates
+        );
+        console.log(appointmentRes.data.message);
+        return appointment;
+      }
     } catch (error) {
       throw new Error(
         "Eroare la adaugarea Programarii " + appointment.nr,
@@ -55,17 +92,44 @@ export const addAppointment = createAsyncThunk(
 export const updateAppointment = createAsyncThunk(
   "appointments/updateAppointment",
   async (appointment) => {
-    const updates = { ...appointment };
+    console.log(appointment)
+    const updates = {
+      ...appointment,
+      data_update: date,
+      ora_update: ora,
+    };
     delete updates._id;
+
     try {
+      if (
+        appointment.status.includes("Anulat") ||
+        appointment.status.includes("Terminat")
+      ) {
+        const getEmployyeRespons = await axios.get(
+          `http://localhost:3000/api/nymphaea/employees/${appointment.angajat}`
+        );
+
+        const appointemntUpdate = {
+          programari: getEmployyeRespons.data.response.programari.filter(
+            (item) => item.nr !== appointment.nr
+          ),
+        };
+
+        await axios.put(
+          `http://localhost:3000/api/nymphaea/employees/${appointment.angajat}`,
+          appointemntUpdate
+        );
+      }
+
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/appointments/${appointment._id}`,
+        `http://localhost:3000/api/nymphaea/appointments/${appointment.nr}`,
         updates
       );
-      console.log(response.data);
+      console.log(response.data.message);
+      return appointment;
     } catch (error) {
       throw new Error(
-        "Eroare la actualizarea Programarii " + appointment._id,
+        "Eroare la actualizarea Programarii " + appointment.nr,
         error
       );
     }
@@ -74,16 +138,16 @@ export const updateAppointment = createAsyncThunk(
 
 export const deleteAppointment = createAsyncThunk(
   "appointments/deleteAppointment",
-  async (appointments) => {
+  async (appointment) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/appointments/${appointments._id}`
+      const appointmentRes = await axios.delete(
+        `http://localhost:3000/api/nymphaea/appointments/${appointment.nr}`
       );
-      console.log(response.data);
-      return appointments;
+      console.log(appointmentRes.data.message);
+      return appointment;
     } catch (error) {
       throw new Error(
-        "Eroare la stergerea Programarii " + appointments._id,
+        "Eroare la stergerea Programarii " + appointment.nr,
         error
       );
     }

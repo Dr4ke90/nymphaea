@@ -1,15 +1,20 @@
 import React from "react";
 import { Menu } from "antd";
 import { FiBookOpen, FiEdit3, FiXSquare } from "react-icons/fi";
+import { useLocation } from "react-router";
 
 const ContextMenu = ({ item, removeItem, editItem }) => {
+  const location = useLocation();
 
-  
   const handleMaiMultButton = () => {};
 
   const handleEditItem = () => {
     if (item === null) return;
-    editItem(item);
+    let tip_update = "Modificare date";
+    editItem({
+      ...item,
+      tip_update: tip_update,
+    });
   };
 
   const handleRemoveItem = () => {
@@ -31,10 +36,15 @@ const ContextMenu = ({ item, removeItem, editItem }) => {
         <Menu.Item key="edit" onClick={handleEditItem} icon={<FiEdit3 />}>
           Edit
         </Menu.Item>
-
-        <Menu.Item key="delete" onClick={handleRemoveItem} icon={<FiXSquare />}>
-          Delete
-        </Menu.Item>
+        {!location.pathname.includes('programari') && (
+          <Menu.Item
+            key="delete"
+            onClick={handleRemoveItem}
+            icon={<FiXSquare />}
+          >
+            Delete
+          </Menu.Item>
+        )}
       </Menu>
     );
   };

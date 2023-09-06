@@ -3,9 +3,15 @@ import React, { useState } from "react";
 import "./t-body.css";
 import { Dropdown } from "antd";
 import ContextMenu from "../context-menu/ContextMenu";
-import { FiXOctagon } from "react-icons/fi";
+import { Button } from "@mui/material";
+import {
+  FaRegCalendarTimes,
+  FaPlayCircle,
+  FaTrashAlt,
+  FaFlag,
+} from "react-icons/fa";
 
-const Tbody = ({ tbody, removeItem, editItem }) => {
+const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
 
@@ -20,10 +26,50 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
 
   const handlePathname = (name) => {
     const pathname = location.pathname;
-    if (!pathname.includes(name)) {
-      return false;
+    if (pathname.includes(name)) {
+      return true;
     }
   };
+
+ 
+
+  const handleControllAppointments = (item) => {
+    if (item.status === "Activ") {
+      return cancel(item);
+    }
+    if (item.status === "Anulat" || item.status === "Terminat") {
+      return removeItem(item);
+    }
+    if (item.status === "In curs") {
+      return finish(item);
+    }
+  };
+
+  const handleChangeIcon = (item) => {
+    if (item.status === "Activ") {
+      return <FaRegCalendarTimes size={27} />;
+    }
+    if (item.status === "Anulat" || item.status === "Terminat") {
+      return <FaTrashAlt size={27} />;
+    }
+    if (item.status === "In curs") {
+      return <FaFlag size={27} />;
+    }
+  };
+
+
+  const handleChangeTitle = (item) => {
+    if (item.status === "Activ") {
+      return "Anuleaza";
+    }
+    if (item.status === "Anulat" || item.status === "Terminat") {
+      return "Sterge";
+    }
+    if (item.status === "In curs") {
+      return "Termina";
+    }
+  };
+
 
 
   if (tbody !== undefined && tbody !== null) {
@@ -34,8 +80,8 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
             overlay={
               <ContextMenu
                 item={item}
-                removeItem={removeItem}
                 editItem={editItem}
+                removeItem={removeItem}
               />
             }
             trigger={["contextMenu"]}
@@ -55,8 +101,11 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
                   key !== "data_update" &&
                   key !== "ora_creat" &&
                   key !== "ora_update" &&
+                  key !== "tip_update" &&
                   key !== "cnp" &&
                   key !== "fise" &&
+                  key !== "inceput" &&
+                  key !== "terminat" &&
                   key !== "programari"
                 ) {
                   return <td key={key}>{`${value}`}</td>;
@@ -66,10 +115,33 @@ const Tbody = ({ tbody, removeItem, editItem }) => {
                   return null;
                 }
               })}
-              {handlePathname("angajati") && (
-                <td className="icon">
-                  <FiXOctagon onClick={() => removeItem(item.nr)} />
-                </td>
+              {handlePathname("programari") && (
+                <div className="buttons-wrapper">
+                  <Button
+                    className="ui-button"
+                    variant="contained"
+                    color="error"
+                    title={handleChangeTitle(item)}
+                    onClick={() => handleControllAppointments(item)}
+                    sx={{ minWidth: "", height: "1rem", padding: "0" }}
+                  >
+                    {handleChangeIcon(item)}
+                  </Button>
+                  {item.status === "Activ" ? (
+                    <Button
+                      className="ui-button"
+                      variant="contained"
+                      color="info"
+                      title="Incepe"
+                      onClick={() => start(item)}
+                      sx={{ minWidth: "", height: "1rem", padding: "0" }}
+                    >
+                      <FaPlayCircle size={27} />
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               )}
             </tr>
           </Dropdown>

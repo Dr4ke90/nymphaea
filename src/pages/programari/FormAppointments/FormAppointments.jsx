@@ -10,10 +10,9 @@ import {
 } from "../../../redux/slices/appointmentsSlice";
 import { useDispatch } from "react-redux";
 
+
 export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
-  const date = new Date().toLocaleDateString("ro", "RO");
-  const ora = new Date().toLocaleTimeString("ro", "RO");
 
   const initialState = {
     nr: cod,
@@ -22,11 +21,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     timp: "",
     client: "",
     angajat: "",
-    status: "",
-    data_creat: date,
-    ora_creat: ora,
-    data_update: date,
-    ora_update: ora,
   };
   const [newAppointment, setNewAppointment] = useState(initialState);
 
@@ -53,11 +47,15 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   const handleAdaugaProgramare = (e) => {
     e.preventDefault();
-    dispatch(addAppointment(newAppointment));
+    dispatch(addAppointment({
+      ...newAppointment,
+      status: "Activ",
+
+    }));
     handleCloseModal();
   };
 
-  const handleUpdateprogramare = (e) => {
+  const handleUpdateAppointment = (e) => {
     e.preventDefault();
     dispatch(updateAppointment(newAppointment));
     handleCloseModal();
@@ -93,13 +91,8 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     <PagePreview className="modal-overlay">
       <PagePreview className="modal-content">
         <Form className="new-appointment-form">
-          {Object.keys(initialState).map((key) => {
-            if (
-              key !== "nr" &&
-              !key.includes("creat") &&
-              !key.includes("update") &&
-              key !== "status"
-            ) {
+          {Object.entries(initialState).map(([key,value]) => {
+            if (key !== "status") {
               return (
                 <Input
                   key={key}
@@ -108,6 +101,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
                   placeholder={handlePlaceholder(key)}
                   onChange={handleChange}
                   value={newAppointment[key]}
+                  disabled={key === "nr"}
                 />
               );
             } else {
@@ -122,7 +116,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
               variant="contained"
               color="success"
               onClick={
-                item !== null ? handleUpdateprogramare : handleAdaugaProgramare
+                item !== null ? handleUpdateAppointment : handleAdaugaProgramare
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""

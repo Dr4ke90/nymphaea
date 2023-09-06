@@ -33,6 +33,23 @@ export const fetchAllEmployees = createAsyncThunk(
   }
 );
 
+export const fetchOneEmployee = createAsyncThunk(
+  "employees/fetchOneEmployees",
+  async (cod) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/nymphaea/employees/${cod}`
+      );
+      console.log(response.data.message);
+      return response.data.response;
+    } catch (error) {
+      throw new Error("Eroare la preluarea Angajatiilor", error);
+    }
+  }
+);
+
+
+
 export const updateEmployee = createAsyncThunk(
   "employees/updateEmployee",
   async (employee) => {
