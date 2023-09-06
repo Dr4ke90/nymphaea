@@ -116,7 +116,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                 }
               })}
               {handlePathname("programari") && (
-                <div className="buttons-wrapper">
+                <td className="buttons-wrapper">
                   <Button
                     className="ui-button"
                     variant="contained"
@@ -141,7 +141,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                   ) : (
                     <></>
                   )}
-                </div>
+                </td>
               )}
             </tr>
           </Dropdown>

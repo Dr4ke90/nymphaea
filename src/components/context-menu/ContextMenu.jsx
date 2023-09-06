@@ -6,7 +6,6 @@ import { useLocation } from "react-router";
 const ContextMenu = ({ item, removeItem, editItem }) => {
   const location = useLocation();
 
-  const handleMaiMultButton = () => {};
 
   const handleEditItem = () => {
     if (item === null) return;
@@ -27,7 +26,6 @@ const ContextMenu = ({ item, removeItem, editItem }) => {
       <Menu>
         <Menu.Item
           key="detalii"
-          onClick={handleMaiMultButton}
           icon={<FiBookOpen />}
         >
           Mai mult
