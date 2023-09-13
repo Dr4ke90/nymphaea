@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import "./t-body.css";
 import { Dropdown } from "antd";
 import ContextMenu from "../context-menu/ContextMenu";
-import { Button } from "@mui/material";
 import {
   FaRegCalendarTimes,
   FaPlayCircle,
@@ -54,15 +53,33 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     }
   };
 
-  const handleChangeIcon = (item) => {
+  const handleChangeButton = (item) => {
     if (item.status === "Activ") {
-      return <FaRegCalendarTimes size={27} />;
+      return (
+        <FaRegCalendarTimes
+          size={27}
+          onClick={() => handleControllAppointments(item)}
+          title={handleChangeTitle(item)}
+        />
+      );
     }
     if (item.status === "Anulat" || item.status === "Terminat") {
-      return <FaTrashAlt size={27} />;
+      return (
+        <FaTrashAlt
+          size={27}
+          onClick={() => handleControllAppointments(item)}
+          title={handleChangeTitle(item)}
+        />
+      );
     }
     if (item.status === "In curs") {
-      return <FaFlag size={27} />;
+      return (
+        <FaFlag
+          size={27}
+          onClick={() => handleControllAppointments(item)}
+          title={handleChangeTitle(item)}
+        />
+      );
     }
   };
 
@@ -74,7 +91,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
       return "Sterge";
     }
     if (item.status === "In curs") {
-      return "Termina";
+      return "Incaseaza";
     }
   };
 
@@ -127,27 +144,13 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
               })}
               {handlePathname("programari") && (
                 <td className="buttons-wrapper">
-                  <Button
-                    className="ui-button"
-                    variant="contained"
-                    color="error"
-                    title={handleChangeTitle(item)}
-                    onClick={() => handleControllAppointments(item)}
-                    sx={{ minWidth: "", height: "1rem", padding: "0" }}
-                  >
-                    {handleChangeIcon(item)}
-                  </Button>
+                  {handleChangeButton(item)}
                   {item.status === "Activ" ? (
-                    <Button
-                      className="ui-button"
-                      variant="contained"
-                      color="info"
-                      title="Incepe"
+                    <FaPlayCircle
+                      size={27}
                       onClick={() => start(item)}
-                      sx={{ minWidth: "", height: "1rem", padding: "0" }}
-                    >
-                      <FaPlayCircle size={27} />
-                    </Button>
+                      title="Incepe"
+                    />
                   ) : (
                     <></>
                   )}
