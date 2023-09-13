@@ -23,7 +23,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     "total",
     "#",
   ];
-  const headProtocol = ["nr", "produs", "pret", "cantitate", "total"];
+  const headProtocol = ["nr", "produs", "pret", "cantitate", "total", "#"];
   const optionsList = ["produse", "protocol", "utilitati", "chirie"];
   const date = new Date().toISOString().slice(0, 10);
   const dispatch = useDispatch();
@@ -170,19 +170,19 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const handleInregistreaza = (event) => {
     event.preventDefault();
 
-    if (totalGenproduse.toFixed(1) === dateFactura.total.toFixed(1)) {
-      dispatch(
-        addInvoice({
-          ...dateFactura,
-          tip:
-            dateFactura.tip.charAt(0).toUpperCase() + dateFactura.tip.slice(1),
-        })
-      );
-      setDateFactura(initialStateFactura);
-      closeModal();
-    } else {
-      alert("Totalul produselor nu este egal cu totalul facturii");
+    if (dateFactura.tip !== "chirie" && dateFactura.tip !== "utilitati") {
+      if (totalGenproduse.toFixed(1) !== dateFactura.total.toFixed(1)) {
+        alert("Totalul produselor nu este egal cu totalul facturii");
+        return;
+      }
     }
+
+    const tipUpperCase =
+      dateFactura.tip.charAt(0).toUpperCase() + dateFactura.tip.slice(1);
+
+    dispatch(addInvoice({ ...dateFactura, tip: tipUpperCase }));
+    setDateFactura(initialStateFactura);
+    closeModal();
   };
 
   const handleRemoveProdus = (nr) => {
