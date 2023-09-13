@@ -56,7 +56,7 @@ export default function ServicesList() {
   return (
     <div className="services-page">
       <div className="title">
-        <Button variant="outlined" onClick={toggleModal}>
+        <Button variant="contained" color="info" onClick={toggleModal}>
           Adauga
         </Button>
         <h2>{title}</h2>

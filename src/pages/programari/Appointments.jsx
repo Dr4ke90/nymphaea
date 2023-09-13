@@ -11,6 +11,7 @@ import {
   updateAppointment,
 } from "../../redux/slices/appointmentsSlice";
 import PagePreview from "../../components/PagePreview/PagePreview";
+import ModalFisa from "../../components/ModalFisa/ModalFisa";
 
 export default function Appointments() {
   const thead = [
@@ -28,10 +29,11 @@ export default function Appointments() {
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const [modal, setModal] = useState(false);
+  const [modalFisa, setModalFisa] = useState(false);
   const [receivedAppointemnt, setReceivedAppointemnt] = useState(null);
   const appointments = useSelector((state) => state.programari);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const ora = new Date().toLocaleTimeString("ro", "RO")
+  const ora = new Date().toLocaleTimeString("ro", "RO");
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -51,6 +53,10 @@ export default function Appointments() {
 
   const toggleModal = () => {
     setModal(!modal);
+  };
+
+  const toggleModalFisa = () => {
+    setModalFisa(!modalFisa);
   };
 
   const handleDeleteAppointment = (item) => {
@@ -78,7 +84,7 @@ export default function Appointments() {
         ...item,
         status: status,
         tip_update: tip_update,
-        inceput: ora
+        inceput: ora,
       })
     );
   };
@@ -111,9 +117,10 @@ export default function Appointments() {
         ...item,
         status: status,
         tip_update: tip_update,
-        terminat: ora
+        terminat: ora,
       })
     );
+    toggleModalFisa();
   };
 
   const handleFilterAll = () => {
@@ -147,10 +154,7 @@ export default function Appointments() {
 
         <h2>{title}</h2>
         <PagePreview className="buttons-wrapper">
-          <Button
-            variant="outlined"
-            onClick={handleFilterActive}
-          >
+          <Button variant="outlined" onClick={handleFilterActive}>
             Active
           </Button>
           <Button variant="outlined" onClick={handleFilterInCurs}>
@@ -181,6 +185,8 @@ export default function Appointments() {
         finish={handleFinishAppointment}
         start={handleStartAppointment}
       />
+
+      {modalFisa && <ModalFisa closeModal={toggleModalFisa}/>}
     </div>
   );
 }
