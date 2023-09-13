@@ -19,3 +19,13 @@ td.icon > svg {
   justify-content: space-around;
   align-items: center;
 }
+
+.trash-wreapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trash-wreapper svg {
+  cursor: pointer;
+}

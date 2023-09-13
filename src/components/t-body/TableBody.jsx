@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./t-body.css";
 import { Dropdown } from "antd";
 import ContextMenu from "../context-menu/ContextMenu";
@@ -14,6 +14,18 @@ import {
 const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
+  const [tableBody, setTableBody] = useState([]);
+
+
+  useEffect(() => {
+    if(tbody === null) return
+    
+    if (tbody.produse) {
+      setTableBody(tbody.produse);
+    } else {
+      setTableBody(tbody);
+    }
+  }, [tbody]);
 
   const handleSelectRow = (id) => {
     setSelectedRow(id);
@@ -30,8 +42,6 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
       return true;
     }
   };
-
- 
 
   const handleControllAppointments = (item) => {
     if (item.status === "Activ") {
@@ -57,7 +67,6 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     }
   };
 
-
   const handleChangeTitle = (item) => {
     if (item.status === "Activ") {
       return "Anuleaza";
@@ -70,12 +79,10 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     }
   };
 
-
-
-  if (tbody !== undefined && tbody !== null) {
+  if (tableBody !== undefined && tableBody !== null) {
     return (
       <tbody>
-        {tbody.map((item, index) => (
+        {tableBody.map((item, index) => (
           <Dropdown
             overlay={
               <ContextMenu
@@ -106,7 +113,11 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                   key !== "fise" &&
                   key !== "inceput" &&
                   key !== "terminat" &&
-                  key !== "programari"
+                  key !== "programari" &&
+                  key !== "tva" &&
+                  key !== "valoare" &&
+                  key !== "vendor" &&
+                  key !== "produse"
                 ) {
                   return <td key={key}>{`${value}`}</td>;
                 } else if (key === "programari" || key === "fise") {
@@ -116,7 +127,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                 }
               })}
               {handlePathname("programari") && (
-                <div className="buttons-wrapper">
+                <td className="buttons-wrapper">
                   <Button
                     className="ui-button"
                     variant="contained"
@@ -141,7 +152,12 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                   ) : (
                     <></>
                   )}
-                </div>
+                </td>
+              )}
+              {handlePathname("facturi") && tbody.tip === "produse" && (
+                <td className="trash-wreapper">
+                  <FaTrashAlt size={24} onClick={() => removeItem(item.nr)} />
+                </td>
               )}
             </tr>
           </Dropdown>

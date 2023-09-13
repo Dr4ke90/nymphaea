@@ -1,0 +1,26 @@
+.regular-invoce-form {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    margin-right: 10px;
+  }
+  
+  .regular-invoce-form .input {
+    width: 45%; 
+    padding: 5px;
+    margin-left: 9px;
+    margin-bottom: 5px;
+  }
+  
+  @media (max-width: 1019px) {
+
+    .invoices-page .modal-overlay .modal-content .table-display-container {
+      margin-top: 15px;
+    }
+    .regular-invoce-form .input {
+      width: 95%;
+      padding: 2px;
+      margin-bottom: 2px;
+    }
+
+  }

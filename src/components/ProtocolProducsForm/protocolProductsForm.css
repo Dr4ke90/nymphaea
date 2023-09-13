@@ -1,0 +1,35 @@
+.form-protocol {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
+}
+
+.form-protocol .input {
+  width: 97%;
+  padding: 5px;
+  margin-left: 9px;
+  margin-bottom: 5px;
+}
+
+.form-protocol button {
+  position: relative;
+  left: 25%;
+  bottom: 0;
+  width: 270px;
+  padding: 2px;
+}
+
+@media (max-width: 1019px) {
+  .form-protocol .input {
+    width: 95%;
+    padding: 2px;
+    margin-bottom: 2px;
+  }
+
+  .form-protocol button {
+    left: 30%;
+    bottom: -5%;
+    padding: 0;
+  }
+}

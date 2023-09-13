@@ -4,6 +4,7 @@ import servicesSlice from './slices/servicesSlice';
 import inventorySlice from './slices/inventorySlice';
 import customersSlice from './slices/customersSlice';
 import appointmentsSlice from './slices/appointmentsSlice';
+import invoicesSlice from './slices/invoicesSlice';
 
 
 
@@ -13,7 +14,8 @@ const store = configureStore({
      servicii:servicesSlice,
      stocuri: inventorySlice,
      clienti: customersSlice,
-     programari: appointmentsSlice
+     programari: appointmentsSlice,
+     facturi:invoicesSlice
     },
   });
   

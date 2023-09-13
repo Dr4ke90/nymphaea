@@ -11,9 +11,9 @@ const TableDisplay = ({
   editItem,
   cancel,
   finish,
-  start
+  start,
 }) => {
-  const [filteredItems, setFilteredItems] = useState(null);
+  const [filteredItems, setFilteredItems] = useState([]);
 
   useEffect(() => {
     setFilteredItems(tbody);

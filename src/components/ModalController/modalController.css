@@ -1,0 +1,6 @@
+.invoices-page .modal-overlay .modal-content .footer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+  }
