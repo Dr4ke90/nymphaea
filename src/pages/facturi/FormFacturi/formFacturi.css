@@ -1,71 +1,64 @@
 .invoices-page .modal-overlay .modal-content {
-  height: 600px;
-  width: 1200px;
-}
-
-.invoices-page .modal-overlay .modal-content .forms-container {
-  display: flex;
-  gap: 10px;
-}
-
-.invoices-page .modal-overlay .modal-content .forms-container .form-factura {
+  height: 90px;
+  width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
 
-.invoices-page .modal-overlay .modal-content .forms-container .form-factura input {
-  width: 45%;
-  margin-left: 9px;
-  margin-bottom: 5px;
+.modal-medium {
+  height: 300px !important;
+  width: 600px !important;
+}
+
+.modal-large {
+  height: 500px !important;
+  width: 1200px !important;
+}
+
+
+.invoices-page
+  .modal-overlay
+  .modal-content
+  .container {
+    display: flex;
+    flex-direction: row;
+  }
+
+
+
+.invoices-page
+  .modal-overlay
+  .modal-content
+  select {
+  text-align: center;
+  width: 280px;
   padding: 5px;
+  margin-left: 10px;
 }
 
-.invoices-page .modal-overlay .modal-content .forms-container .form-factura .error p {
+.invoices-page
+  .modal-overlay
+  .modal-content
+  .container
+  .error
+  p {
   margin: 0;
   color: red;
 }
 
 
-.invoices-page .modal-overlay .modal-content .forms-container .form-produse {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-
-
-.invoices-page .modal-overlay .modal-content .forms-container .form-produse input {
-  width: 44%;
-  margin-left: 9px;
-  margin-bottom: 5px;
-  padding: 5px;
-}
-
-.invoices-page .modal-overlay .modal-content .forms-container .form-factura #total {
-  position: relative;
-  left: 20%;
-  text-align: center;
-}
-
-.invoices-page .modal-overlay .modal-content .forms-container .form-produse #total {
-  position: relative;
-  left: 20%;
-  text-align: center;
-}
-
-
-
 .invoices-page .modal-overlay .modal-content .table-display-container {
-  height: 60%;
+  height: 50%;
   overflow: auto;
   margin-bottom: 10px;
 }
 
 
-.invoices-page .modal-overlay .modal-content .footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
+
+
+
+
+

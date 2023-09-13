@@ -9,9 +9,6 @@ const inventorySlice = createSlice({
     builder.addCase(fetchAllInventory.fulfilled, (state, action) => {
       return action.payload;
     });
-    builder.addCase(deleteProduct.fulfilled, (state, action) => {
-      return state.filter((item) => item.fisa !== action.payload.fisa);
-    });
   },
 });
 

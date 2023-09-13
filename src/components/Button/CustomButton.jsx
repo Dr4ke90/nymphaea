@@ -10,7 +10,7 @@ export default function CustomButton(props) {
       to={`/${props.name.toLowerCase()}`}
       className="custom-link"
     >
-      <Button variant="outlined" {...props}>
+      <Button variant="contained" color="secondary" {...props}>
         {props.name}
       </Button>
     </Link>

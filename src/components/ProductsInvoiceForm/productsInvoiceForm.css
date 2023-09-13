@@ -1,0 +1,36 @@
+.form-produse {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    position: relative;
+  }
+  
+  .form-produse .input {
+    width: 45%;
+    padding: 5px;
+    margin-left: 9px;
+    margin-bottom: 5px;
+  }
+  
+  .form-produse button {
+    position: absolute;
+    left: 50.70%;
+    bottom: 5%;
+    width: 270px;
+    padding: 2px;
+  }
+  
+  @media (max-width: 1019px) {
+  
+    .form-produse .input {
+      width: 95%;
+      padding: 2px;
+      margin-bottom: 2px;
+    }
+  
+    .form-produse button {
+      left: 30%;
+      bottom: -5%;
+      padding: 0;
+    }
+  }

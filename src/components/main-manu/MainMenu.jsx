@@ -13,7 +13,9 @@ export default function MainMenu() {
     "clienti",
     "programari",
     "incasari",
-    "facturi"
+    "facturi",
+    'comenzi',
+    'notificari'
   ];
 
   return (
