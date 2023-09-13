@@ -16,10 +16,9 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
 
-
   useEffect(() => {
-    if(tbody === null) return
-    
+    if (tbody === null) return;
+
     if (tbody.produse) {
       setTableBody(tbody.produse);
     } else {
@@ -154,6 +153,12 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                   )}
                 </td>
               )}
+              {handlePathname("facturi") &&
+                (tbody.tip === "produse" || tbody.tip === "protocol") && (
+                  <td className="trash-wreapper">
+                    <FaTrashAlt size={24} onClick={() => removeItem(item.nr)} />
+                  </td>
+                )}
             </tr>
           </Dropdown>
         ))}
