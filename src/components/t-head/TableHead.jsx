@@ -10,7 +10,7 @@ const Thead = ({ thead, handleChange }) => {
   };
 
   const handleSize = (value) => {
-    let classname = "";
+    let classname = value;
     if (
       value.toLowerCase() === "cod" ||
       value.toLowerCase() === "nr" ||
@@ -49,6 +49,7 @@ const Thead = ({ thead, handleChange }) => {
                     name={value}
                     disabled={handleDisable(value)}
                     className={handleSize(value)}
+                    autoComplete="off"
                   />
                 </th>
               );

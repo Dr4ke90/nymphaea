@@ -8,11 +8,12 @@ import {
   addAppointment,
   updateAppointment,
 } from "../../../redux/slices/appointmentsSlice";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllCustomers } from "../../../redux/slices/customersSlice";
 
 export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
+  const clienti = useSelector((state) => state.clienti);
 
   const initialState = {
     nr: cod,
@@ -25,6 +26,10 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const [newAppointment, setNewAppointment] = useState(initialState);
 
   useEffect(() => {
+    dispatch(fetchAllCustomers());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (item !== null) {
       setNewAppointment(item);
     }
@@ -33,11 +38,39 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-    setNewAppointment({
-      ...newAppointment,
-      [name]: value,
-    });
+  
+    if (name === "client") {
+      if (value !== "") {
+        const client = clienti.find((client) => client.cod === value);
+  
+        if (client) {
+          setNewAppointment({
+            ...newAppointment,
+            [name]: value,
+            numeClient: `${client.nume} ${client.prenume}`,
+          });
+        } else {
+          setNewAppointment({
+            ...newAppointment,
+            [name]: value,
+            numeClient: value,
+          });
+        }
+      } else {
+        setNewAppointment({
+          ...newAppointment,
+          [name]: value,
+          numeClient: value,
+        });
+      }
+    } else {
+      setNewAppointment({
+        ...newAppointment,
+        [name]: value,
+      });
+    }
   };
+  
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
@@ -47,11 +80,13 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   const handleAdaugaProgramare = (e) => {
     e.preventDefault();
-    dispatch(addAppointment({
-      ...newAppointment,
-      status: "Activ",
+    dispatch(
+      addAppointment({
+        ...newAppointment,
+        status: "Activ",
+      })
+    );
 
-    }));
     handleCloseModal();
   };
 
@@ -91,7 +126,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     <PagePreview className="modal-overlay">
       <PagePreview className="modal-content">
         <Form className="new-appointment-form">
-          {Object.entries(initialState).map(([key,value]) => {
+          {Object.entries(initialState).map(([key, value]) => {
             if (key !== "status") {
               return (
                 <Input

@@ -13,19 +13,27 @@
 
 .appointments-page .modal-fisa-overlay .modal-fisa-content {
   background-color: white;
-  height: 450px;
-  width: 900px;
+  height: 400px;
+  width: 750px;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   overflow: auto;
 }
 
+.appointments-page .modal-fisa-overlay .modal-header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 10px 0;
+  border: 1px solid rgb(28, 194, 245);
+  margin-bottom: 5px;
+}
+
 .appointments-page .modal-fisa-overlay .footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
 .appointments-page
@@ -40,23 +48,71 @@
   .modal-fisa-overlay
   .modal-fisa-content
   .modal-fisa-container
-  .table-dispaly-container {
-  width: 60%;
+  .table-container {
+  width: 100%;
+  height: 268px;
+  overflow: auto;
+  margin-bottom: 5px;
+}
+
+.appointments-page
+  .modal-fisa-overlay
+  .modal-fisa-content
+  .modal-fisa-container
+  .table-container table {
+  width: 100%;
+}
+
+.appointments-page
+  .modal-fisa-overlay
+  .modal-fisa-content
+  .modal-fisa-container
+  .table-container
+  .small {
+  width: 60px;
+}
+
+.appointments-page
+  .modal-fisa-overlay
+  .modal-fisa-content
+  .modal-fisa-container
+  .table-container
+  td {
+  text-align: center;
+}
+
+.appointments-page
+  .modal-fisa-overlay
+  .modal-fisa-content
+  .modal-fisa-container
+  .table-container
+  .thead
+  th {
+  padding: 3px 10px 3px 10px;
 }
 
 .modal-fisa-container .buttons-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 40%;
+  width: 100px;
+}
+
+.modal-fisa-container .buttons-wrapper button {
+  width: 100%;
 }
 
 .modal-fisa-container .buttons-wrapper .modal-controller {
   display: flex;
   gap: 10px;
   width: 100%;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.modal-fisa-content .modal-control-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
 }
 
 .modal-fisa-container .buttons-wrapper .modal-controller button {
@@ -75,4 +131,20 @@
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0);
   box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.2);
+}
+
+
+.modal-fisa-overlay .modal-fisa-content .total {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 10px 0 10px 0; */
+  /* border: 1px solid rgb(28, 194, 245); */
+}
+
+.modal-fisa-overlay .modal-fisa-content .total input{
+  padding: 5px 0 5px 0 ;
+  text-align: center;
+  font-size: 20px;
 }

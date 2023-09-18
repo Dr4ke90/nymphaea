@@ -1,0 +1,73 @@
+.modal-servicii-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content {
+    background-color: white;
+    height: 300px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    left: 250px;
+    top: 30px;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content .services-table {
+    height: calc(100% - 48px); 
+    overflow: auto;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: #fff; /* Culorile pot varia */
+    position: sticky;
+    top: 0;
+  }
+
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly .small{
+    width: 30px;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly .tbody {
+    position: relative;
+    z-index: 0; /* Faceți tbody să fie sub thead */
+  }
+
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly .thead {
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Faceți thead să fie deasupra */
+    background-color: #fff; /* Culorile pot varia */
+  }
+
+  
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly td {
+    text-align: center;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content .table-dispaly .thead th {
+    padding: 0 10px 0 10px;
+    font-size: 12px;
+  }
+  
+  .modal-servicii-overlay .modal-servicii-content .buttons-wrapper {
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+  

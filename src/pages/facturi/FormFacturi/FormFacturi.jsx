@@ -47,7 +47,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     categorie: "",
     brand: "",
     produs: "",
-    cantitate: "",
+    stoc: "",
     pret: "",
     total: "",
   };
@@ -107,7 +107,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         [name]: newValue,
       };
 
-      updateProduse.total = updateProduse.cantitate * updateProduse.pret;
+      updateProduse.total = updateProduse.stoc * updateProduse.pret;
 
       return updateProduse;
     });

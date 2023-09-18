@@ -5,6 +5,7 @@ import "./modalController.css";
 
 export default function ModalController({ state, closeModal, inregistreaza }) {
   const checkForEmptyFields = (obj) => {
+    if (state === null) return;
     if (
       Object.values(obj).some(
         (value) => typeof value === "string" && value.trim() === ""

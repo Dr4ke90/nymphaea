@@ -34,6 +34,7 @@ export default function Appointments() {
   const appointments = useSelector((state) => state.programari);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const ora = new Date().toLocaleTimeString("ro", "RO");
+  const [currentAppointment, setCurrentAppointment] = useState({});
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -107,19 +108,20 @@ export default function Appointments() {
 
   const handleFinishAppointment = (item) => {
     const confirm = window.confirm(
-      `Ai terminat Programarea ${item.nr} - ${item.client}??`
+      `Ai terminat Programarea ${item.nr} - ${item.numeClient}??`
     );
     if (!confirm) return;
-    const status = "Terminat";
-    const tip_update = `Modificare status: ${status}`;
-    dispatch(
-      updateAppointment({
-        ...item,
-        status: status,
-        tip_update: tip_update,
-        terminat: ora,
-      })
-    );
+    setCurrentAppointment(item);
+    // const status = "Terminat";
+    // const tip_update = `Modificare status: ${status}`;
+    // dispatch(
+    //   updateAppointment({
+    //     ...item,
+    //     status: status,
+    //     tip_update: tip_update,
+    //     terminat: ora,
+    //   })
+    // );
     toggleModalFisa();
   };
 
@@ -186,7 +188,12 @@ export default function Appointments() {
         start={handleStartAppointment}
       />
 
-      {modalFisa && <ModalFisa closeModal={toggleModalFisa}/>}
+      {modalFisa && (
+        <ModalFisa
+          closeModal={toggleModalFisa}
+          appointment={currentAppointment}
+        />
+      )}
     </div>
   );
 }
