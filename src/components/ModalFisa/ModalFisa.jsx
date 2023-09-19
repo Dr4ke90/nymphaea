@@ -10,10 +10,15 @@ import ModalProduse from "../ModalProduse/ModalProduse";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../redux/slices/customersSlice";
 import ModalReteta from "../ModalReteta/ModalReteta";
+import {
+  addRceceipe,
+  fetchAllReceipes,
+} from "../../redux/slices/cashRegisterSlice";
 
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "tip", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
+  const bonuri = useSelector((state) => state.casa);
 
   const getCodFisa = () => {
     if (clienti.length === 0) return;
@@ -26,6 +31,11 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "F" + paddedNr;
   };
 
+  let nrBon;
+  const nr = bonuri.length + 1;
+  const paddedNr = nr.toString().padStart(6, "0");
+  nrBon = paddedNr;
+
   const initialStateFisa = {
     codFisa: getCodFisa(),
     codClient: appointment.client,
@@ -37,9 +47,13 @@ export default function ModalFisa({ closeModal, appointment }) {
   };
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
 
+
+  
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllCustomers());
+    dispatch(fetchAllReceipes());
   }, [dispatch]);
 
   const [openModalServicii, setOpenModalServicii] = useState(false);
@@ -70,10 +84,9 @@ export default function ModalFisa({ closeModal, appointment }) {
     });
   };
 
-  const [totalFisa, setTotalFisa] = useState(0.0); // Inițializăm totalFisa ca float
+  const [totalFisa, setTotalFisa] = useState(0.0);
 
   useEffect(() => {
-    // Calculăm totalul pentru fiecare serviciu care are o listă de retete
     const updatedServicii = dateFisa.servicii.map((serviciu) => {
       if (serviciu.reteta && serviciu.reteta.length !== 0) {
         const totalReteta = serviciu.reteta.reduce((acc, produs) => {
@@ -81,12 +94,11 @@ export default function ModalFisa({ closeModal, appointment }) {
           const gramaj = parseInt(produs.gramaj);
           const cantitate = parseFloat(produs.cantitate);
 
-          // Verificăm dacă 'cantitate' este definită pentru produs înainte de a calcula totalul
           if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
             const totalProdus = (pret / gramaj) * cantitate;
             return acc + totalProdus;
           } else {
-            return acc; // Nu facem nimic dacă 'cantitate' lipsește sau nu este un număr valid
+            return acc;
           }
         }, 0);
 
@@ -103,7 +115,7 @@ export default function ModalFisa({ closeModal, appointment }) {
       return acc + (parseFloat(serviciu.total) || 0);
     }, 0.0);
 
-    setTotalFisa(parseFloat(totalGeneral.toFixed(2))); // Folosim toFixed(2) pentru a afișa 2 zecimale
+    setTotalFisa(parseFloat(totalGeneral.toFixed(2)));
   }, [dateFisa.servicii]);
 
   const handleRemoveItem = (service) => {
@@ -117,6 +129,19 @@ export default function ModalFisa({ closeModal, appointment }) {
         servicii: updateServicii,
       };
     });
+  };
+
+  const handleInregistreaza = (e) => {
+    e.preventDefault();
+    dispatch(
+      addRceceipe({
+        nrBon: nrBon,
+        ...dateFisa,
+        totalDePlata: totalFisa,
+      })
+    );
+    closeModal()
+    window.location.reload();
   };
 
   const headerFieldOrder = ["numeClient", "codClient", "codFisa", "codAngajat"];
@@ -211,7 +236,7 @@ export default function ModalFisa({ closeModal, appointment }) {
           <Button
             variant="contained"
             color="success"
-            onClick={() => console.log(dateFisa)}
+            onClick={(e) => handleInregistreaza(e)}
           >
             Trimite catre casa
           </Button>

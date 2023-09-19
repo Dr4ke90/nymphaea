@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 
 const appointmentsSlice = createSlice({
@@ -92,7 +92,7 @@ export const addAppointment = createAsyncThunk(
 export const updateAppointment = createAsyncThunk(
   "appointments/updateAppointment",
   async (appointment) => {
-    console.log(appointment)
+    console.log(appointment);
     const updates = {
       ...appointment,
       data_update: date,

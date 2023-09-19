@@ -112,17 +112,9 @@ export default function Appointments() {
     );
     if (!confirm) return;
     setCurrentAppointment(item);
-    // const status = "Terminat";
-    // const tip_update = `Modificare status: ${status}`;
-    // dispatch(
-    //   updateAppointment({
-    //     ...item,
-    //     status: status,
-    //     tip_update: tip_update,
-    //     terminat: ora,
-    //   })
-    // );
+
     toggleModalFisa();
+    
   };
 
   const handleFilterAll = () => {
