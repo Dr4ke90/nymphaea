@@ -134,6 +134,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
                   key !== "valoare" &&
                   key !== "vendor" &&
                   key !== "numeClient" &&
+                  key !== "totalP" &&
                   key !== "produse"
                 ) {
                   return <td key={key}>{`${value}`}</td>;

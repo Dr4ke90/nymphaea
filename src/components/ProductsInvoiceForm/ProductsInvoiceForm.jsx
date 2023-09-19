@@ -10,29 +10,39 @@ export default function ProductsInvoiceForm({
   handleAdaugaProdus,
   handleChangeProdus,
 }) {
+  const handlePlaceHolder = (key) => {
+    let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
+    if (key === "nrInv") placeholder = "Cod produs";
 
-  
-  
+    if (key === "stoc") placeholder = "Cantitate";
+
+    if (key === "pretUnitar") placeholder = "Pret Unitar";
+
+    return placeholder;
+  };
+
   return (
     <PagePreview className="form-produse">
       <Form>
         {Object.keys(stateProdus).map((keyName) => {
-          const placeholder =
-            keyName.substring(0, 1).toUpperCase() + keyName.slice(1);
-          return (
-            <Input
-              className="input"
-              key={keyName}
-              id={keyName}
-              type="text"
-              name={keyName}
-              placeholder={keyName === "nrInv" ? "Cod produs" : placeholder}
-              onChange={handleChangeProdus}
-              value={stateProdus[keyName]}
-              disabled={keyName === "nrInv" || keyName === "total"}
-              autoComplete="off"
-            />
-          );
+          if (keyName !== "totalP") {
+            return (
+              <Input
+                className="input"
+                key={keyName}
+                id={keyName}
+                type="text"
+                name={keyName}
+                placeholder={handlePlaceHolder(keyName)}
+                onChange={handleChangeProdus}
+                value={stateProdus[keyName]}
+                disabled={keyName === "nrInv" || keyName === "total"}
+                autoComplete="off"
+              />
+            );
+          } else {
+            return null;
+          }
         })}
       </Form>
       <Button

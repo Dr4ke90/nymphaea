@@ -7,7 +7,12 @@ import Input from "../Input/Input";
 import { fetchAllInventory } from "../../redux/slices/inventorySlice";
 import "./modalReteta.css";
 
-export default function ModalReteta({ closeModal, service, setDateFisa }) {
+export default function ModalReteta({
+  closeModal,
+  service,
+  setDateFisa,
+  dateFisa,
+}) {
   const thead = ["#", "cod", "produs", "cantitate"];
   const stocuri = useSelector((state) => state.stocuri);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -81,7 +86,6 @@ export default function ModalReteta({ closeModal, service, setDateFisa }) {
       if (serviceIndex !== -1) {
         servicii[serviceIndex].reteta = servicii[serviceIndex].reteta.map(
           (p) => {
-            console.log(value);
             if (p.nrInv === product.nrInv) {
               return {
                 ...p,
@@ -106,6 +110,24 @@ export default function ModalReteta({ closeModal, service, setDateFisa }) {
     }
   };
 
+  const getCantitate = (product) => {
+    const serv = dateFisa.servicii.find((s) => s.cod === service.cod);
+    if (serv.reteta.lentgh !== 0) {
+      const prod = serv.reteta.find((p) => p.nrInv === product.nrInv);
+
+      if (
+        prod &&
+        typeof prod === "object" &&
+        prod.hasOwnProperty("cantitate")
+      ) {
+        return prod.cantitate;
+      }
+    }
+    return;
+  };
+
+  
+
   return (
     <div className="modal-reteta-overlay">
       <div className="modal-reteta-content">
@@ -113,7 +135,7 @@ export default function ModalReteta({ closeModal, service, setDateFisa }) {
           <Table className="table-dispaly">
             <Thead thead={thead} handleChange={handleSearchChange} />
             <tbody className="tbody">
-              {filteredProducts.map((product, index) => {
+              {filteredProducts.map((product) => {
                 return (
                   <tr key={product.nrInv} className="tbody-tr">
                     <td className="small">
@@ -126,7 +148,7 @@ export default function ModalReteta({ closeModal, service, setDateFisa }) {
                         onChange={() => handleCheckboxChange(product)}
                       />
                     </td>
-                    {Object.entries(product).map(([key, value], i) => {
+                    {Object.entries(product).map(([key, value]) => {
                       if (key === "nrInv" || key === "produs") {
                         return (
                           <td key={key} className={handleClassName(key)}>
@@ -140,8 +162,12 @@ export default function ModalReteta({ closeModal, service, setDateFisa }) {
                               type="text"
                               name="cantitate"
                               className="small"
+                              value={getCantitate(product)}
                               onChange={(e) => handleChangeCantiate(e, product)}
                               autoComplete="off"
+                              disabled={!service.reteta.some(
+                                (p) => p.nrInv === product.nrInv
+                              )}
                             />
                           </td>
                         );

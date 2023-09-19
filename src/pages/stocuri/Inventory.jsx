@@ -7,7 +7,7 @@ import { fetchAllInventory } from '../../redux/slices/inventorySlice';
 
 
 export default function Inventory() {
-  const thead = ["nr", "categorie", "brand", "produs","cantitate", "pret (BUC)"];
+  const thead = ["nr", "categorie", "brand", "produs","cantitate", "pret (BUC)", "gr/buc"];
   const inventory = useSelector((state) => state.stocuri);
   const location = useLocation();
   const title = location.pathname.substring(1,2).toUpperCase() + location.pathname.substring(1).slice(1)

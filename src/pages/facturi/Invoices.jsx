@@ -9,7 +9,7 @@ import { fetchAllInvoices } from "../../redux/slices/invoicesSlice";
 import { fetchAllInventory } from "../../redux/slices/inventorySlice";
 
 export default function Invoices() {
-  const thead = ["cod","tip", "data", "serie", "numar", "valoare"];
+  const thead = ["cod","tip", "data", "serie", "numar", "valoare (ron)"];
   const inventory = useSelector((state) => state.stocuri);
   const invoices = useSelector((state) => state.facturi);
   const location = useLocation();

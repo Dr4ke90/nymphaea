@@ -20,7 +20,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     "produs",
     "cantitate",
     "pret",
-    "total",
+    "gr/tub",
     "#",
   ];
   const headProtocol = ["nr", "produs", "pret", "cantitate", "total", "#"];
@@ -48,8 +48,9 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     brand: "",
     produs: "",
     stoc: "",
-    pret: "",
-    total: "",
+    pretUnitar: "",
+    gramaj: "",
+    totalP: "",
   };
   const [produs, setProdus] = useState(initialStateProdus);
 
@@ -94,7 +95,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const handleChangeProdus = (e) => {
     const { name, value } = e.target;
     e.preventDefault();
-    let newValue = value.toLocaleLowerCase();
+    let newValue = value.toLowerCase();
 
     if (name === "pret")
       newValue = newValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
@@ -107,7 +108,8 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         [name]: newValue,
       };
 
-      updateProduse.total = updateProduse.stoc * updateProduse.pret;
+      updateProduse.totalP =
+        parseInt(updateProduse.stoc) * parseInt(updateProduse.pretUnitar);
 
       return updateProduse;
     });

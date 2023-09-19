@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Keyboard from "../../components/Keyboard/Keyboard";
 import "./modalFisa.css";
 import { Button } from "@mui/material";
 import ModalServicii from "../ModalServicii/ModalServicii";
 import Table from "../Table/Table";
 import Thead from "../t-head/TableHead";
 import Input from "../Input/Input";
-import { FaSlidersH } from "react-icons/fa";
+import { FaSlidersH, FaTrash } from "react-icons/fa";
 import ModalProduse from "../ModalProduse/ModalProduse";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../redux/slices/customersSlice";
@@ -15,7 +14,6 @@ import ModalReteta from "../ModalReteta/ModalReteta";
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "tip", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
-  const [total, settotal] = useState(0)
 
   const getCodFisa = () => {
     if (clienti.length === 0) return;
@@ -69,6 +67,55 @@ export default function ModalFisa({ closeModal, appointment }) {
     setDateFisa({
       ...dateFisa,
       servicii: updatedServicii,
+    });
+  };
+
+  const [totalFisa, setTotalFisa] = useState(0.0); // Inițializăm totalFisa ca float
+
+  useEffect(() => {
+    // Calculăm totalul pentru fiecare serviciu care are o listă de retete
+    const updatedServicii = dateFisa.servicii.map((serviciu) => {
+      if (serviciu.reteta && serviciu.reteta.length !== 0) {
+        const totalReteta = serviciu.reteta.reduce((acc, produs) => {
+          const pret = parseFloat(produs.pret);
+          const gramaj = parseInt(produs.gramaj);
+          const cantitate = parseFloat(produs.cantitate);
+
+          // Verificăm dacă 'cantitate' este definită pentru produs înainte de a calcula totalul
+          if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
+            const totalProdus = (pret / gramaj) * cantitate;
+            return acc + totalProdus;
+          } else {
+            return acc; // Nu facem nimic dacă 'cantitate' lipsește sau nu este un număr valid
+          }
+        }, 0);
+
+        serviciu.total =
+          (parseFloat(serviciu.pret) + totalReteta) * serviciu.cantitate;
+      } else {
+        serviciu.total = serviciu.pret * serviciu.cantitate;
+      }
+
+      return serviciu;
+    });
+
+    const totalGeneral = updatedServicii.reduce((acc, serviciu) => {
+      return acc + (parseFloat(serviciu.total) || 0);
+    }, 0.0);
+
+    setTotalFisa(parseFloat(totalGeneral.toFixed(2))); // Folosim toFixed(2) pentru a afișa 2 zecimale
+  }, [dateFisa.servicii]);
+
+  const handleRemoveItem = (service) => {
+    setDateFisa((prevFisa) => {
+      const updateServicii = prevFisa.servicii.filter(
+        (s) => s.cod !== service.cod
+      );
+
+      return {
+        ...prevFisa,
+        servicii: updateServicii,
+      };
     });
   };
 
@@ -145,6 +192,10 @@ export default function ModalFisa({ closeModal, appointment }) {
                           style={{ cursor: "pointer" }}
                           onClick={() => handleOpenModalReteta(service)}
                         />
+                        <FaTrash
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleRemoveItem(service)}
+                        />
                       </td>
                     </tr>
                   );
@@ -153,8 +204,8 @@ export default function ModalFisa({ closeModal, appointment }) {
             </Table>
           </div>
         </div>
-        <div className="total"> 
-                <Input type="text" name="total" value={total} disabled />
+        <div className="total">
+          <Input type="text" name="total" value={totalFisa} disabled />
         </div>
         <div className="modal-control-buttons">
           <Button
@@ -186,6 +237,7 @@ export default function ModalFisa({ closeModal, appointment }) {
           <ModalReteta
             closeModal={handleOpenModalReteta}
             service={curentService}
+            dateFisa={dateFisa}
             setDateFisa={setDateFisa}
           />
         )}

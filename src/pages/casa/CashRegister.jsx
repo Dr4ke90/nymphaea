@@ -2,7 +2,7 @@ import TableDisplay from "../../components/table-display/TableDisplay";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router";
 import "./cashRegister.css";
-
+import Keyboard from "../../components/Keyboard/Keyboard";
 
 export default function CashRegister() {
   const thead = ["bon", "data", "creat", "valoare", "#"];
@@ -19,7 +19,23 @@ export default function CashRegister() {
         </Button>
         <h2>{name}</h2>
       </div>
-      <TableDisplay thead={thead} tbody={null} removeItem={null} />
+      <div className="cash-page-wrapper">
+        <TableDisplay thead={thead} tbody={null} removeItem={null} />
+        <div>
+          <Keyboard />
+          <div className="buttons-wrapper">
+            <Button variant="contained" color="info">
+              Servicii
+            </Button>
+            <Button variant="contained" color="info">
+              Produse
+            </Button>
+            <Button variant="contained" color="info">
+              Oferte
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
