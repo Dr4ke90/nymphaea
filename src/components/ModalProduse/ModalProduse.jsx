@@ -22,12 +22,12 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
   }, [stocuri]);
 
   const handleCheckboxChange = (product) => {
-    const serviceIndex = dateFisa.servicii.findIndex(
-      (item) => item.nrInv === product.nrInv
+    const serviceIndex = dateFisa.produse.findIndex(
+      (item) => item.cod === product.cod
     );
 
     if (serviceIndex !== -1) {
-      const updateProducts = [...dateFisa.servicii];
+      const updateProducts = [...dateFisa.produse];
       updateProducts.splice(serviceIndex, 1);
 
       for (let i = 0; i < updateProducts.length; i++) {
@@ -36,17 +36,18 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
 
       setDateFisa({
         ...dateFisa,
-        servicii: updateProducts,
+        produse: updateProducts,
       });
     } else {
       setDateFisa({
         ...dateFisa,
-        servicii: [
-          ...dateFisa.servicii,
-          { nr: dateFisa.servicii.length + 1, ...product },
+        produse: [
+          ...dateFisa.produse,
+          { nr: dateFisa.produse.length + 1, ...product },
         ],
       });
     }
+    console.log(dateFisa)
   };
 
   const handleSearchChange = (event) => {
@@ -83,20 +84,20 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
             <tbody className="tbody">
               {filteredServices.map((product) => {
                 return (
-                  <tr key={product.nrInv} className="tbody-tr">
+                  <tr key={product.cod} className="tbody-tr">
                     <td className="small">
                       <Input
                         type="checkbox"
-                        name={product.nrInv}
+                        name={product.cod}
                         onChange={() => handleCheckboxChange(product)}
-                        checked={dateFisa.servicii.some(
-                          (item) => item.nrInv === product.nrInv
+                        checked={dateFisa.produse.some(
+                          (item) => item.cod === product.cod
                         )}
                       />
                     </td>
                     {Object.entries(product).map(([key, value]) => {
                       if (
-                        key === "nrInv" ||
+                        key === "cod" ||
                         key === "brand" ||
                         key === "produs"
                       ) {

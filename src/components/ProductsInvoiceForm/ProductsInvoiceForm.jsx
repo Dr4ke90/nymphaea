@@ -12,9 +12,10 @@ export default function ProductsInvoiceForm({
 }) {
   const handlePlaceHolder = (key) => {
     let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
-    if (key === "nrInv") placeholder = "Cod produs";
 
     if (key === "stoc") placeholder = "Cantitate";
+
+    if (key === "gramaj") placeholder = "Gramaj / BUC";
 
     if (key === "pretUnitar") placeholder = "Pret Unitar";
 
@@ -25,7 +26,7 @@ export default function ProductsInvoiceForm({
     <PagePreview className="form-produse">
       <Form>
         {Object.keys(stateProdus).map((keyName) => {
-          if (keyName !== "totalP") {
+          if (keyName !== "totalP" && keyName !== "cantitateGr") {
             return (
               <Input
                 className="input"
@@ -36,7 +37,7 @@ export default function ProductsInvoiceForm({
                 placeholder={handlePlaceHolder(keyName)}
                 onChange={handleChangeProdus}
                 value={stateProdus[keyName]}
-                disabled={keyName === "nrInv" || keyName === "total"}
+                disabled={keyName === "cod" || keyName === "total"}
                 autoComplete="off"
               />
             );

@@ -16,7 +16,7 @@ import {
 } from "../../redux/slices/cashRegisterSlice";
 
 export default function ModalFisa({ closeModal, appointment }) {
-  const thead = ["nr", "cod", "tip", "cantitate", "#"];
+  const thead = ["nr", "cod", "serviciu/produs", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
   const bonuri = useSelector((state) => state.casa);
 
@@ -43,12 +43,9 @@ export default function ModalFisa({ closeModal, appointment }) {
     data: appointment.data,
     codProgramare: appointment.nr,
     codAngajat: appointment.angajat,
-    servicii: [],
+    produse: [],
   };
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
-
-
-  
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -76,23 +73,23 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleChangeCantitate = (event, index) => {
     const { value } = event.target;
-    const updatedServicii = [...dateFisa.servicii];
-    updatedServicii[index].cantitate = value;
+    const updatedServicii = [...dateFisa.produse];
+    updatedServicii[index].cantitateUtilizata = value;
     setDateFisa({
       ...dateFisa,
-      servicii: updatedServicii,
+      produse: updatedServicii,
     });
   };
 
   const [totalFisa, setTotalFisa] = useState(0.0);
 
   useEffect(() => {
-    const updatedServicii = dateFisa.servicii.map((serviciu) => {
+    const updatedServicii = dateFisa.produse.map((serviciu) => {
       if (serviciu.reteta && serviciu.reteta.length !== 0) {
         const totalReteta = serviciu.reteta.reduce((acc, produs) => {
           const pret = parseFloat(produs.pret);
           const gramaj = parseInt(produs.gramaj);
-          const cantitate = parseFloat(produs.cantitate);
+          const cantitate = parseFloat(produs.cantitateUtilizata);
 
           if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
             const totalProdus = (pret / gramaj) * cantitate;
@@ -102,31 +99,36 @@ export default function ModalFisa({ closeModal, appointment }) {
           }
         }, 0);
 
-        serviciu.total =
-          (parseFloat(serviciu.pret) + totalReteta) * serviciu.cantitate;
+        serviciu.totalServiciu =
+          (parseFloat(serviciu.pret) + totalReteta) * serviciu.cantitateUtilizata;
       } else {
-        serviciu.total = serviciu.pret * serviciu.cantitate;
+       serviciu.totalServiciu = parseFloat(serviciu.pret) * parseInt(serviciu.cantitateUtilizata);
       }
-
+      console.log(dateFisa.produse)
       return serviciu;
     });
 
     const totalGeneral = updatedServicii.reduce((acc, serviciu) => {
-      return acc + (parseFloat(serviciu.total) || 0);
+      return acc + (parseFloat(serviciu.totalServiciu) || 0.0);
     }, 0.0);
 
     setTotalFisa(parseFloat(totalGeneral.toFixed(2)));
-  }, [dateFisa.servicii]);
+  }, [dateFisa.produse]);
 
   const handleRemoveItem = (service) => {
     setDateFisa((prevFisa) => {
-      const updateServicii = prevFisa.servicii.filter(
+      const updatedServicii = prevFisa.produse.filter(
         (s) => s.cod !== service.cod
       );
 
+      const renumberedServicii = updatedServicii.map((s, index) => ({
+        ...s,
+        nr: index + 1,
+      }));
+
       return {
         ...prevFisa,
-        servicii: updateServicii,
+        produse: renumberedServicii,
       };
     });
   };
@@ -140,7 +142,7 @@ export default function ModalFisa({ closeModal, appointment }) {
         totalDePlata: totalFisa,
       })
     );
-    closeModal()
+    closeModal();
     window.location.reload();
   };
 
@@ -187,7 +189,7 @@ export default function ModalFisa({ closeModal, appointment }) {
             <Table>
               <Thead thead={thead} />
               <tbody>
-                {dateFisa.servicii.map((service, index) => {
+                {dateFisa.produse.map((service, index) => {
                   return (
                     <tr key={service.cod}>
                       {tableFieldOrder.map((key) => {
@@ -200,7 +202,7 @@ export default function ModalFisa({ closeModal, appointment }) {
                       <td key={"input"}>
                         <Input
                           type="text"
-                          name="cantitate"
+                          name="cantitateUtilizata"
                           className="small"
                           onChange={(e) => handleChangeCantitate(e, index)}
                           autoComplete="off"
@@ -213,11 +215,16 @@ export default function ModalFisa({ closeModal, appointment }) {
                           justifyContent: "space-around",
                         }}
                       >
-                        <FaSlidersH
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleOpenModalReteta(service)}
-                        />
+                        {service.reteta && (
+                          <FaSlidersH
+                            size={21}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleOpenModalReteta(service)}
+                          />
+                        )}
+
                         <FaTrash
+                          size={21}
                           style={{ cursor: "pointer" }}
                           onClick={() => handleRemoveItem(service)}
                         />

@@ -68,6 +68,7 @@ export default function EmployeesList() {
         tbody={employees}
         removeItem={handleDeleteEmployee}
         editItem={handleEditEmployee}
+        listOrder={thead}
       />
     </div>
   );

@@ -13,21 +13,28 @@
 .table-display th,
 .table-display td {
   padding: 3px;
-  text-align: left;
+  text-align: center;
   border: 1px solid #7f8686;
   position: relative;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .table-display thead {
-  background-color: #84d5e9;
+  background-color: rgba(171, 10, 235, 0.932);
 }
 
 .table-display tbody tr:nth-child(even) {
-    background-color: #f7e9e9;
-  }
+  background-color: #a7a1a1;
+}
+
+.table-display tbody tr:nth-child(odd) {
+  background-color: #f7e9e9;
+}
 
 .table-display tbody tr:hover {
-  background-color: #cac3c3;
+  background-color: rgba(171, 10, 235, 0.932);
+  cursor: pointer;
 }
 
 .selected {
@@ -58,5 +65,3 @@
 .options input {
   width: 45px;
 }
-
-

@@ -22,12 +22,12 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
   }, [services]);
 
   const handleCheckboxChange = (service) => {
-    const serviceIndex = dateFisa.servicii.findIndex(
+    const serviceIndex = dateFisa.produse.findIndex(
       (item) => item.cod === service.cod
     );
 
     if (serviceIndex !== -1) {
-      const updatedServicii = [...dateFisa.servicii];
+      const updatedServicii = [...dateFisa.produse];
       updatedServicii.splice(serviceIndex, 1);
 
       for (let i = 0; i < updatedServicii.length; i++) {
@@ -36,14 +36,14 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
 
       setDateFisa({
         ...dateFisa,
-        servicii: updatedServicii,
+        produse: updatedServicii,
       });
     } else {
       setDateFisa({
         ...dateFisa,
-        servicii: [
-          ...dateFisa.servicii,
-          { nr: dateFisa.servicii.length + 1, reteta: [], ...service },
+        produse: [
+          ...dateFisa.produse,
+          { nr: dateFisa.produse.length + 1, reteta: [], ...service },
         ],
       });
     }
@@ -89,7 +89,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
                         type="checkbox"
                         name={service.cod}
                         onChange={() => handleCheckboxChange(service)}
-                        checked={dateFisa.servicii.some(
+                        checked={dateFisa.produse.some(
                           (item) => item.cod === service.cod
                         )}
                       />

@@ -47,7 +47,7 @@ export default function ModalReteta({
 
   const handleCheckboxChange = (product) => {
     const productIndex = service.reteta.findIndex(
-      (p) => p.nrInv === product.nrInv
+      (p) => p.cod === product.cod
     );
 
     if (productIndex !== -1) {
@@ -57,16 +57,16 @@ export default function ModalReteta({
     }
 
     setDateFisa((prevDateFisa) => {
-      const { servicii } = prevDateFisa;
+      const { produse } = prevDateFisa;
 
-      const serviceIndex = servicii.findIndex(
+      const serviceIndex = produse.findIndex(
         (serv) => serv.cod === service.cod
       );
 
       if (serviceIndex !== -1) {
-        servicii[serviceIndex].reteta = service.reteta;
+        produse[serviceIndex].reteta = service.reteta;
 
-        return { ...prevDateFisa, servicii: [...servicii] };
+        return { ...prevDateFisa, produse: [...produse] };
       } else {
         return { ...prevDateFisa };
       }
@@ -78,18 +78,18 @@ export default function ModalReteta({
     const { value } = e.target;
 
     setDateFisa((prevDateFisa) => {
-      const { servicii } = prevDateFisa;
-      const serviceIndex = servicii.findIndex(
+      const { produse } = prevDateFisa;
+      const serviceIndex = produse.findIndex(
         (serv) => serv.cod === service.cod
       );
 
       if (serviceIndex !== -1) {
-        servicii[serviceIndex].reteta = servicii[serviceIndex].reteta.map(
+        produse[serviceIndex].reteta = produse[serviceIndex].reteta.map(
           (p) => {
-            if (p.nrInv === product.nrInv) {
+            if (p.cod === product.cod) {
               return {
                 ...p,
-                cantitate: value,
+                cantitateUtilizata: value,
               };
             } else {
               return p;
@@ -97,7 +97,7 @@ export default function ModalReteta({
           }
         );
 
-        return { ...prevDateFisa, servicii: [...servicii] };
+        return { ...prevDateFisa, produse: [...produse] };
       } else {
         return { ...prevDateFisa };
       }
@@ -111,9 +111,9 @@ export default function ModalReteta({
   };
 
   const getCantitate = (product) => {
-    const serv = dateFisa.servicii.find((s) => s.cod === service.cod);
+    const serv = dateFisa.produse.find((s) => s.cod === service.cod);
     if (serv.reteta.lentgh !== 0) {
-      const prod = serv.reteta.find((p) => p.nrInv === product.nrInv);
+      const prod = serv.reteta.find((p) => p.cod === product.cod);
 
       if (
         prod &&
@@ -123,7 +123,6 @@ export default function ModalReteta({
         return prod.cantitate;
       }
     }
-    return;
   };
 
   
@@ -137,19 +136,19 @@ export default function ModalReteta({
             <tbody className="tbody">
               {filteredProducts.map((product) => {
                 return (
-                  <tr key={product.nrInv} className="tbody-tr">
+                  <tr key={product.cod} className="tbody-tr">
                     <td className="small">
                       <Input
                         type="checkbox"
-                        name={product.nrInv}
+                        name={product.cod}
                         checked={service.reteta.some(
-                          (p) => p.nrInv === product.nrInv
+                          (p) => p.cod === product.cod
                         )}
                         onChange={() => handleCheckboxChange(product)}
                       />
                     </td>
                     {Object.entries(product).map(([key, value]) => {
-                      if (key === "nrInv" || key === "produs") {
+                      if (key === "cod" || key === "produs") {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}
@@ -166,7 +165,7 @@ export default function ModalReteta({
                               onChange={(e) => handleChangeCantiate(e, product)}
                               autoComplete="off"
                               disabled={!service.reteta.some(
-                                (p) => p.nrInv === product.nrInv
+                                (p) => p.cod === product.cod
                               )}
                             />
                           </td>

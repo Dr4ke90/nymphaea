@@ -26,15 +26,9 @@ export default function ServicesList() {
   }, [dispatch]);
 
   let code = 0;
-  if (servicii.length !== 0) {
-    const nr = parseInt(servicii[servicii.length - 1].cod) + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  } else {
-    const nr = servicii.length + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    code = paddedNr;
-  }
+  const nr = servicii.length + 1;
+  const paddedNr = nr.toString().padStart(3, "0");
+  code = "S" + paddedNr;
 
   const toggleModal = () => {
     setModal(!modal);
@@ -74,6 +68,7 @@ export default function ServicesList() {
         tbody={servicii}
         removeItem={handleDeleteService}
         editItem={handleEditService}
+        listOrder={thead}
       />
     </div>
   );

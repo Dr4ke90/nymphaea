@@ -1,9 +1,12 @@
 .thead-search input {
-  width: 93%;
+  width: 80%;
 }
 
-.table-display .thead-tr th {
+.table-display th {
   text-align: center;
+  padding: 2px;
+  font-size: 12px;
+  background-color: rgba(171, 10, 235, 0.932);
 }
 
 .thead-tr .small {
@@ -11,7 +14,7 @@
 }
 
 .thead-tr .medium {
- width: 110px;
+ width: 150px;
 }
 
 .thead-tr .large {

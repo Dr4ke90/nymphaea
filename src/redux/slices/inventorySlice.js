@@ -41,7 +41,7 @@ export const addProduct = createAsyncThunk(
   }
 );
 
-export const updateProduct = createAsyncThunk(
+export const updateInventory = createAsyncThunk(
   "inventory/updateProduct",
   async (product) => {
     const updates = { ...product };
@@ -58,19 +58,5 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-export const deleteProduct = createAsyncThunk(
-  "inventory/deleteProduct",
-  async (product) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/inventory/${product._id}`
-      );
-      console.log(response.data);
-      return product;
-    } catch (error) {
-      throw new Error("Eroare la stergerea Produsului ", product._id, error);
-    }
-  }
-);
 
 export default inventorySlice.reducer;

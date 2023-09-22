@@ -18,9 +18,9 @@ export default function Appointments() {
     "nr",
     "data",
     "ora",
-    "timp (ore)",
+    "timp",
     "client",
-    "programat la",
+    "angajat",
     "status",
     "#",
   ];
@@ -178,6 +178,7 @@ export default function Appointments() {
         cancel={handleCancelAppointment}
         finish={handleFinishAppointment}
         start={handleStartAppointment}
+        listOrder={thead}
       />
 
       {modalFisa && (

@@ -10,19 +10,22 @@ import {
   FaFlag,
 } from "react-icons/fa";
 
-const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
+const Tbody = ({
+  tbody,
+  removeItem,
+  editItem,
+  cancel,
+  finish,
+  start,
+  listOrder,
+}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
 
-  useEffect(() => {
-    if (tbody === null) return;
 
-    if (tbody.produse) {
-      setTableBody(tbody.produse);
-    } else {
-      setTableBody(tbody);
-    }
+  useEffect(() => {
+    setTableBody(tbody);
   }, [tbody]);
 
   const handleSelectRow = (id) => {
@@ -57,7 +60,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     if (item.status === "Activ") {
       return (
         <FaRegCalendarTimes
-          size={27}
+          size={16}
           onClick={() => handleControllAppointments(item)}
           title={handleChangeTitle(item)}
         />
@@ -66,7 +69,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     if (item.status === "Anulat" || item.status === "Terminat") {
       return (
         <FaTrashAlt
-          size={27}
+          size={16}
           onClick={() => handleControllAppointments(item)}
           title={handleChangeTitle(item)}
         />
@@ -75,7 +78,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
     if (item.status === "In curs") {
       return (
         <FaFlag
-          size={27}
+          size={16}
           onClick={() => handleControllAppointments(item)}
           title={handleChangeTitle(item)}
         />
@@ -94,6 +97,7 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
       return "Incaseaza";
     }
   };
+
 
   if (tableBody !== undefined && tableBody !== null) {
     return (
@@ -115,55 +119,41 @@ const Tbody = ({ tbody, removeItem, editItem, cancel, finish, start }) => {
               onClick={() => handleSelectRow(item._id)}
               onContextMenu={(e) => handleContextMenu(e, item._id)}
             >
-              {Object.entries(item).map(([key, value]) => {
+              {listOrder.map((key) => {
                 if (
-                  key !== "_id" &&
-                  key !== "adresa" &&
-                  key !== "data_nasterii" &&
-                  key !== "data_creat" &&
-                  key !== "data_update" &&
-                  key !== "ora_creat" &&
-                  key !== "ora_update" &&
-                  key !== "tip_update" &&
-                  key !== "cnp" &&
-                  key !== "fise" &&
-                  key !== "inceput" &&
-                  key !== "terminat" &&
-                  key !== "programari" &&
-                  key !== "tva" &&
-                  key !== "valoare" &&
-                  key !== "vendor" &&
-                  key !== "numeClient" &&
-                  key !== "totalP" &&
-                  key !== "produse"
+                  key === "produse" ||
+                  key === "programari" ||
+                  key === "fise"
                 ) {
-                  return <td key={key}>{`${value}`}</td>;
-                } else if (key === "programari" || key === "fise") {
-                  return <td key={key}>{`${value.length}`}</td>;
+                  return (
+                    <td key={key} id={key}>
+                      {item[key].length}
+                    </td>
+                  );
+                } else if (key === "#") {
+                  return (
+                    <td className="buttons-wrapper" key={key}>
+                      {handleChangeButton(item)}
+                      {item.status === "Activ" ? (
+                        <FaPlayCircle
+                          size={16}
+                          onClick={() => start(item)}
+                          title="Incepe"
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </td>
+                  );
                 } else {
-                  return null;
+                  return (
+                    <td key={key} id={key}>
+                      {item[key]}
+                    </td>
+                  );
                 }
               })}
-              {handlePathname("programari") && (
-                <td className="buttons-wrapper">
-                  {handleChangeButton(item)}
-                  {item.status === "Activ" ? (
-                    <FaPlayCircle
-                      size={27}
-                      onClick={() => start(item)}
-                      title="Incepe"
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </td>
-              )}
-              {handlePathname("facturi") &&
-                (tbody.tip === "produse" || tbody.tip === "protocol") && (
-                  <td className="trash-wreapper">
-                    <FaTrashAlt size={24} onClick={() => removeItem(item.nr)} />
-                  </td>
-                )}
+            
             </tr>
           </Dropdown>
         ))}

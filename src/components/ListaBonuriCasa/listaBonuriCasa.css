@@ -1,0 +1,56 @@
+.lista-bonuri {
+    border: 1px solid blueviolet;
+    width: 20%;
+    margin-top: 5px;
+    padding: 0 30px 0 10px;
+    text-align: center;
+    position: relative;
+}
+
+.lista-bonuri .title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.lista-bonuri .title hr{
+    width: 100%;
+}
+
+.lista-bonuri .list-container {
+    overflow: auto;
+    width: 105%;
+    height: 80%;
+    padding: 0 10px 0 0;
+}
+
+.lista-bonuri ol {
+    counter-reset: li; /* Initiate a counter */
+    list-style: decimal; /* Keep using default numbering for IE6/7 */
+    padding: 0;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    margin-left: 20px;
+    
+}
+
+.lista-bonuri li {
+    position: relative;
+	min-height: 30px;
+    color: rgb(12, 199, 212);
+    cursor: pointer;
+    border-bottom: 1px solid black;
+}
+
+.lista-bonuri li::marker {
+    color: red; /* Setează culoarea marcatorului */
+    font-size: 16px; /* Setează dimensiunea textului marcatorului */
+    background-color: lightblue;
+    /* Alte stilizări la alegere */
+  }
+
+.lista-bonuri h4 {
+    margin: 0;
+    padding: 0;
+    padding-top: 5px;
+}

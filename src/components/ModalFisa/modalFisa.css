@@ -59,7 +59,8 @@
   .modal-fisa-overlay
   .modal-fisa-content
   .modal-fisa-container
-  .table-container table {
+  .table-container
+  table {
   width: 100%;
 }
 
@@ -72,13 +73,30 @@
   width: 60px;
 }
 
-.appointments-page
-  .modal-fisa-overlay
-  .modal-fisa-content
-  .modal-fisa-container
-  .table-container
-  td {
+.appointments-page .table-container td,
+.appointments-page .table-container th {
   text-align: center;
+  border: 1px solid #7f8686;
+  position: relative;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.appointments-page .table-container thead {
+  background-color: rgba(171, 10, 235, 0.932);
+}
+
+.appointments-page .table-container tbody tr:nth-child(even) {
+  background-color: #d4cfcf;
+}
+
+.appointments-page .table-container tbody tr:nth-child(odd) {
+  background-color: #f7e9e9;
+}
+
+.appointments-page .table-container tbody tr:hover {
+  background-color: rgba(171, 10, 235, 0.932);
+  cursor: pointer;
 }
 
 .appointments-page
@@ -120,7 +138,6 @@
   margin-top: 4px;
 }
 
-
 .modal-fisa-overlay .modal-fisa-content .total {
   width: 100%;
   display: flex;
@@ -130,8 +147,8 @@
   /* border: 1px solid rgb(28, 194, 245); */
 }
 
-.modal-fisa-overlay .modal-fisa-content .total input{
-  padding: 5px 0 5px 0 ;
+.modal-fisa-overlay .modal-fisa-content .total input {
+  padding: 5px 0 5px 0;
   text-align: center;
   font-size: 20px;
 }

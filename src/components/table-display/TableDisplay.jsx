@@ -12,6 +12,7 @@ const TableDisplay = ({
   cancel,
   finish,
   start,
+  listOrder
 }) => {
   const [filteredItems, setFilteredItems] = useState([]);
 
@@ -49,6 +50,7 @@ const TableDisplay = ({
           cancel={cancel}
           finish={finish}
           start={start}
+          listOrder={listOrder}
         />
       </Table>
     </div>

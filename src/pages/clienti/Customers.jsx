@@ -11,7 +11,7 @@ import {
 } from "../../redux/slices/customersSlice";
 
 export default function Customers() {
-  const thead = ["cod", "nume", "prenume", "telefon", "Data Nasterii", "fise"];
+  const thead = ["cod", "nume", "prenume", "telefon", "nascut", "fise"];
   const customers = useSelector((state) => state.clienti);
   const location = useLocation();
   const title =
@@ -69,6 +69,7 @@ export default function Customers() {
         tbody={customers}
         removeItem={handleDeleteCustomer}
         editItem={handleEditCustomer}
+        listOrder={thead}
       />
     </div>
   );

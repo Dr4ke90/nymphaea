@@ -14,13 +14,13 @@ import ProtocolProductsFrom from "../../../components/ProtocolProducsForm/Protoc
 const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const thead = [
     "nr",
-    "inventar",
+    "cod",
     "categorie",
     "brand",
-    "produs",
-    "cantitate",
+    "tip",
+    "stoc",
+    "gramaj",
     "pret",
-    "gr/tub",
     "#",
   ];
   const headProtocol = ["nr", "produs", "pret", "cantitate", "total", "#"];
@@ -43,14 +43,14 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const [dateFactura, setDateFactura] = useState(initialStateFactura);
 
   const initialStateProdus = {
-    nrInv: codProdus,
+    cod: codProdus,
     categorie: "",
     brand: "",
-    produs: "",
+    tip: "",
     stoc: "",
-    pretUnitar: "",
     gramaj: "",
-    totalP: "",
+    pret: "",
+    total: "",
   };
   const [produs, setProdus] = useState(initialStateProdus);
 
@@ -108,8 +108,8 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         [name]: newValue,
       };
 
-      updateProduse.totalP =
-        parseInt(updateProduse.stoc) * parseInt(updateProduse.pretUnitar);
+      updateProduse.total =
+        parseInt(updateProduse.stoc) * parseInt(updateProduse.pret);
 
       return updateProduse;
     });
@@ -145,6 +145,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         ...dateFactura.produse,
         {
           nr: dateFactura.produse.length + 1,
+          cantitateGr: product.stoc * product.gramaj,
           ...product,
         },
       ],
@@ -156,7 +157,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
       const paddedNr = "P" + cod.toString().padStart(4, "0");
       const updates = {
         ...initialStateProdus,
-        nrInv: paddedNr,
+        cod: paddedNr,
       };
       return updates;
     });
@@ -165,7 +166,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const [totalGenproduse, setTotalGenProduse] = useState(0);
   useEffect(() => {
     setTotalGenProduse(
-      dateFactura.produse.reduce((suma, produs) => suma + produs.total, 0)
+      dateFactura.produse.reduce((suma, produs) => suma + parseFloat(produs.totalP), 0)
     );
   }, [dateFactura.produse]);
 
@@ -173,7 +174,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     event.preventDefault();
 
     if (dateFactura.tip !== "chirie" && dateFactura.tip !== "utilitati") {
-      if (totalGenproduse.toFixed(1) !== dateFactura.total.toFixed(1)) {
+      if (totalGenproduse.toFixed(1) !== parseFloat(dateFactura.total).toFixed(1)) {
         alert("Totalul produselor nu este egal cu totalul facturii");
         return;
       }
@@ -185,6 +186,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     dispatch(addInvoice({ ...dateFactura, tip: tipUpperCase }));
     setDateFactura(initialStateFactura);
     closeModal();
+
   };
 
   const handleRemoveProdus = (nr) => {
@@ -205,7 +207,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     setProdus(() => {
       const updates = {
         ...produs,
-        nrInv: paddedNr,
+        cod: paddedNr,
       };
       return updates;
     });
@@ -282,7 +284,8 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         {(dateFactura.tip === "produse" || dateFactura.tip === "protocol") && (
           <TableDisplay
             thead={dateFactura.tip === "protocol" ? headProtocol : thead}
-            tbody={dateFactura}
+            tbody={dateFactura.produse}
+            listOrder={dateFactura.tip === "protocol" ? headProtocol : thead}
             removeItem={handleRemoveProdus}
           />
         )}
