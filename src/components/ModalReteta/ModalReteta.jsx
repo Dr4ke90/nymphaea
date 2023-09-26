@@ -148,7 +148,7 @@ export default function ModalReteta({
                       />
                     </td>
                     {Object.entries(product).map(([key, value]) => {
-                      if (key === "cod" || key === "produs") {
+                      if (key === "cod" || key === "tip") {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}

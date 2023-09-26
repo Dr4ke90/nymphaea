@@ -33,7 +33,7 @@ export const fetchAllInvoices = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/nymphaea/invoices"
+        "http://52.3.55.96:3000/api/nymphaea/invoices"
       );
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export const addInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/nymphaea/invoices",
+        "http://52.3.55.96:3000/api/nymphaea/invoices",
         invoice
       );
       console.log(response.data.message);
@@ -59,7 +59,7 @@ export const addInvoice = createAsyncThunk(
             delete produs.nr
             delete produs.total
             const response = await axios.post(
-              `http://localhost:3000/api/nymphaea/inventory`,
+              `http://52.3.55.96:3000/api/nymphaea/inventory`,
               produs
             );
             console.log(response.data.message);
@@ -77,7 +77,7 @@ export const deleteInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/invoices/${invoice.nr}`
+        `http://52.3.55.96:3000/api/nymphaea/invoices/${invoice.nr}`
       );
       console.log(response.data.message);
       return invoice;
@@ -92,7 +92,7 @@ export const updateInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/invoices/${invoice.nr}`,
+        `http://52.3.55.96:3000/api/nymphaea/invoices/${invoice.nr}`,
         invoice
       );
       console.log(response.data.success);

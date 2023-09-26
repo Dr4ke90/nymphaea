@@ -23,7 +23,6 @@ const Tbody = ({
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
 
-
   useEffect(() => {
     setTableBody(tbody);
   }, [tbody]);
@@ -98,11 +97,12 @@ const Tbody = ({
     }
   };
 
+  console.log(tableBody);
 
   if (tableBody !== undefined && tableBody !== null) {
     return (
       <tbody>
-        {tableBody.map((item, index) => (
+        {tableBody?.map((item, index) => (
           <Dropdown
             overlay={
               <ContextMenu
@@ -119,7 +119,7 @@ const Tbody = ({
               onClick={() => handleSelectRow(item._id)}
               onContextMenu={(e) => handleContextMenu(e, item._id)}
             >
-              {listOrder.map((key) => {
+              {listOrder?.map((key) => {
                 if (
                   key === "produse" ||
                   key === "programari" ||
@@ -153,7 +153,6 @@ const Tbody = ({
                   );
                 }
               })}
-            
             </tr>
           </Dropdown>
         ))}

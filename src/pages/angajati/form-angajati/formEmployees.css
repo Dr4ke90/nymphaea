@@ -1,5 +1,6 @@
 .employees-page .modal-overlay .modal-content {
   height: 390px;
+  width: 300px;
 }
 
 .employees-page .modal-overlay .modal-content .new-employee-form {

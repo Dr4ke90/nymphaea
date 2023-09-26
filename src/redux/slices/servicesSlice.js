@@ -33,7 +33,7 @@ export const fetchAllServices = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/nymphaea/services"
+        "http://52.3.55.96:3000/api/nymphaea/services"
       );
       return response.data;
     } catch (error) {
@@ -53,7 +53,7 @@ export const addService = createAsyncThunk(
       };
 
       const response = await axios.post(
-        "http://localhost:3000/api/nymphaea/services",
+        "http://52.3.55.96:3000/api/nymphaea/services",
         serviceToSave
       );
       console.log(response.data.success);
@@ -69,7 +69,7 @@ export const deleteService = createAsyncThunk(
   async (service) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/services/${service.cod}`
+        `http://52.3.55.96:3000/api/nymphaea/services/${service.cod}`
       );
       console.log(response.data.success);
       return service;
@@ -84,7 +84,7 @@ export const updateService = createAsyncThunk(
   async (service) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/services/${service.cod}`,
+        `http://52.3.55.96:3000/api/nymphaea/services/${service.cod}`,
         service
       );
       console.log(response.data.success);

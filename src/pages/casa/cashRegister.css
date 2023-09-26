@@ -51,7 +51,7 @@
 .cash-page .table-container td {
   text-align: center;
   border-bottom: 1px dotted rgb(12, 12, 12);
-  padding: 1;
+  padding: 1px;
 }
 
 .cash-page .lista-bonuri {

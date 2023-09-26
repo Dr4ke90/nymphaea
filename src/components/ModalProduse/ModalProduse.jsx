@@ -99,7 +99,7 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
                       if (
                         key === "cod" ||
                         key === "brand" ||
-                        key === "produs"
+                        key === "tip"
                       ) {
                         return (
                           <td key={key} className={handleClassName(key)}>

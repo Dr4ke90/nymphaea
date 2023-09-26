@@ -23,7 +23,7 @@ export const fetchAllCustomers = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/nymphaea/customers"
+        "http://52.3.55.96:3000/api/nymphaea/customers"
       );
       console.log('Clientii au fost incarcati cu succes')
       return response.data;
@@ -38,7 +38,7 @@ export const addCustomer = createAsyncThunk(
   async (customer) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/nymphaea/customers",
+        "http://52.3.55.96:3000/api/nymphaea/customers",
         customer
       );
       console.log(response.data.success);
@@ -56,7 +56,7 @@ export const updateCustomer = createAsyncThunk(
     delete updates._id;
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/nymphaea/customers/${customer.cod}`,
+        `http://52.3.55.96:3000/api/nymphaea/customers/${customer.cod}`,
         updates
       );
       console.log(response.data.success);
@@ -71,7 +71,7 @@ export const deleteCustomer = createAsyncThunk(
   async (customer) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/nymphaea/customers/${customer.cod}`
+        `http://52.3.55.96:3000/api/nymphaea/customers/${customer.cod}`
       );
       console.log(response.data.success);
       return customer;

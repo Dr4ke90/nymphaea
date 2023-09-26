@@ -21,11 +21,12 @@
 }
 
 .table-display thead {
-  background-color: rgba(171, 10, 235, 0.932);
+  background-color: rgba(255, 6, 201, 0.932);
 }
 
 .table-display tbody tr:nth-child(even) {
-  background-color: #a7a1a1;
+  background-color: #f7e9e9;
+
 }
 
 .table-display tbody tr:nth-child(odd) {
@@ -33,7 +34,7 @@
 }
 
 .table-display tbody tr:hover {
-  background-color: rgba(171, 10, 235, 0.932);
+  background-color: rgba(235, 10, 205, 0.932);
   cursor: pointer;
 }
 

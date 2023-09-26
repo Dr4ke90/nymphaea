@@ -16,6 +16,7 @@
 
   .customers-page .modal-overlay .modal-content {
     height: 260px;
+    width: 300px;
 }
 
 .customers-page .modal-overlay .modal-content .new-customer-form .buttons-wrapper {
