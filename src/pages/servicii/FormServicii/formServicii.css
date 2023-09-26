@@ -1,16 +1,4 @@
 .services-page .modal-overlay .modal-content {
-    height: 200px;
-    width: 250px;
+    height: 270px;
+    width: 300px;
 }
-
-
-.services-page .modal-overlay .modal-content .new-service-form .buttons-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
-
-.services-page .modal-overlay .modal-content .new-service-form  input {
-    width: 95%;
-    margin-bottom: 5px;
-    padding: 5px;
-  }
