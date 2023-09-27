@@ -1,7 +1,7 @@
 .services-page .title {
   display: flex;
-  justify-content: space-between; /* Plasează elementele la capetele containerului */
-  align-items: center; /* Centrează vertical elementele în container */
+  justify-content: space-between;
+  align-items: center; 
   height: 47px;
   margin-top: 5px;
 }
