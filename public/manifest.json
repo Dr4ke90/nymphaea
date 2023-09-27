@@ -2,7 +2,6 @@
   "short_name": "Studio-Nymphaea",
   "name": "Studio-Nymphaea",
   "icons": [
-    
   ],
   "start_url": ".",
   "display": "standalone",
