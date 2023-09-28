@@ -1,9 +1,0 @@
-export default function checkForEmptyValues(obj) {
-  Object.values(obj).map((value) => {
-    if (typeof value === "string" && value.trim() === "") {
-      return "Toate campurile sunt obligatorii";
-    } else {
-      return null
-    }
-  })
-}

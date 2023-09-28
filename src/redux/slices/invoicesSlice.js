@@ -33,7 +33,7 @@ export const fetchAllInvoices = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:3000/api/nymphaea/invoices"
+        "http://127.0.0.1:3001/api/nymphaea/invoices"
       );
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export const addInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:3000/api/nymphaea/invoices",
+        "http://127.0.0.1:3001/api/nymphaea/invoices",
         invoice
       );
       console.log(response.data.message);
@@ -62,7 +62,7 @@ export const addInvoice = createAsyncThunk(
             delete produs.total;
 
             const inventoryResponse = await axios.get(
-              `http://127.0.0.1:3000/api/nymphaea/inventory/${produs.cod}`
+              `http://127.0.0.1:3001/api/nymphaea/inventory/${produs.cod}`
             );
 
             if (Object.keys(inventoryResponse.data.response).length !== 0) {
@@ -73,14 +73,14 @@ export const addInvoice = createAsyncThunk(
                };
 
               const updateResponse = await axios.put(
-                `http://127.0.0.1:3000/api/nymphaea/inventory/${existingProduct.cod}`,
+                `http://127.0.0.1:3001/api/nymphaea/inventory/${existingProduct.cod}`,
                 updatedProduct
               );
 
               console.log(updateResponse.data.message);
             } else {
               const addResponse = await axios.post(
-                `http://127.0.0.1:3000/api/nymphaea/inventory`,
+                `http://127.0.0.1:3001/api/nymphaea/inventory`,
                 produs
               );
 

@@ -17,7 +17,7 @@ export const fetchAllInventory = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:3000/api/nymphaea/inventory"
+        "http://127.0.0.1:3001/api/nymphaea/inventory"
       );
       return response.data;
     } catch (error) {
@@ -31,7 +31,7 @@ export const addProduct = createAsyncThunk(
   async (product) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:3000/api/nymphaea/inventory",
+        "http://127.0.0.1:3001/api/nymphaea/inventory",
         product
       );
       return response.data;
@@ -48,7 +48,7 @@ export const updateInventory = createAsyncThunk(
     delete updates._id;
     try {
       const response = await axios.put(
-        `http://127.0.0.1:3000/api/nympahea/inventory/${product._id}`,
+        `http://127.0.0.1:3001/api/nympahea/inventory/${product._id}`,
         updates
       );
       console.log(response.data);
