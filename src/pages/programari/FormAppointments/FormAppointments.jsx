@@ -11,10 +11,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../../redux/slices/customersSlice";
 import FromCustomer from "../../clienti/FormClienti/FormCustomer";
+import { fetchAllEmployees } from "../../../redux/slices/employeesSlice";
 
-export default function FormAppointment({ closeModal, cod, item, setItem }) {
+export default function FormAppointment({ closeModal, cod, item }) {
   const dispatch = useDispatch();
   const clienti = useSelector((state) => state.clienti);
+  const angajati = useSelector(state => state.angajati)
   const [showCreateClientButton, setShowCreateClientButton] = useState(false);
 
   const initialState = {
@@ -34,6 +36,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   useEffect(() => {
     dispatch(fetchAllCustomers());
+    dispatch(fetchAllEmployees())
   }, [dispatch]);
 
   useEffect(() => {
@@ -91,6 +94,13 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
           setShowCreateClientButton(true);
         }
       }
+    } else if (name === "angajat") {
+      const angajat = angajati.find(angajat => angajat.cod === newAppointment.angajat)
+      setNewAppointment({
+        ...newAppointment,
+        [name]:value,
+        numeAngajat: `${angajat.nume} ${angajat.prenume}`
+      })
     } else {
       setNewAppointment({
         ...newAppointment,
@@ -101,7 +111,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
-    setItem(null);
     closeModal();
   };
 
@@ -120,7 +129,23 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   const handleUpdateAppointment = (e) => {
     e.preventDefault();
-    dispatch(updateAppointment(newAppointment));
+    let newApp = {};
+    if (newAppointment.status === "Anulat") {
+      newApp = {
+        ...newAppointment,
+        status: "Activ",
+        tip_update: "Modificare status: Reprogramare",
+      };
+    }
+
+    if (newAppointment.status === "Activ") {
+      newApp = {
+        ...newAppointment,
+        tip_update: "Modificare date",
+      };
+    }
+
+    dispatch(updateAppointment(newApp));
     handleCloseModal();
   };
 
@@ -165,7 +190,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     <PagePreview className="modal-overlay">
       <PagePreview className="modal-content">
         <Form className="new-appointment-form">
-          {Object.entries(initialState).map(([key, value]) => {
+          {Object.keys(initialState).map((key) => {
             if (key !== "status") {
               return (
                 <div key={key} className="input-wrapper">
@@ -175,7 +200,13 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
                     placeholder={handlePlaceholder(key)}
                     onChange={handleChange}
                     value={newAppointment[key]}
-                    disabled={key === "nr"}
+                    disabled={
+                      key === "nr" ||
+                      newAppointment.status === "Terminat" ||
+                      (key === "client" &&
+                        newAppointment.status === "Anulat") ||
+                      newAppointment.status === "In curs"
+                    }
                     autoComplete="off"
                   />
                   {key === "client" &&
@@ -218,7 +249,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
-              )}
+              ) || item.status === "Terminat"}
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>

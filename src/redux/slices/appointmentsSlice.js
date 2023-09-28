@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const appointmentsSlice = createSlice({
@@ -92,7 +92,6 @@ export const addAppointment = createAsyncThunk(
 export const updateAppointment = createAsyncThunk(
   "appointments/updateAppointment",
   async (appointment) => {
-    console.log(appointment);
     const updates = {
       ...appointment,
       data_update: date,
@@ -105,27 +104,65 @@ export const updateAppointment = createAsyncThunk(
         appointment.status.includes("Anulat") ||
         appointment.status.includes("Terminat")
       ) {
-        const getEmployyeRespons = await axios.get(
-          `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`
+        const response = await axios.put(
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          updates
         );
+        console.log(response.data.message);
 
-        const appointemntUpdate = {
-          programari: getEmployyeRespons.data.response.programari.filter(
+        if (Object.keys(response.data.response).length !== 0) {
+          const getEmployeeResponse = await axios.get(
+            `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`
+          );
+
+          const updatedAppointments = getEmployeeResponse.data.response.programari.filter(
             (item) => item.nr !== appointment.nr
-          ),
-        };
+          );
 
-        await axios.put(
-          `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`,
-          appointemntUpdate
+          const appointmentUpdate = {
+            programari: updatedAppointments,
+          };
+
+          await axios.put(
+            `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`,
+            appointmentUpdate
+          );
+        }
+      } else if (appointment.status.includes("Activ")) {
+        const response = await axios.put(
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          updates
         );
+        console.log(response.data.message);
+
+        if (Object.keys(response.data.response).length !== 0) {
+          const getEmployyeRespons = await axios.get(
+            `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`
+          );
+          if (Object.keys(getEmployyeRespons.data.response).length === 0) {
+            return;
+          }
+
+          const appointemntUpdate = {
+            programari: [
+              ...getEmployyeRespons.data.response.programari,
+              appointment,
+            ],
+          };
+
+          await axios.put(
+            `http://127.0.0.1:3001/api/nymphaea/employees/${appointment.angajat}`,
+            appointemntUpdate
+          );
+        }
+      } else {
+        const response = await axios.put(
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          updates
+        );
+        console.log(response.data.message);
       }
 
-      const response = await axios.put(
-        `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
-        updates
-      );
-      console.log(response.data.message);
       return appointment;
     } catch (error) {
       throw new Error(

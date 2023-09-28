@@ -8,8 +8,9 @@ import {
   FaPlayCircle,
   FaTrashAlt,
   FaFlag,
-  FaSlidersH
+  FaSlidersH,
 } from "react-icons/fa";
+import FormAppointment from "../../pages/programari/FormAppointments/FormAppointments";
 
 const Tbody = ({
   tbody,
@@ -24,8 +25,6 @@ const Tbody = ({
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
 
-
-
   useEffect(() => {
     setTableBody(tbody);
   }, [tbody]);
@@ -38,10 +37,14 @@ const Tbody = ({
     e.preventDefault();
     setSelectedRow(id);
   };
-  
+
+  const [openFormAppointment, setOpenFormAppointment] = useState(false);
+
+  const toggleOpenFormAppointment = () => {
+    setOpenFormAppointment(!openFormAppointment);
+  };
 
   const handleChangeButton = (item) => {
-
     if (item.status === "Activ") {
       return (
         <div className="active">
@@ -92,18 +95,23 @@ const Tbody = ({
           <FaSlidersH
             size={16}
             style={{ cursor: "pointer" }}
+            onClick={toggleOpenFormAppointment}
           />
+          {openFormAppointment && (
+            <FormAppointment
+              closeModal={toggleOpenFormAppointment}
+              item={item}
+            />
+          )}
         </div>
       );
     }
 
     if (item.status === "Terminat") {
-      return (
-        <span>{item.terminat}</span>
-      );
+      console.log(item)
+      return <span>{item.terminat}</span>;
     }
   };
-
 
   if (tableBody !== undefined && tableBody !== null) {
     return (

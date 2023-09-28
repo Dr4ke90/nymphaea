@@ -6,7 +6,6 @@ import { Button } from "@mui/material";
 import "./appointments.css";
 import FormAppointment from "./FormAppointments/FormAppointments";
 import {
-  deleteAppointment,
   fetchAllAppointments,
   updateAppointment,
 } from "../../redux/slices/appointmentsSlice";
@@ -20,7 +19,7 @@ export default function Appointments() {
     "ora",
     "timp",
     "numeClient",
-    "angajat",
+    "numeAngajat",
     "status",
     "#",
   ];
@@ -35,6 +34,7 @@ export default function Appointments() {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const ora = new Date().toLocaleTimeString("ro", "RO");
   const [currentAppointment, setCurrentAppointment] = useState({});
+
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -58,14 +58,6 @@ export default function Appointments() {
 
   const toggleModalFisa = () => {
     setModalFisa(!modalFisa);
-  };
-
-  const handleDeleteAppointment = (item) => {
-    const confirm = window.confirm(
-      `Esti sigur ca vrei sa stergi Programarea ${item.nr}`
-    );
-    if (!confirm) return;
-    dispatch(deleteAppointment(item));
   };
 
   const handleEditAppointment = (item) => {
@@ -107,7 +99,6 @@ export default function Appointments() {
   };
 
   const handleFinishAppointment = (item) => {
-    console.log(item)
     const confirm = window.confirm(
       `Ai terminat Programarea ${item.nr} - ${item.numeClient}??`
     );
@@ -168,13 +159,11 @@ export default function Appointments() {
           closeModal={toggleModal}
           cod={code}
           item={receivedAppointemnt}
-          setItem={setReceivedAppointemnt}
         />
       )}
       <TableDisplay
         thead={thead}
         tbody={filteredAppointments}
-        removeItem={handleDeleteAppointment}
         editItem={handleEditAppointment}
         cancel={handleCancelAppointment}
         finish={handleFinishAppointment}
