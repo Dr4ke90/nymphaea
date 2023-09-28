@@ -38,7 +38,9 @@ export default function FromCustomer({ closeModal, cod, item, setItem }) {
 
   const handleCloseModal = () => {
     setNewClient(initialState);
-    setItem(null);
+    if (item) {
+      setItem(null);
+    }
     closeModal();
   };
 

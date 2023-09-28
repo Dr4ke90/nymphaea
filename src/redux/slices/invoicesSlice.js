@@ -33,7 +33,7 @@ export const fetchAllInvoices = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://52.3.55.96:3000/api/nymphaea/invoices"
+        "http://127.0.0.1:3000/api/nymphaea/invoices"
       );
       return response.data;
     } catch (error) {
@@ -47,24 +47,48 @@ export const addInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.post(
-        "http://52.3.55.96:3000/api/nymphaea/invoices",
+        "http://127.0.0.1:3000/api/nymphaea/invoices",
         invoice
       );
       console.log(response.data.message);
 
-
-      if (Object.keys(response.data.response).length !== 0 && invoice.tip === "Produse")
+      if (
+        Object.keys(response.data.response).length !== 0 &&
+        invoice.tip === "Produse"
+      ) {
         await Promise.all(
           invoice.produse.map(async (produs) => {
-            delete produs.nr
-            delete produs.total
-            const response = await axios.post(
-              `http://52.3.55.96:3000/api/nymphaea/inventory`,
-              produs
+            delete produs.nr;
+            delete produs.total;
+
+            const inventoryResponse = await axios.get(
+              `http://127.0.0.1:3000/api/nymphaea/inventory/${produs.cod}`
             );
-            console.log(response.data.message);
+
+            if (Object.keys(inventoryResponse.data.response).length !== 0) {
+              const existingProduct = inventoryResponse.data.response;
+              const updatedProduct = {
+                ...produs,
+                stoc: parseInt(existingProduct.stoc) + parseInt(produs.stoc)
+               };
+
+              const updateResponse = await axios.put(
+                `http://127.0.0.1:3000/api/nymphaea/inventory/${existingProduct.cod}`,
+                updatedProduct
+              );
+
+              console.log(updateResponse.data.message);
+            } else {
+              const addResponse = await axios.post(
+                `http://127.0.0.1:3000/api/nymphaea/inventory`,
+                produs
+              );
+
+              console.log(addResponse.data.message);
+            }
           })
         );
+      }
       return invoice;
     } catch (error) {
       throw new Error("Eroare la adaugarea Facturii" + invoice.nr, error);
@@ -77,7 +101,7 @@ export const deleteInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.delete(
-        `http://52.3.55.96:3000/api/nymphaea/invoices/${invoice.nr}`
+        `http://127.0.0.1:3000/api/nymphaea/invoices/${invoice.nr}`
       );
       console.log(response.data.message);
       return invoice;
@@ -92,7 +116,7 @@ export const updateInvoice = createAsyncThunk(
   async (invoice) => {
     try {
       const response = await axios.put(
-        `http://52.3.55.96:3000/api/nymphaea/invoices/${invoice.nr}`,
+        `http://127.0.0.1:3000/api/nymphaea/invoices/${invoice.nr}`,
         invoice
       );
       console.log(response.data.success);

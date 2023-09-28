@@ -10,10 +10,12 @@ import {
 } from "../../../redux/slices/appointmentsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../../redux/slices/customersSlice";
+import FromCustomer from "../../clienti/FormClienti/FormCustomer";
 
 export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
   const clienti = useSelector((state) => state.clienti);
+  const [showCreateClientButton, setShowCreateClientButton] = useState(false);
 
   const initialState = {
     nr: cod,
@@ -24,6 +26,11 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     angajat: "",
   };
   const [newAppointment, setNewAppointment] = useState(initialState);
+
+  let code = 0;
+  const nr = clienti.length + 1;
+  const paddedNr = nr.toString().padStart(3, "0");
+  code = "C" + paddedNr;
 
   useEffect(() => {
     dispatch(fetchAllCustomers());
@@ -38,30 +45,48 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-  
+
     if (name === "client") {
-      if (value !== "") {
+      if (value.startsWith("C0")) {
         const client = clienti.find((client) => client.cod === value);
-  
+
         if (client) {
           setNewAppointment({
             ...newAppointment,
             [name]: value,
             numeClient: `${client.nume} ${client.prenume}`,
           });
+          setShowCreateClientButton(false);
         } else {
           setNewAppointment({
             ...newAppointment,
             [name]: value,
             numeClient: value,
           });
+          setShowCreateClientButton(true);
         }
       } else {
-        setNewAppointment({
-          ...newAppointment,
-          [name]: value,
-          numeClient: value,
-        });
+        const client = clienti.find(
+          (client) =>
+            `${client.nume} ${client.prenume}`.toLowerCase() ===
+            value.toLowerCase()
+        );
+
+        if (client) {
+          setNewAppointment({
+            ...newAppointment,
+            [name]: value,
+            numeClient: `${client.nume} ${client.prenume}`,
+          });
+          setShowCreateClientButton(false);
+        } else {
+          setNewAppointment({
+            ...newAppointment,
+            [name]: value,
+            numeClient: value,
+          });
+          setShowCreateClientButton(true);
+        }
       }
     } else {
       setNewAppointment({
@@ -70,7 +95,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
       });
     }
   };
-  
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
@@ -80,13 +104,14 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
 
   const handleAdaugaProgramare = (e) => {
     e.preventDefault();
+
     dispatch(
       addAppointment({
         ...newAppointment,
         status: "Activ",
       })
     );
-
+    setNewAppointment(initialState);
     handleCloseModal();
   };
 
@@ -122,6 +147,17 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     return placeholder;
   };
 
+  const [openFormCustomer, setOpenFormCustomer] = useState(false);
+
+  const toggleFormCustomer = () => {
+    setOpenFormCustomer(!openFormCustomer);
+  };
+
+  const handleCreateNewCustomer = (e) => {
+    e.preventDefault();
+    toggleFormCustomer();
+  };
+
   return (
     <PagePreview className="modal-overlay">
       <PagePreview className="modal-content">
@@ -129,20 +165,44 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
           {Object.entries(initialState).map(([key, value]) => {
             if (key !== "status") {
               return (
-                <Input
-                  key={key}
-                  type={handleInputType(key)}
-                  name={key}
-                  placeholder={handlePlaceholder(key)}
-                  onChange={handleChange}
-                  value={newAppointment[key]}
-                  disabled={key === "nr"}
-                />
+                <div key={key} className="input-wrapper">
+                  <Input
+                    type={handleInputType(key)}
+                    name={key}
+                    placeholder={handlePlaceholder(key)}
+                    onChange={handleChange}
+                    value={newAppointment[key]}
+                    disabled={key === "nr"}
+                    autoComplete="off"
+                  />
+                  {key === "client" &&
+                    newAppointment.client !== "" &&
+                    showCreateClientButton && (
+                      <div className="new-client-div">
+                        <p>Creati client nou?</p>
+                        <button
+                          className="create-client-button"
+                          onClick={handleCreateNewCustomer}
+                        >
+                          Creați
+                        </button>
+                        {openFormCustomer && (
+                          <FromCustomer
+                            closeModal={toggleFormCustomer}
+                            cod={code}
+                            item={null}
+                            setItem={null}
+                          />
+                        )}
+                      </div>
+                    )}
+                </div>
               );
             } else {
               return null;
             }
           })}
+
           <PagePreview className="buttons-wrapper">
             <Button variant="contained" color="info" onClick={closeModal}>
               Close

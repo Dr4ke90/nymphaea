@@ -17,7 +17,7 @@ export const fetchAllSales = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://52.3.55.96:3000/api/nymphaea/sales"
+        "http://127.0.0.1:3000/api/nymphaea/sales"
       );
       return response.data;
     } catch (error) {
@@ -29,13 +29,13 @@ export const fetchAllSales = createAsyncThunk(
 export const addNewSale = createAsyncThunk("sales/addNewSale", async (sale) => {
   try {
     const response = await axios.post(
-      "http://52.3.55.96:3000/api/nymphaea/sales",
+      "http://127.0.0.1:3000/api/nymphaea/sales",
       sale
     );
 
     if (Object.keys(response.data.response).length !== 0) {
       const inventoryResponse = await axios.get(
-        "http://52.3.55.96:3000/api/nymphaea/inventory"
+        "http://127.0.0.1:3000/api/nymphaea/inventory"
       );
 
       // Dacă vânzarea conține produse
@@ -64,7 +64,7 @@ export const addNewSale = createAsyncThunk("sales/addNewSale", async (sale) => {
 
                 promises.push(
                   axios.put(
-                    `http://52.3.55.96:3000/api/nymphaea/inventory/${itemReteta.cod}`,
+                    `http://127.0.0.1:3000/api/nymphaea/inventory/${itemReteta.cod}`,
                     updatedInventory
                   )
                 );
@@ -92,7 +92,7 @@ export const addNewSale = createAsyncThunk("sales/addNewSale", async (sale) => {
 
               promises.push(
                 axios.put(
-                  `http://52.3.55.96:3000/api/nymphaea/inventory/${productInSale.cod}`,
+                  `http://127.0.0.1:3000/api/nymphaea/inventory/${productInSale.cod}`,
                   updatedInventory
                 )
               );
@@ -103,7 +103,7 @@ export const addNewSale = createAsyncThunk("sales/addNewSale", async (sale) => {
        const responsePromise = await Promise.all(promises);
 
        if (responsePromise.request.status === 200) {
-          await axios.delete(`http://52.3.55.96:3000/api/nymphaea/casa/${sale.nrBon}`)
+          await axios.delete(`http://127.0.0.1:3000/api/nymphaea/casa/${sale.nrBon}`)
        }
       }
     }

@@ -43,11 +43,12 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   const [dateFactura, setDateFactura] = useState(initialStateFactura);
 
   const initialStateProdus = {
-    cod: codProdus,
+    barcode: "",
+    stoc: "",
+    cod: "",
     categorie: "",
     brand: "",
     tip: "",
-    stoc: "",
     gramaj: "",
     pret: "",
     total: "",
@@ -151,24 +152,16 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
       ],
     });
 
-    setProdus(() => {
-      const cod =
-        parseInt(codProdus.substring(1)) + (dateFactura.produse.length + 1);
-      const paddedNr = "P" + cod.toString().padStart(4, "0");
-      const updates = {
-        ...initialStateProdus,
-        cod: paddedNr,
-      };
-      return updates;
-    });
+    setProdus(initialStateProdus);
   };
 
   const [totalGenproduse, setTotalGenProduse] = useState(0);
   useEffect(() => {
     setTotalGenProduse(
-      dateFactura.produse.reduce((suma, produs) => suma + parseFloat(produs.totalP), 0)
+      dateFactura.produse.reduce((suma, produs) => suma + parseFloat(produs.total), 0)
     );
   }, [dateFactura.produse]);
+
 
   const handleInregistreaza = (event) => {
     event.preventDefault();
@@ -189,9 +182,9 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
 
   };
 
-  const handleRemoveProdus = (nr) => {
+  const handleRemoveProdus = (produs) => {
     setDateFactura((prev) => {
-      const updateProduse = prev.produse.filter((item) => item.nr !== nr);
+      const updateProduse = prev.produse.filter((item) => item.nr !== produs.nr);
 
       const updateFactura = {
         ...prev,
@@ -250,6 +243,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
               <hr />
               <ProductsInvoiceForm
                 stateProdus={produs}
+                setStateProdus={setProdus}
                 handleAdaugaProdus={handleAdaugaProdus}
                 handleChangeProdus={handleChangeProdus}
               />

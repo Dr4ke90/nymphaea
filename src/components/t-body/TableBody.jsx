@@ -8,6 +8,7 @@ import {
   FaPlayCircle,
   FaTrashAlt,
   FaFlag,
+  FaSlidersH
 } from "react-icons/fa";
 
 const Tbody = ({
@@ -23,6 +24,8 @@ const Tbody = ({
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
 
+
+
   useEffect(() => {
     setTableBody(tbody);
   }, [tbody]);
@@ -35,69 +38,72 @@ const Tbody = ({
     e.preventDefault();
     setSelectedRow(id);
   };
-
-  const handlePathname = (name) => {
-    const pathname = location.pathname;
-    if (pathname.includes(name)) {
-      return true;
-    }
-  };
-
-  const handleControllAppointments = (item) => {
-    if (item.status === "Activ") {
-      return cancel(item);
-    }
-    if (item.status === "Anulat" || item.status === "Terminat") {
-      return removeItem(item);
-    }
-    if (item.status === "In curs") {
-      return finish(item);
-    }
-  };
+  
 
   const handleChangeButton = (item) => {
+
     if (item.status === "Activ") {
       return (
-        <FaRegCalendarTimes
-          size={16}
-          onClick={() => handleControllAppointments(item)}
-          title={handleChangeTitle(item)}
-        />
+        <div className="active">
+          <FaRegCalendarTimes
+            size={16}
+            onClick={() => cancel(item)}
+            title="Anuleaza"
+            style={{ cursor: "pointer" }}
+          />
+          <FaPlayCircle
+            size={16}
+            onClick={() => start(item)}
+            title="Incepe"
+            style={{ cursor: "pointer" }}
+          />
+        </div>
       );
     }
-    if (item.status === "Anulat" || item.status === "Terminat") {
+
+    if (location.pathname.includes("facturi")) {
       return (
-        <FaTrashAlt
-          size={16}
-          onClick={() => handleControllAppointments(item)}
-          title={handleChangeTitle(item)}
-        />
+        <div>
+          <FaTrashAlt
+            size={16}
+            onClick={() => removeItem(item)}
+            style={{ cursor: "pointer" }}
+          />
+        </div>
       );
     }
+
     if (item.status === "In curs") {
       return (
-        <FaFlag
-          size={16}
-          onClick={() => handleControllAppointments(item)}
-          title={handleChangeTitle(item)}
-        />
+        <div>
+          <FaFlag
+            size={16}
+            onClick={() => finish(item)}
+            title="Finalizeaza"
+            style={{ cursor: "pointer" }}
+          />
+        </div>
+      );
+    }
+
+    if (item.status === "Anulat") {
+      return (
+        <div>
+          <FaSlidersH
+            size={16}
+            style={{ cursor: "pointer" }}
+          />
+        </div>
+      );
+    }
+
+    if (item.status === "Terminat") {
+      return (
+        <span>{item.terminat}</span>
       );
     }
   };
 
-  const handleChangeTitle = (item) => {
-    if (item.status === "Activ") {
-      return "Anuleaza";
-    }
-    if (item.status === "Anulat" || item.status === "Terminat") {
-      return "Sterge";
-    }
-    if (item.status === "In curs") {
-      return "Incaseaza";
-    }
-  };
-
-  console.log(tableBody);
 
   if (tableBody !== undefined && tableBody !== null) {
     return (
@@ -134,15 +140,6 @@ const Tbody = ({
                   return (
                     <td className="buttons-wrapper" key={key}>
                       {handleChangeButton(item)}
-                      {item.status === "Activ" ? (
-                        <FaPlayCircle
-                          size={16}
-                          onClick={() => start(item)}
-                          title="Incepe"
-                        />
-                      ) : (
-                        <></>
-                      )}
                     </td>
                   );
                 } else {

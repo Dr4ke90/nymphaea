@@ -23,7 +23,7 @@ export const fetchAllEmployees = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://52.3.55.96:3000/api/nymphaea/employees"
+        "http://127.0.0.1:3000/api/nymphaea/employees"
       );
       console.log(`Angajatii au fost incarcati cu succes`);
       return response.data;
@@ -38,7 +38,7 @@ export const fetchOneEmployee = createAsyncThunk(
   async (cod) => {
     try {
       const response = await axios.get(
-        `http://52.3.55.96:3000/api/nymphaea/employees/${cod}`
+        `http://127.0.0.1:3000/api/nymphaea/employees/${cod}`
       );
       console.log(response.data.message);
       return response.data.response;
@@ -55,7 +55,7 @@ export const updateEmployee = createAsyncThunk(
   async (employee) => {
     try {
       const response = await axios.put(
-        `http://52.3.55.96:3000/api/nymphaea/employees/${employee.cod}`,
+        `http://127.0.0.1:3000/api/nymphaea/employees/${employee.cod}`,
         employee
       );
       console.log(response.data.success);
@@ -73,7 +73,7 @@ export const addEmployee = createAsyncThunk(
   async (employee) => {
     try {
       await axios.post(
-        "http://52.3.55.96:3000/api/nymphaea/employees",
+        "http://127.0.0.1:3000/api/nymphaea/employees",
         employee
       );
       return employee;
@@ -88,7 +88,7 @@ export const deleteEmployee = createAsyncThunk(
   async (employee) => {
     try {
       const response = await axios.delete(
-        `http://52.3.55.96:3000/api/nymphaea/employees/${employee.cod}`
+        `http://127.0.0.1:3000/api/nymphaea/employees/${employee.cod}`
       );
       console.log(response.data.success);
       return employee;

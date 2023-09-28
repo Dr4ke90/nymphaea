@@ -32,7 +32,7 @@ export const fetchAllReceipes = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        "http://52.3.55.96:3000/api/nymphaea/casa"
+        "http://127.0.0.1:3000/api/nymphaea/casa"
       );
       return response.data;
     } catch (error) {
@@ -52,14 +52,14 @@ export const addRceceipe = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        "http://52.3.55.96:3000/api/nymphaea/casa",
+        "http://127.0.0.1:3000/api/nymphaea/casa",
         updates
       );
       console.log(response.data.message);
 
       if (response.data.response) {
         const getEmployyeRespons = await axios.get(
-          `http://52.3.55.96:3000/api/nymphaea/employees/${receipe.codAngajat}`
+          `http://127.0.0.1:3000/api/nymphaea/employees/${receipe.codAngajat}`
         );
 
         if (Object.keys(getEmployyeRespons.data.response).length !== 0) {
@@ -70,13 +70,13 @@ export const addRceceipe = createAsyncThunk(
           };
 
           const updateEmployyeResponse = await axios.put(
-            `http://52.3.55.96:3000/api/nymphaea/employees/${receipe.codAngajat}`,
+            `http://127.0.0.1:3000/api/nymphaea/employees/${receipe.codAngajat}`,
             appointemntUpdate
           );
 
           if (updateEmployyeResponse.data.response !== 0) {
             const getCustomerResponse = await axios.get(
-              `http://52.3.55.96:3000/api/nymphaea/customers/${receipe.codClient}`
+              `http://127.0.0.1:3000/api/nymphaea/customers/${receipe.codClient}`
             );
 
             if (Object.keys(getCustomerResponse.data.response).length !== 0) {
@@ -88,7 +88,7 @@ export const addRceceipe = createAsyncThunk(
               };
 
               const customerUpdateResponse = await axios.put(
-                `http://52.3.55.96:3000/api/nymphaea/customers/${receipe.codClient}`,
+                `http://127.0.0.1:3000/api/nymphaea/customers/${receipe.codClient}`,
                 customerUpdate
               );
 
@@ -102,7 +102,7 @@ export const addRceceipe = createAsyncThunk(
                 };
 
                 const response = await axios.put(
-                  `http://52.3.55.96:3000/api/nymphaea/appointments/${receipe.codProgramare}`,
+                  `http://127.0.0.1:3000/api/nymphaea/appointments/${receipe.codProgramare}`,
                   appUpdate
                 );
                 console.log(response.data.message);
@@ -138,7 +138,7 @@ export const updateReceipe = createAsyncThunk(
         appointment.status.includes("Terminat")
       ) {
         const getEmployyeRespons = await axios.get(
-          `http://52.3.55.96:3000/api/nymphaea/employees/${appointment.angajat}`
+          `http://127.0.0.1:3000/api/nymphaea/employees/${appointment.angajat}`
         );
 
         const appointemntUpdate = {
@@ -148,13 +148,13 @@ export const updateReceipe = createAsyncThunk(
         };
 
         await axios.put(
-          `http://52.3.55.96:3000/api/nymphaea/employees/${appointment.angajat}`,
+          `http://127.0.0.1:3000/api/nymphaea/employees/${appointment.angajat}`,
           appointemntUpdate
         );
       }
 
       const response = await axios.put(
-        `http://52.3.55.96:3000/api/nymphaea/appointments/${appointment.nr}`,
+        `http://127.0.0.1:3000/api/nymphaea/appointments/${appointment.nr}`,
         updates
       );
       console.log(response.data.message);
@@ -173,7 +173,7 @@ export const deleteAppointment = createAsyncThunk(
   async (appointment) => {
     try {
       const appointmentRes = await axios.delete(
-        `http://52.3.55.96:3000/api/nymphaea/appointments/${appointment.nr}`
+        `http://127.0.0.1:3000/api/nymphaea/appointments/${appointment.nr}`
       );
       console.log(appointmentRes.data.message);
       return appointment;

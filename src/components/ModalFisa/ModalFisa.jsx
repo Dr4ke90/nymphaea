@@ -21,14 +21,31 @@ export default function ModalFisa({ closeModal, appointment }) {
   const bonuri = useSelector((state) => state.casa);
 
   const getCodFisa = () => {
-    if (clienti.length === 0) return;
-    const client = clienti.filter(
-      (client) => client.cod === appointment.client
-    );
+    if (clienti.length === 0 || !appointment) return "";
 
-    const nr = client[0].fise.length + 1;
-    const paddedNr = nr.toString().padStart(3, "0");
-    return "F" + paddedNr;
+    if (appointment.client.startsWith("C0")) {
+      const client = clienti.find(
+        (client) => client.cod === appointment.client
+      );
+
+      if (client) {
+        const nr = client.fise.length + 1;
+        const paddedNr = nr.toString().padStart(3, "0");
+        return "F" + paddedNr;
+      }
+    } else {
+      const clientByName = clienti.find(
+        (client) => `${client.nume} ${client.prenume}` === appointment.client
+      );
+
+      if (clientByName) {
+        const nr = clientByName.fise.length + 1;
+        const paddedNr = nr.toString().padStart(3, "0");
+        return "F" + paddedNr;
+      }
+    }
+
+    return "";
   };
 
   let nrBon;
@@ -100,11 +117,13 @@ export default function ModalFisa({ closeModal, appointment }) {
         }, 0);
 
         serviciu.totalServiciu =
-          (parseFloat(serviciu.pret) + totalReteta) * serviciu.cantitateUtilizata;
+          (parseFloat(serviciu.pret) + totalReteta) *
+          serviciu.cantitateUtilizata;
       } else {
-       serviciu.totalServiciu = parseFloat(serviciu.pret) * parseInt(serviciu.cantitateUtilizata);
+        serviciu.totalServiciu =
+          parseFloat(serviciu.pret) * parseInt(serviciu.cantitateUtilizata);
       }
-      console.log(dateFisa.produse)
+      console.log(dateFisa.produse);
       return serviciu;
     });
 

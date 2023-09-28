@@ -13,6 +13,7 @@ import Invoices from "./pages/facturi/Invoices";
 import CashRegister from "./pages/casa/CashRegister";
 import Dashboard from "./pages/dashboard/Dashboard";
 
+
 function App() {
   return (
     <div className="App">

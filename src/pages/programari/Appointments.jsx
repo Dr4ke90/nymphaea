@@ -19,7 +19,7 @@ export default function Appointments() {
     "data",
     "ora",
     "timp",
-    "client",
+    "numeClient",
     "angajat",
     "status",
     "#",
@@ -107,6 +107,7 @@ export default function Appointments() {
   };
 
   const handleFinishAppointment = (item) => {
+    console.log(item)
     const confirm = window.confirm(
       `Ai terminat Programarea ${item.nr} - ${item.numeClient}??`
     );

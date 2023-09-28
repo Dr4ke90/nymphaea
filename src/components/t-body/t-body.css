@@ -21,6 +21,12 @@ td.icon > svg {
   gap: 10px;
 }
 
+.buttons-wrapper .active{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
 .trash-wreapper {
   display: flex;
   justify-content: center;
