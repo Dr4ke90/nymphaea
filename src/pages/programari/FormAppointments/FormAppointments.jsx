@@ -47,8 +47,11 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     const { name, value } = e.target;
 
     if (name === "client") {
-      if (value.startsWith("C0")) {
-        const client = clienti.find((client) => client.cod === value);
+      if (value.startsWith("c") || value.startsWith("C")) {
+        const capitalizeValuea = value.toUpperCase();
+        const client = clienti.find(
+          (client) => client.cod === capitalizeValuea
+        );
 
         if (client) {
           setNewAppointment({

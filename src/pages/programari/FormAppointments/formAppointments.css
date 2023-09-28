@@ -1,35 +1,47 @@
 .appointments-page .modal-overlay .modal-content {
-    height: 270px;
-    width: 300px;
+  height: 266px;
+  width: 300px;
 }
 
-
-.appointments-page .modal-overlay .modal-content .new-appointment-form .buttons-wrapper {
-    display: flex;
-    justify-content: space-between;
+.appointments-page
+  .modal-overlay
+  .modal-content
+  .new-appointment-form
+  .buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
-.appointments-page .modal-overlay .modal-content .new-appointment-form  input {
-    width: 95%;
-    margin-bottom: 5px;
-    padding: 5px;
-  }
+.appointments-page .modal-overlay .modal-content .new-appointment-form input {
+  width: 95%;
+  margin-bottom: 5px;
+  padding: 5px;
+}
 
-  .new-client-div {
-    display: flex;
-    font-size: 11px;
-    justify-content: space-between;
-    align-items: center;
-  }
+.new-client-div {
+  display: flex;
+  font-size: 11px;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .new-client-div button {
-    padding: 0;
-    font-size: 11px;
-    width: 70px;
-    margin-bottom: 5px;
-  }
+.new-client-div button {
+  padding: 0;
+  font-size: 11px;
+  width: 70px;
+  margin-bottom: 5px;
+}
 
-  .new-client-div p {
-    margin: 0;
-    margin-bottom: 5px;
+.new-client-div p {
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.new-client-div .modal-content {
+  height: 220px !important;
+}
+
+.new-client-div .modal-content .buttons-wrapper button {
+    width: 100px;
+    height: 30px;
   }
