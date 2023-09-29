@@ -15,6 +15,7 @@ import {
   fetchAllReceipes,
 } from "../../redux/slices/cashRegisterSlice";
 import { updateAppointment } from "../../redux/slices/appointmentsSlice";
+import { getHour } from "../../utils/getHour";
 
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "serviciu/produs", "cantitate", "#"];
@@ -153,6 +154,8 @@ export default function ModalFisa({ closeModal, appointment }) {
     });
   };
 
+ 
+
   const handleInregistreaza = (e) => {
     e.preventDefault();
     dispatch(
@@ -162,12 +165,14 @@ export default function ModalFisa({ closeModal, appointment }) {
         totalDePlata: totalFisa,
       })
     );
-    dispatch(updateAppointment({
-      ...appointment,
-      status: "Terminat",
-      tip_update: "Modificare status: Terminat",
-      terminat: new Date().toLocaleTimeString("ro", "RO")
-    }))
+    dispatch(
+      updateAppointment({
+        ...appointment,
+        status: "Terminat",
+        tip_update: "Modificare status: Terminat",
+        terminat: getHour(),
+      })
+    );
     closeModal();
   };
 
