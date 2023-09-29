@@ -12,7 +12,9 @@ const cashRegisterSlice = createSlice({
     builder.addCase(addRceceipe.fulfilled, (state, action) => {
       return [...state, action.payload];
     });
-
+    builder.addCase(deleteReceipe.fulfilled, (state, action) => {
+      return state.filter((item) => item.nrBon !== action.payload.nrBon);
+    });
     builder.addCase(updateReceipe.fulfilled, (state, action) => {
       const index = state.findIndex(
         (appointemnt) => appointemnt.nr === action.payload.nr
@@ -115,7 +117,7 @@ export const addRceceipe = createAsyncThunk(
       return receipe;
     } catch (error) {
       throw new Error(
-        "Eroare la adaugarea Programarii " + receipe.nrBon,
+        "Eroare la adaugarea programarii " + receipe.nrBon,
         error
       );
     }
@@ -168,20 +170,17 @@ export const updateReceipe = createAsyncThunk(
   }
 );
 
-export const deleteAppointment = createAsyncThunk(
-  "appointments/deleteAppointment",
-  async (appointment) => {
+export const deleteReceipe = createAsyncThunk(
+  "cashRegister/deleteReceipe",
+  async (receipe) => {
     try {
-      const appointmentRes = await axios.delete(
-        `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`
+      const response = await axios.delete(
+        `http://127.0.0.1:3001/api/nymphaea/casa/${receipe.nrBon}`
       );
-      console.log(appointmentRes.data.message);
-      return appointment;
+      console.log(response.data.message);
+      return receipe;
     } catch (error) {
-      throw new Error(
-        "Eroare la stergerea Programarii " + appointment.nr,
-        error
-      );
+      throw new Error("Eroare la stergerea bonului " + receipe.nrBon, error);
     }
   }
 );

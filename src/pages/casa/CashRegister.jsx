@@ -5,12 +5,17 @@ import Keyboard from "../../components/Keyboard/Keyboard";
 import ListaBonuriCasa from "../../components/ListaBonuriCasa/ListaBonuriCasa";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllReceipes } from "../../redux/slices/cashRegisterSlice";
+import {
+  deleteReceipe,
+  fetchAllReceipes,
+} from "../../redux/slices/cashRegisterSlice";
 import Thead from "../../components/t-head/TableHead";
 import Table from "../../components/Table/Table";
 import Input from "../../components/Input/Input";
-import { addNewSale } from "../../redux/slices/salesSlice";
 import ModalFisa from "../../components/ModalFisa/ModalFisa";
+import { addNewSale } from "../../redux/slices/salesSlice";
+import { getHour } from "../../utils/getHour";
+import { updateInventoryRecursively } from "../../redux/slices/inventorySlice";
 
 export default function CashRegister() {
   const thead = ["nr", "cod", "serv/produs", "cantitate", "pret", "total"];
@@ -57,7 +62,14 @@ export default function CashRegister() {
   };
 
   const handleIncaseaza = () => {
-    dispatch(addNewSale(bonCurent));
+    dispatch(
+      addNewSale({
+        ...bonCurent,
+        oraIncasarii: getHour(),
+      })
+    );
+    dispatch(deleteReceipe(bonCurent));
+    dispatch(updateInventoryRecursively(bonCurent));
     setInput("");
   };
 
@@ -82,25 +94,20 @@ export default function CashRegister() {
     });
   };
 
-  
   const cashDisplay = ["totalDePlata", "incasat", "rest"];
 
   const handleOpenModalFisa = () => {
     setOpenModalFisa(!openModalFisa);
   };
 
-
   return (
     <div className="cash-page">
-       {openModalFisa && (
-          <ModalFisa closeModal={handleOpenModalFisa} />
-        )}
+      {openModalFisa && <ModalFisa closeModal={handleOpenModalFisa} />}
       <div className="title">
         <Button variant="contained" color="info" onClick={handleOpenModalFisa}>
           Creaza
         </Button>
         <h2>{name}</h2>
-       
       </div>
       <div className="cash-page-wrapper">
         <ListaBonuriCasa bonuri={bonuri} setBonCurrent={handleSetBonCurrent} />
@@ -156,11 +163,13 @@ export default function CashRegister() {
               placeholder="Suma primita"
               value={input}
               onChange={(e) => handleChangeInputnIncasat(e)}
+              disabled={Object.keys(bonCurent).length === 2}
             />
             <Button
               variant="contained"
               color="success"
               onClick={() => handleIncaseaza()}
+              disabled={input === "" || input < bonCurent.totalDePlata}
             >
               Incaseaza
             </Button>

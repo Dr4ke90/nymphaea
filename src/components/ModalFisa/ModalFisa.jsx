@@ -17,12 +17,15 @@ import {
 import { updateAppointment } from "../../redux/slices/appointmentsSlice";
 import { getHour } from "../../utils/getHour";
 import { fetchAllEmployees } from "../../redux/slices/employeesSlice";
+import { getDate } from "../../utils/getDate";
+import { fetchAllSales } from "../../redux/slices/salesSlice";
 
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "serviciu/produs", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
   const bonuri = useSelector((state) => state.casa);
   const angajati = useSelector((state) => state.angajati);
+  const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
   const getCodFisa = () => {
@@ -53,8 +56,10 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "";
   };
 
+  console.log(bonuri);
+
   let nrBon;
-  const nr = bonuri.length + 1;
+  const nr = bonuri.length + 1 + incasari.length;
   const paddedNr = nr.toString().padStart(6, "0");
   nrBon = paddedNr;
 
@@ -75,6 +80,7 @@ export default function ModalFisa({ closeModal, appointment }) {
     dispatch(fetchAllCustomers());
     dispatch(fetchAllReceipes());
     dispatch(fetchAllEmployees());
+    dispatch(fetchAllSales());
   }, [dispatch]);
 
   const [openModalServicii, setOpenModalServicii] = useState(false);
@@ -165,6 +171,7 @@ export default function ModalFisa({ closeModal, appointment }) {
         nrBon: nrBon,
         ...dateFisa,
         totalDePlata: totalFisa,
+        data: getDate(),
       })
     );
     dispatch(
@@ -182,8 +189,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     const { name, value } = e.target;
     if (name === "codAngajat") {
       const angajat = angajati.find((angajat) => angajat.cod === value);
-
-      console.log(angajat)
 
       if (angajat) {
         setDateFisa({
