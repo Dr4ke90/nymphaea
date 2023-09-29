@@ -10,6 +10,7 @@ import Thead from "../../components/t-head/TableHead";
 import Table from "../../components/Table/Table";
 import Input from "../../components/Input/Input";
 import { addNewSale } from "../../redux/slices/salesSlice";
+import ModalFisa from "../../components/ModalFisa/ModalFisa";
 
 export default function CashRegister() {
   const thead = ["nr", "cod", "serv/produs", "cantitate", "pret", "total"];
@@ -18,7 +19,7 @@ export default function CashRegister() {
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const bonuri = useSelector((state) => state.casa);
-
+  const [openModalFisa, setOpenModalFisa] = useState(false);
   const [bonCurent, setBonCurrent] = useState({});
   const [input, setInput] = useState("");
 
@@ -30,13 +31,12 @@ export default function CashRegister() {
         rest: input !== "" ? input - prevBon.totalDePlata : "",
       };
     });
-  },[input]);
-
+  }, [input]);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllReceipes());
-  },[dispatch]);
+  }, [dispatch]);
 
   const handleButtonClick = (value) => {
     setInput(input + value);
@@ -47,17 +47,17 @@ export default function CashRegister() {
   };
 
   const handleSetBonCurrent = (bon) => {
-    const boncurent = bonuri.find((b) => b.nrBon === bon.nrBon)
+    const boncurent = bonuri.find((b) => b.nrBon === bon.nrBon);
     setBonCurrent({
       ...boncurent,
       incasat: "",
-      rest: ""
+      rest: "",
     });
     setInput("");
   };
 
   const handleIncaseaza = () => {
-    dispatch(addNewSale(bonCurent))
+    dispatch(addNewSale(bonCurent));
     setInput("");
   };
 
@@ -69,28 +69,38 @@ export default function CashRegister() {
 
   const handleTenPercentButton = () => {
     setBonCurrent((prevBon) => {
-      const reducere = 0.1; 
-      const totalRedus = prevBon.totalDePlata * (1 - reducere); 
-  
+      const reducere = 0.1;
+      const totalRedus = prevBon.totalDePlata * (1 - reducere);
+
       const updateBon = {
         ...prevBon,
         totalDePlata: totalRedus,
         reducere: "10%",
       };
-  
+
       return updateBon;
     });
   };
 
-  const cashDisplay = ["totalDePlata", "incasat", "rest"]
+  
+  const cashDisplay = ["totalDePlata", "incasat", "rest"];
+
+  const handleOpenModalFisa = () => {
+    setOpenModalFisa(!openModalFisa);
+  };
+
 
   return (
     <div className="cash-page">
+       {openModalFisa && (
+          <ModalFisa closeModal={handleOpenModalFisa} />
+        )}
       <div className="title">
-        <Button variant="contained" color="info">
+        <Button variant="contained" color="info" onClick={handleOpenModalFisa}>
           Creaza
         </Button>
         <h2>{name}</h2>
+       
       </div>
       <div className="cash-page-wrapper">
         <ListaBonuriCasa bonuri={bonuri} setBonCurrent={handleSetBonCurrent} />

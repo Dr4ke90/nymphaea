@@ -88,7 +88,7 @@ export default function ProductsInvoiceForm({
     <PagePreview className="form-produse">
       <Form>
         {inputsOrder.map((keyName) => {
-          if (keyName !== "total" && keyName !== "cantitateGr") {
+          if (keyName !== "total" && keyName !== "cantitateGr" && keyName !== "cod") {
             return (
               <Input
                 className="input"

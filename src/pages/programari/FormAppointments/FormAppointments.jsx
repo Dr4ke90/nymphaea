@@ -50,7 +50,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     e.preventDefault();
     const { name, value } = e.target;
 
-    // Verifică dacă valoarea inputului nu este goală
     if (name === "client") {
       if (value.startsWith("c") || value.startsWith("C")) {
         const capitalizeValue = value.toUpperCase();

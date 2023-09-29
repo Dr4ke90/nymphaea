@@ -1,4 +1,4 @@
-.appointments-page .modal-fisa-overlay {
+.modal-fisa-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,9 +11,9 @@
   z-index: 1000;
 }
 
-.appointments-page .modal-fisa-overlay .modal-fisa-content {
+.modal-fisa-overlay .modal-fisa-content {
   background-color: white;
-  height: 400px;
+  height: 420px;
   width: 750px;
   padding: 20px;
   border-radius: 8px;
@@ -21,7 +21,7 @@
   overflow: auto;
 }
 
-.appointments-page .modal-fisa-overlay .modal-header {
+.modal-fisa-overlay .modal-header {
   display: flex;
   justify-content: space-around;
   padding: 10px 0 10px 0;
@@ -29,34 +29,26 @@
   margin-bottom: 5px;
 }
 
-.appointments-page .modal-fisa-overlay .footer {
+.modal-fisa-overlay .footer {
   display: flex;
   align-items: center;
   justify-content: space-around;
   margin-top: 10px;
 }
 
-.appointments-page
-  .modal-fisa-overlay
-  .modal-fisa-content
-  .modal-fisa-container {
+.modal-fisa-overlay .modal-fisa-content .modal-fisa-container {
   display: flex;
   gap: 10px;
 }
 
-.appointments-page
-  .modal-fisa-overlay
-  .modal-fisa-content
-  .modal-fisa-container
-  .table-container {
+.modal-fisa-overlay .modal-fisa-content .modal-fisa-container .table-container {
   width: 100%;
   height: 268px;
   overflow: auto;
   margin-bottom: 5px;
 }
 
-.appointments-page
-  .modal-fisa-overlay
+.modal-fisa-overlay
   .modal-fisa-content
   .modal-fisa-container
   .table-container
@@ -64,8 +56,7 @@
   width: 100%;
 }
 
-.appointments-page
-  .modal-fisa-overlay
+.modal-fisa-overlay
   .modal-fisa-content
   .modal-fisa-container
   .table-container
@@ -73,8 +64,8 @@
   width: 60px;
 }
 
-.appointments-page .table-container td,
-.appointments-page .table-container th {
+.table-container td,
+.table-container th {
   text-align: center;
   border: 1px solid #7f8686;
   position: relative;
@@ -82,25 +73,24 @@
   font-weight: 600;
 }
 
-.appointments-page .table-container thead {
+.table-container thead {
   background-color: rgba(171, 10, 235, 0.932);
 }
 
-.appointments-page .table-container tbody tr:nth-child(even) {
+.table-container tbody tr:nth-child(even) {
   background-color: #d4cfcf;
 }
 
-.appointments-page .table-container tbody tr:nth-child(odd) {
+.table-container tbody tr:nth-child(odd) {
   background-color: #f7e9e9;
 }
 
-.appointments-page .table-container tbody tr:hover {
+.table-container tbody tr:hover {
   background-color: rgba(171, 10, 235, 0.932);
   cursor: pointer;
 }
 
-.appointments-page
-  .modal-fisa-overlay
+.modal-fisa-overlay
   .modal-fisa-content
   .modal-fisa-container
   .table-container
@@ -111,12 +101,13 @@
 
 .modal-fisa-container .buttons-wrapper {
   display: flex;
+  justify-content: space-around !important;
   flex-direction: column;
   width: 100px;
 }
 
 .modal-fisa-container .buttons-wrapper button {
-  width: 100%;
+  width: 100% !important;
 }
 
 .modal-fisa-container .buttons-wrapper .modal-controller {
