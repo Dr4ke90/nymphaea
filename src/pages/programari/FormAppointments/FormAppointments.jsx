@@ -94,13 +94,6 @@ export default function FormAppointment({ closeModal, cod, item }) {
           setShowCreateClientButton(true);
         }
       }
-    } else if (name === "angajat") {
-      const angajat = angajati.find(angajat => angajat.cod === newAppointment.angajat)
-      setNewAppointment({
-        ...newAppointment,
-        [name]:value,
-        numeAngajat: `${angajat.nume} ${angajat.prenume}`
-      })
     } else {
       setNewAppointment({
         ...newAppointment,
@@ -249,7 +242,7 @@ export default function FormAppointment({ closeModal, cod, item }) {
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
-              ) || item.status === "Terminat"}
+              ) || (newAppointment.status === "Terminat") }
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>
