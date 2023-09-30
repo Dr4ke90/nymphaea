@@ -5,11 +5,17 @@ import Keyboard from "../../components/Keyboard/Keyboard";
 import ListaBonuriCasa from "../../components/ListaBonuriCasa/ListaBonuriCasa";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllReceipes } from "../../redux/slices/cashRegisterSlice";
+import {
+  deleteReceipe,
+  fetchAllReceipes,
+} from "../../redux/slices/cashRegisterSlice";
 import Thead from "../../components/t-head/TableHead";
 import Table from "../../components/Table/Table";
 import Input from "../../components/Input/Input";
+import ModalFisa from "../../components/ModalFisa/ModalFisa";
 import { addNewSale } from "../../redux/slices/salesSlice";
+import { getHour } from "../../utils/getHour";
+import { updateInventoryRecursively } from "../../redux/slices/inventorySlice";
 
 export default function CashRegister() {
   const thead = ["nr", "cod", "serv/produs", "cantitate", "pret", "total"];
@@ -18,7 +24,7 @@ export default function CashRegister() {
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
   const bonuri = useSelector((state) => state.casa);
-
+  const [openModalFisa, setOpenModalFisa] = useState(false);
   const [bonCurent, setBonCurrent] = useState({});
   const [input, setInput] = useState("");
 
@@ -30,13 +36,12 @@ export default function CashRegister() {
         rest: input !== "" ? input - prevBon.totalDePlata : "",
       };
     });
-  },[input]);
-
+  }, [input]);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllReceipes());
-  },[dispatch]);
+  }, [dispatch]);
 
   const handleButtonClick = (value) => {
     setInput(input + value);
@@ -47,17 +52,24 @@ export default function CashRegister() {
   };
 
   const handleSetBonCurrent = (bon) => {
-    const boncurent = bonuri.find((b) => b.nrBon === bon.nrBon)
+    const boncurent = bonuri.find((b) => b.nrBon === bon.nrBon);
     setBonCurrent({
       ...boncurent,
       incasat: "",
-      rest: ""
+      rest: "",
     });
     setInput("");
   };
 
   const handleIncaseaza = () => {
-    dispatch(addNewSale(bonCurent))
+    dispatch(
+      addNewSale({
+        ...bonCurent,
+        oraIncasarii: getHour(),
+      })
+    );
+    dispatch(deleteReceipe(bonCurent));
+    dispatch(updateInventoryRecursively(bonCurent));
     setInput("");
   };
 
@@ -69,25 +81,30 @@ export default function CashRegister() {
 
   const handleTenPercentButton = () => {
     setBonCurrent((prevBon) => {
-      const reducere = 0.1; 
-      const totalRedus = prevBon.totalDePlata * (1 - reducere); 
-  
+      const reducere = 0.1;
+      const totalRedus = prevBon.totalDePlata * (1 - reducere);
+
       const updateBon = {
         ...prevBon,
         totalDePlata: totalRedus,
         reducere: "10%",
       };
-  
+
       return updateBon;
     });
   };
 
-  const cashDisplay = ["totalDePlata", "incasat", "rest"]
+  const cashDisplay = ["totalDePlata", "incasat", "rest"];
+
+  const handleOpenModalFisa = () => {
+    setOpenModalFisa(!openModalFisa);
+  };
 
   return (
     <div className="cash-page">
+      {openModalFisa && <ModalFisa closeModal={handleOpenModalFisa} />}
       <div className="title">
-        <Button variant="contained" color="info">
+        <Button variant="contained" color="info" onClick={handleOpenModalFisa}>
           Creaza
         </Button>
         <h2>{name}</h2>
@@ -146,11 +163,13 @@ export default function CashRegister() {
               placeholder="Suma primita"
               value={input}
               onChange={(e) => handleChangeInputnIncasat(e)}
+              disabled={Object.keys(bonCurent).length === 2}
             />
             <Button
               variant="contained"
               color="success"
               onClick={() => handleIncaseaza()}
+              disabled={input === "" || input < bonCurent.totalDePlata}
             >
               Incaseaza
             </Button>

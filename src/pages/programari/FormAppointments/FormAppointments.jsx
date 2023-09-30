@@ -13,11 +13,12 @@ import { fetchAllCustomers } from "../../../redux/slices/customersSlice";
 import FromCustomer from "../../clienti/FormClienti/FormCustomer";
 import { fetchAllEmployees } from "../../../redux/slices/employeesSlice";
 
-export default function FormAppointment({ closeModal, cod, item }) {
+export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
   const clienti = useSelector((state) => state.clienti);
-  const angajati = useSelector(state => state.angajati)
+  const angajati = useSelector((state) => state.angajati);
   const [showCreateClientButton, setShowCreateClientButton] = useState(false);
+  const [showEmployeeError, setShowEmployeeError] = useState(false);
 
   const initialState = {
     nr: cod,
@@ -36,7 +37,7 @@ export default function FormAppointment({ closeModal, cod, item }) {
 
   useEffect(() => {
     dispatch(fetchAllCustomers());
-    dispatch(fetchAllEmployees())
+    dispatch(fetchAllEmployees());
   }, [dispatch]);
 
   useEffect(() => {
@@ -51,10 +52,8 @@ export default function FormAppointment({ closeModal, cod, item }) {
 
     if (name === "client") {
       if (value.startsWith("c") || value.startsWith("C")) {
-        const capitalizeValuea = value.toUpperCase();
-        const client = clienti.find(
-          (client) => client.cod === capitalizeValuea
-        );
+        const capitalizeValue = value.toUpperCase();
+        const client = clienti.find((client) => client.cod === capitalizeValue);
 
         if (client) {
           setNewAppointment({
@@ -94,6 +93,24 @@ export default function FormAppointment({ closeModal, cod, item }) {
           setShowCreateClientButton(true);
         }
       }
+    } else if (name === "angajat") {
+      const angajat = angajati.find((angajat) => angajat.cod === value);
+
+      if (angajat) {
+        setNewAppointment({
+          ...newAppointment,
+          [name]: value,
+          numeAngajat: `${angajat.nume} ${angajat.prenume}`,
+        });
+        setShowEmployeeError(false);
+      } else {
+        setNewAppointment({
+          ...newAppointment,
+          [name]: value,
+          numeAngajat: value,
+        });
+        setShowEmployeeError(true);
+      }
     } else {
       setNewAppointment({
         ...newAppointment,
@@ -104,6 +121,9 @@ export default function FormAppointment({ closeModal, cod, item }) {
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
+
+    setItem(null);
+
     closeModal();
   };
 
@@ -137,9 +157,8 @@ export default function FormAppointment({ closeModal, cod, item }) {
         tip_update: "Modificare date",
       };
     }
-
-    dispatch(updateAppointment(newApp));
     handleCloseModal();
+    dispatch(updateAppointment(newApp));
   };
 
   const handleInputType = (key) => {
@@ -197,7 +216,8 @@ export default function FormAppointment({ closeModal, cod, item }) {
                       key === "nr" ||
                       newAppointment.status === "Terminat" ||
                       (key === "client" &&
-                        newAppointment.status === "Anulat") ||
+                        (newAppointment.status === "Anulat" ||
+                          newAppointment.status === "Activ")) ||
                       newAppointment.status === "In curs"
                     }
                     autoComplete="off"
@@ -223,6 +243,20 @@ export default function FormAppointment({ closeModal, cod, item }) {
                         )}
                       </div>
                     )}
+                  {key === "angajat" &&
+                    newAppointment.angajat !== "" &&
+                    showEmployeeError && (
+                      <p
+                        style={{
+                          color: "red",
+                          margin: "0",
+                          fontSize: "11px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        Angajatul nu exista
+                      </p>
+                    )}
                 </div>
               );
             } else {
@@ -231,7 +265,7 @@ export default function FormAppointment({ closeModal, cod, item }) {
           })}
 
           <PagePreview className="buttons-wrapper">
-            <Button variant="contained" color="info" onClick={closeModal}>
+            <Button variant="contained" color="info" onClick={handleCloseModal}>
               Close
             </Button>
             <Button
@@ -242,7 +276,7 @@ export default function FormAppointment({ closeModal, cod, item }) {
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
-              ) || (newAppointment.status === "Terminat") }
+              ) || item.status === "Terminat"}
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>

@@ -24,6 +24,7 @@ const Tbody = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const location = useLocation();
   const [tableBody, setTableBody] = useState([]);
+  const [currentItem, setCurrentItem] = useState({});
 
   useEffect(() => {
     setTableBody(tbody);
@@ -40,7 +41,10 @@ const Tbody = ({
 
   const [openFormAppointment, setOpenFormAppointment] = useState(false);
 
-  const toggleOpenFormAppointment = () => {
+  const toggleOpenFormAppointment = (item) => {
+    if (item) {
+      setCurrentItem(item);
+    }
     setOpenFormAppointment(!openFormAppointment);
   };
 
@@ -95,12 +99,13 @@ const Tbody = ({
           <FaSlidersH
             size={16}
             style={{ cursor: "pointer" }}
-            onClick={toggleOpenFormAppointment}
+            onClick={() => toggleOpenFormAppointment(item)}
           />
           {openFormAppointment && (
             <FormAppointment
               closeModal={toggleOpenFormAppointment}
-              item={item}
+              item={currentItem}
+              setItem={setCurrentItem}
             />
           )}
         </div>
@@ -108,8 +113,7 @@ const Tbody = ({
     }
 
     if (item.status === "Terminat") {
-      console.log(item)
-      return <span>{item.terminat}</span>;
+      return <span>{`${item.inceput} / ${item.terminat}`}</span>;
     }
   };
 

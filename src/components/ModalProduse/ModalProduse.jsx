@@ -47,7 +47,6 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
         ],
       });
     }
-    console.log(dateFisa)
   };
 
   const handleSearchChange = (event) => {

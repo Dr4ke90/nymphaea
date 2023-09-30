@@ -11,6 +11,7 @@ import {
 } from "../../redux/slices/appointmentsSlice";
 import PagePreview from "../../components/PagePreview/PagePreview";
 import ModalFisa from "../../components/ModalFisa/ModalFisa";
+import { getHour } from "../../utils/getHour";
 
 export default function Appointments() {
   const thead = [
@@ -32,7 +33,6 @@ export default function Appointments() {
   const [receivedAppointemnt, setReceivedAppointemnt] = useState(null);
   const appointments = useSelector((state) => state.programari);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const ora = new Date().toLocaleTimeString("ro", "RO");
   const [currentAppointment, setCurrentAppointment] = useState({});
 
 
@@ -77,7 +77,7 @@ export default function Appointments() {
         ...item,
         status: status,
         tip_update: tip_update,
-        inceput: ora,
+        inceput: getHour(),
       })
     );
   };
@@ -159,6 +159,7 @@ export default function Appointments() {
           closeModal={toggleModal}
           cod={code}
           item={receivedAppointemnt}
+          setItem={setReceivedAppointemnt}
         />
       )}
       <TableDisplay

@@ -15,11 +15,18 @@ import {
   fetchAllReceipes,
 } from "../../redux/slices/cashRegisterSlice";
 import { updateAppointment } from "../../redux/slices/appointmentsSlice";
+import { getHour } from "../../utils/getHour";
+import { fetchAllEmployees } from "../../redux/slices/employeesSlice";
+import { getDate } from "../../utils/getDate";
+import { fetchAllSales } from "../../redux/slices/salesSlice";
 
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "serviciu/produs", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
   const bonuri = useSelector((state) => state.casa);
+  const angajati = useSelector((state) => state.angajati);
+  const incasari = useSelector((state) => state.incasari);
+  const [foundedEmployye, setFoundedEmployee] = useState(false);
 
   const getCodFisa = () => {
     if (clienti.length === 0 || !appointment) return "";
@@ -49,26 +56,31 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "";
   };
 
+  console.log(bonuri);
+
   let nrBon;
-  const nr = bonuri.length + 1;
+  const nr = bonuri.length + 1 + incasari.length;
   const paddedNr = nr.toString().padStart(6, "0");
   nrBon = paddedNr;
 
   const initialStateFisa = {
     codFisa: getCodFisa(),
-    codClient: appointment.client,
-    numeClient: appointment.numeClient,
-    data: appointment.data,
-    codProgramare: appointment.nr,
-    codAngajat: appointment.angajat,
+    codClient: appointment ? appointment.client : "",
+    numeClient: appointment ? appointment.numeClient : "",
+    data: appointment ? appointment.data : "",
+    codProgramare: appointment ? appointment.nr : "",
+    codAngajat: appointment ? appointment.angajat : "",
     produse: [],
   };
+
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllCustomers());
     dispatch(fetchAllReceipes());
+    dispatch(fetchAllEmployees());
+    dispatch(fetchAllSales());
   }, [dispatch]);
 
   const [openModalServicii, setOpenModalServicii] = useState(false);
@@ -124,7 +136,6 @@ export default function ModalFisa({ closeModal, appointment }) {
         serviciu.totalServiciu =
           parseFloat(serviciu.pret) * parseInt(serviciu.cantitateUtilizata);
       }
-      console.log(dateFisa.produse);
       return serviciu;
     });
 
@@ -160,18 +171,44 @@ export default function ModalFisa({ closeModal, appointment }) {
         nrBon: nrBon,
         ...dateFisa,
         totalDePlata: totalFisa,
+        data: getDate(),
       })
     );
-    dispatch(updateAppointment({
-      ...appointment,
-      status: "Terminat",
-      tip_update: "Modificare status: Terminat",
-      terminat: new Date().toLocaleTimeString("ro", "RO")
-    }))
+    dispatch(
+      updateAppointment({
+        ...appointment,
+        status: "Terminat",
+        tip_update: "Modificare status: Terminat",
+        terminat: getHour(),
+      })
+    );
     closeModal();
   };
 
-  const headerFieldOrder = ["numeClient", "codClient", "codFisa", "codAngajat"];
+  const handleChangeAngajat = (e) => {
+    const { name, value } = e.target;
+    if (name === "codAngajat") {
+      const angajat = angajati.find((angajat) => angajat.cod === value);
+
+      if (angajat) {
+        setDateFisa({
+          ...dateFisa,
+          [name]: value,
+        });
+        setFoundedEmployee(true);
+      } else {
+        setDateFisa({
+          ...dateFisa,
+          [name]: value,
+        });
+        setFoundedEmployee(false);
+      }
+    } else {
+      return;
+    }
+  };
+
+  const headerFieldOrder = ["codAngajat", "numeClient", "codClient", "codFisa"];
   const tableFieldOrder = ["nr", "cod", "tip", "nrInv", "produs"];
   return (
     <div className="modal-fisa-overlay">
@@ -183,9 +220,11 @@ export default function ModalFisa({ closeModal, appointment }) {
                 <Input
                   key={key}
                   type="text"
-                  disabled
+                  disabled={appointment || key !== "codAngajat"}
+                  placeHolder={key}
                   value={dateFisa[key]}
                   name={key}
+                  onChange={handleChangeAngajat}
                 />
               );
             } else {
@@ -199,6 +238,7 @@ export default function ModalFisa({ closeModal, appointment }) {
               variant="contained"
               color="info"
               onClick={handleModalServicii}
+              disabled={dateFisa.codAngajat === "" || !foundedEmployye}
             >
               Servicii
             </Button>
@@ -269,6 +309,14 @@ export default function ModalFisa({ closeModal, appointment }) {
             variant="contained"
             color="success"
             onClick={(e) => handleInregistreaza(e)}
+            disabled={
+              dateFisa.produse.length === 0 ||
+              !dateFisa.produse.every(
+                (produs) =>
+                  produs.hasOwnProperty("cantitateUtilizata") &&
+                  produs.cantitateUtilizata !== ""
+              )
+            }
           >
             Trimite catre casa
           </Button>
