@@ -9,6 +9,9 @@ const inventorySlice = createSlice({
     builder.addCase(fetchAllInventory.fulfilled, (state, action) => {
       return action.payload;
     });
+    builder.addCase(addProduct.fulfilled, (state, action) => {
+      return [...state, action.payload]
+    });
   },
 });
 

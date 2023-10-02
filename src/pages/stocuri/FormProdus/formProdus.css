@@ -1,0 +1,22 @@
+.inventory-page .modal-overlay .modal-content {
+  height: 270px;
+  width: 250px;
+  position: relative;
+}
+
+.inventory-page .modal-overlay .modal-content form {
+    width: 100%;
+ }
+
+
+.inventory-page .modal-overlay .modal-content input {
+    width: 96%;
+    margin-top: 5px;
+}
+
+.inventory-page .modal-overlay .modal-content .footer { 
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}

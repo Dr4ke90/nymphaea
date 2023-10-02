@@ -1,20 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import "./inventory.css";
 import { fetchAllInventory } from "../../redux/slices/inventorySlice";
 import TableDisplay from "../../components/table-display/TableDisplay";
+import { Button } from "@mui/material";
+import FormProdus from "./FormProdus/FormProdus";
 
 export default function Inventory() {
   const thead = [
     "cod",
     "categorie",
     "brand",
-    "tip",
-    "stoc",
-    "cantitateGr",
-    "pret",
+    "descriere",
     "gramaj",
+    "stoc",
+    "stocInGr",
+    "pretCuTva",
   ];
   const inventory = useSelector((state) => state.stocuri);
   const location = useLocation();
@@ -27,13 +29,33 @@ export default function Inventory() {
     dispatch(fetchAllInventory());
   }, [dispatch]);
 
-  
+  let codProdus = 0;
+  const nrProd = inventory.length + 1;
+  const paddedNrProd = nrProd.toString().padStart(4, "0");
+  codProdus = "P" + paddedNrProd;
+
+  const [openFormProdus, setOpenFormProdus] = useState(false);
+
+  const toggleModalFormProdus = () => {
+    setOpenFormProdus(!openFormProdus);
+  };
+
   return (
     <div className="inventory-page">
+      {openFormProdus && (
+        <FormProdus cod={codProdus} closeModal={toggleModalFormProdus} />
+      )}
       <div className="title">
+        <Button
+          variant="contained"
+          color="info"
+          onClick={toggleModalFormProdus}
+        >
+          Adauga
+        </Button>
         <h2>{title}</h2>
       </div>
-      <TableDisplay thead={thead} tbody={inventory} listOrder={thead}/>
+      <TableDisplay thead={thead} tbody={inventory} listOrder={thead} />
     </div>
   );
 }
