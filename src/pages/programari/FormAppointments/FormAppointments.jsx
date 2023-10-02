@@ -274,13 +274,9 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
               onClick={
                 item !== null ? handleUpdateAppointment : handleAdaugaProgramare
               }
-              disabled={
-                Object.values(newAppointment).some(
-                  (value) => typeof value === "string" && value.trim() === ""
-                ) ||
-                newAppointment.status === "Terminat" ||
-                showEmployeeError
-              }
+              disabled={Object.values(newAppointment).some(
+                (value) => typeof value === "string" && value.trim() === ""
+              ) || item.status === "Terminat"}
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>
