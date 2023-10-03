@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import "./formServicii.css";
 import { useDispatch } from "react-redux";
 import { addService, updateService } from "../../../redux/slices/servicesSlice";
+import ModalProduseDeBaza from "../../../components/ModalProduseBaza/ModalProduseDeBaza";
 
 export default function FormServicii({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
@@ -21,8 +22,9 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
     ora_creat: ora,
     data_update: date,
     ora_update: ora,
+    produseDeBaza: [],
   };
-  
+
   const [newService, setNewService] = useState(initialState);
 
   useEffect(() => {
@@ -76,15 +78,29 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
     return placeholder;
   };
 
+  const [openModalProduseDeBaza, setModalProduseDeBaza] = useState(false);
+
+  const toggleModalProduseDebaza = () => {
+    setModalProduseDeBaza(!openModalProduseDeBaza);
+  };
+
   return (
     <PagePreview className="modal-overlay">
       <PagePreview className="modal-content">
+        {openModalProduseDeBaza && (
+          <ModalProduseDeBaza
+            closeModal={toggleModalProduseDebaza}
+            service={newService}
+            setService={setNewService}
+          />
+        )}
         <Form className="new-service-form">
           {Object.keys(initialState).map((key) => {
             if (
               key !== "data_creat" &&
               key !== "ora_creat" &&
               key !== "data_update" &&
+              key !== "produseDeBaza" &&
               key !== "ora_update"
             ) {
               return (
@@ -102,6 +118,14 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
               return null;
             }
           })}
+          <Button
+            variant="outlined"
+            color="info"
+            id="buton-produse"
+            onClick={toggleModalProduseDebaza}
+          >
+            Adauga produse de baza
+          </Button>
           <PagePreview className="buttons-wrapper">
             <Button variant="contained" color="info" onClick={handleCloseModal}>
               Close

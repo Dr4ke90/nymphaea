@@ -36,14 +36,21 @@ export default function ServicesList() {
 
   const handleDeleteService = (item) => {
     const confirm = window.confirm(
-      `Esti sigur ca vrei sa stergi Angajatul ${item.cod}`
+      `Esti sigur ca vrei sa stergi Serviciul ${item.cod}`
     );
     if (!confirm) return;
     dispatch(deleteService(item));
   };
 
   const handleEditService = (item) => {
-    setReceivedService(item);
+    if (!item.hasOwnProperty("produseDeBaza")) {
+      setReceivedService({
+        ...item,
+        produseDeBaza: [],
+      });
+    } else {
+      setReceivedService(item);
+    }
     setModal(true);
   };
 
