@@ -8,7 +8,7 @@ import Table from "../Table/Table";
 import Input from "../Input/Input";
 
 export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
-  const thead = ["#", "cod", "tip"];
+  const thead = ["#", "cod", "descriere"];
   const services = useSelector((state) => state.servicii);
   const [filteredServices, setFilteredServices] = useState([]);
 
@@ -43,7 +43,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
         ...dateFisa,
         produse: [
           ...dateFisa.produse,
-          { nr: dateFisa.produse.length + 1, reteta: [], ...service },
+          { nr: dateFisa.produse.length + 1, ...service },
         ],
       });
     }
@@ -69,7 +69,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
   };
 
   const handleClassName = (key) => {
-    if (key !== "tip") {
+    if (key !== "descriere") {
       return "small";
     }
   };
@@ -95,7 +95,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
                       />
                     </td>
                     {Object.entries(service).map(([key, value]) => {
-                      if (key === "cod" || key === "tip") {
+                      if (key === "cod" || key === "descriere") {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}

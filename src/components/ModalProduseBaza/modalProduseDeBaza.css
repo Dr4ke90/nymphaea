@@ -67,13 +67,17 @@
   
   .modal-prodDeBaza-overlay .modal-prodDeBaza-content .buttons-wrapper {
     width: 100%;
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
+    position: relative;
+    bottom: 25px;
+    left: 220px;
   }
   
 
   .modal-prodDeBaza-overlay .modal-prodDeBaza-content .total {
     display: flex;
     margin-top: 15px;
+  }
+
+  .modal-prodDeBaza-overlay .modal-prodDeBaza-content .descriere {
+    width: 200px;
   }

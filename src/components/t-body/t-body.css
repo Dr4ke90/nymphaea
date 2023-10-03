@@ -13,14 +13,6 @@ td.icon > svg {
   cursor: pointer;
 }
 
-
-.buttons-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
 .buttons-wrapper .active{
   display: flex;
   justify-content: space-around;

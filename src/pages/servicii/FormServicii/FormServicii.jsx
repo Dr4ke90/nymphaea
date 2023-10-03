@@ -16,13 +16,14 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
   const initialState = {
     cod: cod,
     departament: "",
-    tip: "",
+    descriere: "",
     pret: "",
     data_creat: date,
     ora_creat: ora,
     data_update: date,
     ora_update: ora,
     produseDeBaza: [],
+    produseExtra: []
   };
 
   const [newService, setNewService] = useState(initialState);
@@ -101,6 +102,7 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
               key !== "ora_creat" &&
               key !== "data_update" &&
               key !== "produseDeBaza" &&
+              key !== "produseExtra" &&
               key !== "ora_update"
             ) {
               return (
@@ -124,7 +126,7 @@ export default function FormServicii({ closeModal, cod, item, setItem }) {
             id="buton-produse"
             onClick={toggleModalProduseDebaza}
           >
-            Adauga produse de baza
+            Produse de baza
           </Button>
           <PagePreview className="buttons-wrapper">
             <Button variant="contained" color="info" onClick={handleCloseModal}>

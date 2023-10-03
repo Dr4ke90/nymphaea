@@ -9,7 +9,7 @@ import { FaSlidersH, FaTrash } from "react-icons/fa";
 import ModalProduse from "../ModalProduse/ModalProduse";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../redux/slices/customersSlice";
-import ModalReteta from "../ModalReteta/ModalReteta";
+import ModalProduseExtra from "../ModalProduseExtra/ModalProduseExtra";
 import {
   addRceceipe,
   fetchAllReceipes,
@@ -56,8 +56,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "";
   };
 
-  console.log(bonuri);
-
   let nrBon;
   const nr = bonuri.length + 1 + incasari.length;
   const paddedNr = nr.toString().padStart(6, "0");
@@ -93,11 +91,11 @@ export default function ModalFisa({ closeModal, appointment }) {
     setOpenModalProduse(!openModalProduse);
   };
 
-  const [openModalReteta, setOpenModalReteta] = useState(false);
+  const [openModalProduseExtra, setOpenModalProduseExtra] = useState(false);
   const [curentService, setCurrentService] = useState({});
-  const handleOpenModalReteta = (service) => {
-    setOpenModalReteta(!openModalReteta);
 
+  const handleOpenModalProduseExtra = (service) => {
+    setOpenModalProduseExtra(!openModalProduseExtra);
     setCurrentService(service);
   };
 
@@ -115,8 +113,8 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   useEffect(() => {
     const updatedServicii = dateFisa.produse.map((serviciu) => {
-      if (serviciu.reteta && serviciu.reteta.length !== 0) {
-        const totalReteta = serviciu.reteta.reduce((acc, produs) => {
+      if (serviciu.produseExtra && serviciu.produseExtra.length !== 0) {
+        const totalProduseExtra = serviciu.produseExtra.reduce((acc, produs) => {
           const pret = parseFloat(produs.pret);
           const gramaj = parseInt(produs.gramaj);
           const cantitate = parseFloat(produs.cantitateUtilizata);
@@ -130,7 +128,7 @@ export default function ModalFisa({ closeModal, appointment }) {
         }, 0);
 
         serviciu.totalServiciu =
-          (parseFloat(serviciu.pret) + totalReteta) *
+          (parseFloat(serviciu.pret) + totalProduseExtra) *
           serviciu.cantitateUtilizata;
       } else {
         serviciu.totalServiciu =
@@ -166,23 +164,24 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleInregistreaza = (e) => {
     e.preventDefault();
-    dispatch(
-      addRceceipe({
-        nrBon: nrBon,
-        ...dateFisa,
-        totalDePlata: totalFisa,
-        data: getDate(),
-      })
-    );
-    dispatch(
-      updateAppointment({
-        ...appointment,
-        status: "Terminat",
-        tip_update: "Modificare status: Terminat",
-        terminat: getHour(),
-      })
-    );
-    closeModal();
+    // dispatch(
+    //   addRceceipe({
+    //     nrBon: nrBon,
+    //     ...dateFisa,
+    //     totalDePlata: totalFisa,
+    //     data: getDate(),
+    //   })
+    // );
+    // dispatch(
+    //   updateAppointment({
+    //     ...appointment,
+    //     status: "Terminat",
+    //     tip_update: "Modificare status: Terminat",
+    //     terminat: getHour(),
+    //   })
+    // );
+    // closeModal();
+    console.log(dateFisa);
   };
 
   const handleChangeAngajat = (e) => {
@@ -209,7 +208,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   };
 
   const headerFieldOrder = ["codAngajat", "numeClient", "codClient", "codFisa"];
-  const tableFieldOrder = ["nr", "cod", "tip", "nrInv", "produs"];
+  const tableFieldOrder = ["nr", "cod", "descriere", "produs"];
   return (
     <div className="modal-fisa-overlay">
       <div className="modal-fisa-content">
@@ -238,7 +237,7 @@ export default function ModalFisa({ closeModal, appointment }) {
               variant="contained"
               color="info"
               onClick={handleModalServicii}
-              disabled={dateFisa.codAngajat === "" || !foundedEmployye}
+              disabled={dateFisa.codAngajat === ""}
             >
               Servicii
             </Button>
@@ -276,23 +275,28 @@ export default function ModalFisa({ closeModal, appointment }) {
                       <td
                         key={"add-produse"}
                         style={{
-                          display: "flex",
-                          justifyContent: "space-around",
+                          height: "inherit",
                         }}
                       >
-                        {service.reteta && (
-                          <FaSlidersH
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-around",
+                          }}
+                        >
+                          {service.produseExtra && (
+                            <FaSlidersH
+                              size={21}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleOpenModalProduseExtra(service)}
+                            />
+                          )}
+                          <FaTrash
                             size={21}
                             style={{ cursor: "pointer" }}
-                            onClick={() => handleOpenModalReteta(service)}
+                            onClick={() => handleRemoveItem(service)}
                           />
-                        )}
-
-                        <FaTrash
-                          size={21}
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleRemoveItem(service)}
-                        />
+                        </div>
                       </td>
                     </tr>
                   );
@@ -338,9 +342,9 @@ export default function ModalFisa({ closeModal, appointment }) {
             setDateFisa={setDateFisa}
           />
         )}
-        {openModalReteta && (
-          <ModalReteta
-            closeModal={handleOpenModalReteta}
+        {openModalProduseExtra && (
+          <ModalProduseExtra
+            closeModal={handleOpenModalProduseExtra}
             service={curentService}
             dateFisa={dateFisa}
             setDateFisa={setDateFisa}

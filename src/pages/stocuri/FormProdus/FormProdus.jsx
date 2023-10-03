@@ -14,7 +14,7 @@ export default function FormProdus({ cod, closeModal }) {
     descriere: "",
     gramaj: "",
     pretFaraTva: "",
-    pretCuTva: "",
+    pret: "",
     pretAchizitie: "",
     stoc: 0,
     stocInGr: 0,
@@ -58,8 +58,8 @@ export default function FormProdus({ cod, closeModal }) {
     "descriere",
     "gramaj",
     "pretFaraTva",
-    "pretCuTva",
     "pretAchizitie",
+    "pret",
   ];
 
   return (
@@ -74,7 +74,7 @@ export default function FormProdus({ cod, closeModal }) {
                 name={key}
                 value={produs[key]}
                 onChange={handleChangeProdus}
-                disabled={key === "cod" || key === "pretCuTva"}
+                disabled={key === "cod" || key === "pret"}
                 placeholder={key}
               />
             );

@@ -276,7 +276,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
-              ) || item.status === "Terminat"}
+              ) || newAppointment.status === "Terminat"}
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>

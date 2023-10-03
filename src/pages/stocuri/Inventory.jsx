@@ -16,7 +16,7 @@ export default function Inventory() {
     "gramaj",
     "stoc",
     "stocInGr",
-    "pretCuTva",
+    "pret",
   ];
   const inventory = useSelector((state) => state.stocuri);
   const location = useLocation();

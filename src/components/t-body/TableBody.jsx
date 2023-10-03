@@ -51,7 +51,13 @@ const Tbody = ({
   const handleChangeButton = (item) => {
     if (item.status === "Activ") {
       return (
-        <div className="active">
+        <div
+          className="active"
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+          }}
+        >
           <FaRegCalendarTimes
             size={16}
             onClick={() => cancel(item)}
@@ -70,7 +76,12 @@ const Tbody = ({
 
     if (location.pathname.includes("facturi")) {
       return (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+          }}
+        >
           <FaTrashAlt
             size={16}
             onClick={() => removeItem(item)}
@@ -82,7 +93,12 @@ const Tbody = ({
 
     if (item.status === "In curs") {
       return (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+          }}
+        >
           <FaFlag
             size={16}
             onClick={() => finish(item)}
@@ -95,7 +111,12 @@ const Tbody = ({
 
     if (item.status === "Anulat") {
       return (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+          }}
+        >
           <FaSlidersH
             size={16}
             style={{ cursor: "pointer" }}
@@ -150,7 +171,7 @@ const Tbody = ({
                   );
                 } else if (key === "#") {
                   return (
-                    <td className="buttons-wrapper" key={key}>
+                    <td className="buttons-wrapper" key={key} >
                       {handleChangeButton(item)}
                     </td>
                   );

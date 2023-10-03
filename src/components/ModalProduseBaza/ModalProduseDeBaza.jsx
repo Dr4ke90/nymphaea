@@ -102,7 +102,7 @@ export default function ModalProduseDeBaza({
           ...updatedProducts[productIndex],
           cantitate: parsedValue,
           valoare: (
-            (product.pretCuTva / product.gramaj) *
+            (product.pret / product.gramaj) *
             parseFloat(parsedValue)
           ).toFixed(2),
         };
@@ -133,7 +133,6 @@ export default function ModalProduseDeBaza({
     const prod = service.produseDeBaza.find((p) => p.cod === product.cod);
 
     if (prod) {
-      console.log(prod);
       return prod.valoare;
     } else {
       return;

@@ -8,7 +8,7 @@ import { fetchAllInventory } from "../../redux/slices/inventorySlice";
 import "./modalProduse.css";
 
 export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
-  const thead = ["#", "cod", "brand", "produs"];
+  const thead = ["#", "cod", "brand", "descriere"];
   const stocuri = useSelector((state) => state.stocuri);
   const [filteredServices, setFilteredServices] = useState([]);
 
@@ -69,7 +69,7 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
   };
 
   const handleClassName = (key) => {
-    if (key !== "tip") {
+    if (key !== "descriere") {
       return "small";
     }
   };
@@ -98,7 +98,7 @@ export default function ModalProduse({ closeModal, dateFisa, setDateFisa }) {
                       if (
                         key === "cod" ||
                         key === "brand" ||
-                        key === "tip"
+                        key === "descriere"
                       ) {
                         return (
                           <td key={key} className={handleClassName(key)}>

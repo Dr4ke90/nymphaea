@@ -23,7 +23,6 @@ const Thead = ({ thead, handleChange }) => {
 
     if (
       value.toLowerCase() === "pret" ||
-      value.toLowerCase() === "descriere" ||
       value.toLowerCase() === "total"
     ) {
       classname = "medium";
