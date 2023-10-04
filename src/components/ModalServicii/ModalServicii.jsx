@@ -95,7 +95,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
                       />
                     </td>
                     {Object.entries(service).map(([key, value]) => {
-                      if (key === "cod" || key === "descriere") {
+                      if (key === "cod" || key === "tip") {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}

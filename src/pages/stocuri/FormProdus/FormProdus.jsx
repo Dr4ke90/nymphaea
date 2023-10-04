@@ -14,9 +14,9 @@ export default function FormProdus({ cod, closeModal, item, setItem }) {
     brand: "",
     descriere: "",
     gramaj: "",
-    pretFaraTva: 0,
-    pret: 0,
-    pretAchizitie: 0,
+    pretFaraTva: 0.00,
+    pret: 0.00,
+    pretAchizitie: 0.00,
     stoc: 0,
     stocInGr: 0,
   };
@@ -44,7 +44,7 @@ export default function FormProdus({ cod, closeModal, item, setItem }) {
         if (value) {
           updatedProdus.pret = (parseFloat(value) * 1.19).toFixed(2);
         } else {
-          updatedProdus.pret = "";
+          updatedProdus.pret = 0.00;
         }
       }
 

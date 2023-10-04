@@ -11,7 +11,7 @@ import {
 } from "../../redux/slices/servicesSlice";
 
 export default function ServicesList() {
-  const thead = ["cod", "departament", "descriere", "pret"];
+  const thead = ["cod", "departament", "tip", "pret"];
   const servicii = useSelector((state) => state.servicii);
   const location = useLocation();
   const title =

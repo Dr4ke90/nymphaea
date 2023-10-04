@@ -208,7 +208,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   };
 
   const headerFieldOrder = ["codAngajat", "numeClient", "codClient", "codFisa"];
-  const tableFieldOrder = ["nr", "cod", "descriere", "produs"];
+  const tableFieldOrder = ["nr", "cod", "tip", "produs"];
   return (
     <div className="modal-fisa-overlay">
       <div className="modal-fisa-content">
