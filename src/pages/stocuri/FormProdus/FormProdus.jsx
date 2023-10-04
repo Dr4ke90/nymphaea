@@ -1,26 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./formProdus.css";
 import Input from "../../../components/Input/Input";
-import ModalController from "../../../components/ModalController/ModalController";
 import Form from "../../../components/Formular/Form";
 import { useDispatch } from "react-redux";
-import { addProduct } from "../../../redux/slices/inventorySlice";
+import { addProduct, updateInventory } from "../../../redux/slices/inventorySlice";
+import PagePreview from "../../../components/PagePreview/PagePreview";
+import { Button } from "@mui/material";
 
-export default function FormProdus({ cod, closeModal }) {
+export default function FormProdus({ cod, closeModal, item, setItem }) {
   const initialState = {
     cod: cod,
     categorie: "",
     brand: "",
     descriere: "",
     gramaj: "",
-    pretFaraTva: "",
-    pret: "",
-    pretAchizitie: "",
+    pretFaraTva: 0,
+    pret: 0,
+    pretAchizitie: 0,
     stoc: 0,
     stocInGr: 0,
   };
 
   const [produs, setProdus] = useState(initialState);
+
+  useEffect(() => {
+    if (item !== null) {
+      setProdus(item);
+    }
+  }, [item]);
 
   const handleChangeProdus = (e) => {
     e.preventDefault();
@@ -35,9 +42,9 @@ export default function FormProdus({ cod, closeModal }) {
       if (name === "pretFaraTva") {
         updatedProdus.pretFaraTva = value;
         if (value) {
-          updatedProdus.pretCuTva = (parseFloat(value) * 1.19).toFixed(2);
+          updatedProdus.pret = (parseFloat(value) * 1.19).toFixed(2);
         } else {
-          updatedProdus.pretCuTva = "";
+          updatedProdus.pret = "";
         }
       }
 
@@ -45,22 +52,24 @@ export default function FormProdus({ cod, closeModal }) {
     });
   };
 
-  const dispatch = useDispatch();
-  const handleInregistreaza = () => {
-    dispatch(addProduct(produs));
+  const handleCloseModal = () => {
+    setProdus(initialState);
+    setItem(null);
     closeModal();
   };
 
-  const inputOrder = [
-    "cod",
-    "categorie",
-    "brand",
-    "descriere",
-    "gramaj",
-    "pretFaraTva",
-    "pretAchizitie",
-    "pret",
-  ];
+  const dispatch = useDispatch();
+  const handleInregistreaza = () => {
+    dispatch(addProduct(produs));
+    handleCloseModal();
+  };
+
+  const handleUpdateProduct = () => {
+    dispatch(updateInventory(produs));
+    handleCloseModal();
+  };
+
+  const inputOrder = ["cod", "categorie", "brand", "descriere", "gramaj"];
 
   return (
     <div className="modal-overlay">
@@ -80,11 +89,21 @@ export default function FormProdus({ cod, closeModal }) {
             );
           })}
         </Form>
-        <ModalController
-          state={produs}
-          closeModal={closeModal}
-          inregistreaza={handleInregistreaza}
-        />
+        <PagePreview className="buttons-wrapper">
+          <Button variant="contained" color="info" onClick={handleCloseModal}>
+            Close
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={item !== null ? handleUpdateProduct : handleInregistreaza}
+            disabled={Object.values(produs).some(
+              (value) => typeof value === "string" && value.trim() === ""
+            )}
+          >
+            {item !== null ? "Update" : "Adauga"}
+          </Button>
+        </PagePreview>
       </div>
     </div>
   );

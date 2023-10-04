@@ -7,9 +7,8 @@
   
   .regular-invoce-form .input {
     width: 45%; 
-    padding: 5px;
+    height: 20px;
     margin-left: 9px;
-    margin-bottom: 5px;
   }
   
   @media (max-width: 1019px) {
@@ -19,8 +18,7 @@
     }
     .regular-invoce-form .input {
       width: 95%;
-      padding: 2px;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
   }

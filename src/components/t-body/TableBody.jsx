@@ -74,7 +74,7 @@ const Tbody = ({
       );
     }
 
-    if (location.pathname.includes("facturi")) {
+    if (location.pathname.includes("cheltuieli")) {
       return (
         <div
           style={{

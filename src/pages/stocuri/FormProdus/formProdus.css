@@ -1,5 +1,5 @@
 .inventory-page .modal-overlay .modal-content {
-  height: 270px;
+  height: 200px;
   width: 250px;
   position: relative;
 }
@@ -17,6 +17,13 @@
 .inventory-page .modal-overlay .modal-content .footer { 
     margin-top: 10px;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.inventory-page .modal-overlay .modal-content .buttons-wrapper {
+    margin-top: 10px;
     display: flex;
     justify-content: space-between;
 }

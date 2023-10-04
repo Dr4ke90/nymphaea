@@ -13,7 +13,7 @@ export default function MainMenu() {
     "clienti",
     "programari",
     "incasari",
-    "facturi",
+    "cheltuieli",
     'comenzi',
     'notificari'
   ];

@@ -164,23 +164,23 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleInregistreaza = (e) => {
     e.preventDefault();
-    // dispatch(
-    //   addRceceipe({
-    //     nrBon: nrBon,
-    //     ...dateFisa,
-    //     totalDePlata: totalFisa,
-    //     data: getDate(),
-    //   })
-    // );
-    // dispatch(
-    //   updateAppointment({
-    //     ...appointment,
-    //     status: "Terminat",
-    //     tip_update: "Modificare status: Terminat",
-    //     terminat: getHour(),
-    //   })
-    // );
-    // closeModal();
+    dispatch(
+      addRceceipe({
+        nrBon: nrBon,
+        ...dateFisa,
+        totalDePlata: totalFisa,
+        data: getDate(),
+      })
+    );
+    dispatch(
+      updateAppointment({
+        ...appointment,
+        status: "Terminat",
+        tip_update: "Modificare status: Terminat",
+        terminat: getHour(),
+      })
+    );
+    closeModal();
     console.log(dateFisa);
   };
 

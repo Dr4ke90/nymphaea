@@ -60,6 +60,9 @@ export const addInvoice = createAsyncThunk(
           invoice.produse.map(async (produs) => {
             delete produs.nr;
             delete produs.total;
+            delete produs._id;
+
+            console.log(produs)
 
             const inventoryResponse = await axios.get(
               `http://127.0.0.1:3001/api/nymphaea/inventory/${produs.cod}`

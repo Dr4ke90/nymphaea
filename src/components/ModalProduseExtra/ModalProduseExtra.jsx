@@ -115,15 +115,14 @@ export default function ModalProduseExtra({
   const getCantitate = (product) => {
     const serv = dateFisa.produse.find((s) => s.cod === service.cod);
     if (serv.produseExtra.length !== 0) {
-      // Corectat aici
       const prod = serv.produseExtra.find((p) => p.cod === product.cod);
 
       if (
         prod &&
         typeof prod === "object" &&
-        prod.hasOwnProperty("cantitate")
+        prod.hasOwnProperty("cantitateUtilizata")
       ) {
-        return prod.cantitate;
+        return prod.cantitateUtilizata;
       }
     }
     return ""; 

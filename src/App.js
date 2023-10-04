@@ -28,7 +28,7 @@ function App() {
             <Route path="/clienti" element={<Customers />}></Route>
             <Route path="/programari" element={<Appointments />}></Route>
             <Route path="/incasari" element={<Sales />}></Route>
-            <Route path="/facturi" element={<Invoices />}></Route>
+            <Route path="/cheltuieli" element={<Invoices />}></Route>
             <Route path="/casa" element={<CashRegister />}></Route>
             <Route path="/" element={<Dashboard />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>

@@ -23,6 +23,7 @@ export default function Inventory() {
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
+  const [receivedProduct, setReceivedProduct] = useState(null);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -40,10 +41,21 @@ export default function Inventory() {
     setOpenFormProdus(!openFormProdus);
   };
 
+  const handleEditProduct = (item) => {
+    setReceivedProduct(item);
+
+    toggleModalFormProdus();
+  };
+
   return (
     <div className="inventory-page">
       {openFormProdus && (
-        <FormProdus cod={codProdus} closeModal={toggleModalFormProdus} />
+        <FormProdus
+          cod={codProdus}
+          closeModal={toggleModalFormProdus}
+          item={receivedProduct}
+          setItem={setReceivedProduct}
+        />
       )}
       <div className="title">
         <Button
@@ -55,7 +67,12 @@ export default function Inventory() {
         </Button>
         <h2>{title}</h2>
       </div>
-      <TableDisplay thead={thead} tbody={inventory} listOrder={thead} />
+      <TableDisplay
+        thead={thead}
+        tbody={inventory}
+        listOrder={thead}
+        editItem={handleEditProduct}
+      />
     </div>
   );
 }

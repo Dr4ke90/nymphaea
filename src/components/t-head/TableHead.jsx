@@ -17,13 +17,14 @@ const Thead = ({ thead, handleChange }) => {
       value.toLowerCase() === "inventar" ||
       value.toLowerCase() === "programari" ||
       value.toLowerCase() === "fise" ||
+      value.toLowerCase() === "stoc" ||
+      value.toLowerCase() === "pret" ||
       value.toLowerCase() === "#"
     )
       classname = "small";
 
     if (
-      value.toLowerCase() === "pret" ||
-      value.toLowerCase() === "total"
+      value.toLowerCase() === "total" 
     ) {
       classname = "medium";
     }

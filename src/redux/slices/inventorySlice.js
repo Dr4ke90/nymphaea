@@ -10,7 +10,17 @@ const inventorySlice = createSlice({
       return action.payload;
     });
     builder.addCase(addProduct.fulfilled, (state, action) => {
-      return [...state, action.payload]
+      return [...state, action.payload];
+    });
+    builder.addCase(updateInventory.fulfilled, (state, action) => {
+      const updateProduct = action.payload;
+
+      const index = state.findIndex(
+        (product) => product.cod === updateProduct.cod
+      );
+      if (index !== -1) {
+        state[index] = updateProduct;
+      }
     });
   },
 });
@@ -33,11 +43,8 @@ export const addProduct = createAsyncThunk(
   "inventory/addProduct",
   async (product) => {
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:3001/api/nymphaea/inventory",
-        product
-      );
-      return response.data;
+      await axios.post("http://127.0.0.1:3001/api/nymphaea/inventory", product);
+      return product;
     } catch (error) {
       throw new Error("Eroare la incarcarea adaugarea produsului", error);
     }
@@ -51,16 +58,20 @@ export const updateInventory = createAsyncThunk(
     delete updates._id;
     try {
       const response = await axios.put(
-        `http://127.0.0.1:3001/api/nympahea/inventory/${product._id}`,
+        `http://127.0.0.1:3001/api/nymphaea/inventory/${product.cod}`,
         updates
       );
-      console.log(response.data);
+      console.log(response.data.message);
+      return product;
     } catch (error) {
-      throw new Error("Eroare la actualizarea Produsului ", product._id, error);
+      throw new Error(
+        "Eroare la actualizarea Produsului ",
+        product.cod,
+        error
+      );
     }
   }
 );
-
 
 export const updateInventoryRecursively = createAsyncThunk(
   "inventory/updateProduct",
@@ -74,21 +85,21 @@ export const updateInventoryRecursively = createAsyncThunk(
         const promises = [];
 
         for (const productInSale of sale.produse) {
-          if (productInSale.reteta) {
-            for (const itemReteta of productInSale.reteta) {
+          if (productInSale.produseExtra) {
+            for (const itemReteta of productInSale.produseExtra) {
               const inventoryItem = inventoryResponse.data.find(
                 (item) => item.cod === itemReteta.cod
               );
               if (inventoryItem) {
                 const stoc =
                   inventoryItem.stoc - itemReteta.cantitateUtilizata / 100;
-                const cantitateGr =
-                  inventoryItem.cantitateGr - itemReteta.cantitateUtilizata;
+                const stocInGr =
+                  inventoryItem.stocInGr - itemReteta.cantitateUtilizata;
 
                 const updatedInventory = {
                   ...inventoryItem,
                   stoc,
-                  cantitateGr,
+                  stocInGr,
                 };
 
                 delete updatedInventory._id;
@@ -108,14 +119,14 @@ export const updateInventoryRecursively = createAsyncThunk(
             if (inventoryItem) {
               const stoc =
                 inventoryItem.stoc - productInSale.cantitateUtilizata;
-              const cantitateGr =
-                inventoryItem.cantitateGr -
+              const stocInGr =
+                inventoryItem.stocInGr -
                 productInSale.gramaj * productInSale.cantitateUtilizata;
 
               const updatedInventory = {
                 ...inventoryItem,
                 stoc,
-                cantitateGr,
+                stocInGr,
               };
 
               delete updatedInventory._id;
@@ -137,6 +148,5 @@ export const updateInventoryRecursively = createAsyncThunk(
     }
   }
 );
-
 
 export default inventorySlice.reducer;

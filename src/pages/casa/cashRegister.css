@@ -10,13 +10,7 @@
   margin-top: 5px;
 }
 
-.cash-page .title h2 {
-  position: relative;
-  right: 55%;
-  font-size: 30px;
-  letter-spacing: 15px;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-}
+
 
 .cash-page .cash-page-wrapper {
   display: flex;

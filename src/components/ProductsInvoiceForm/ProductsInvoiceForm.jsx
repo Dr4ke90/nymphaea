@@ -14,103 +14,100 @@ export default function ProductsInvoiceForm({
   handleChangeProdus,
 }) {
   const inventory = useSelector((state) => state.stocuri);
-  const [inputDisabled, setInputDisabled] = useState(true);
+  const [activateInputs, setActivateInputs] = useState(true);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllInventory());
   }, [dispatch]);
 
-  let codProdus = 0;
-  const nrProd = inventory.length + 1;
-  const paddedNrProd = nrProd.toString().padStart(4, "0");
-  codProdus = "P" + paddedNrProd;
+  useEffect(() => {
+    if (stateProdus.descriere === "") {
+      setActivateInputs(true);
+    }
+  }, [stateProdus.descriere]);
 
   const handlePlaceHolder = (key) => {
     let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
 
     if (key === "stoc") placeholder = "Cantitate";
 
-    if (key === "barcode") placeholder = "Cod de bare";
-
     if (key === "gramaj") placeholder = "Gramaj / BUC";
 
-    if (key === "pretUnitar") placeholder = "Pret Unitar";
+    if (key === "pretFaraTva") placeholder = "Pret fara TVA";
+
+    if (key === "pretAchizitie") placeholder = "Pret achizitie";
 
     return placeholder;
-  };
-
-  const handleDisableInputs = (keyName) => {
-    return inputDisabled && keyName !== "barcode" && stateProdus.barcode === "";
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (stateProdus.descriere !== "") {
+      setActivateInputs(false);
+    }
+
     const findedProduct = inventory.find(
-      (item) => item.barcode === stateProdus.barcode
+      (item) =>
+        item.descriere.toLowerCase() === stateProdus.descriere.toLowerCase()
     );
 
-    if (findedProduct !== undefined) {
-      setStateProdus({
-        ...findedProduct,
-        stoc: "0",
-      });
+    if (findedProduct) {
+      setStateProdus(findedProduct);
     } else {
       setStateProdus({
         ...stateProdus,
-        cod: codProdus,
+        cod:
+          stateProdus.descriere !== ""
+            ? `P${(inventory.length + 1).toString().padStart(4, "0")}`
+            : "",
       });
     }
-
-    setInputDisabled(false);
   };
 
   const inputsOrder = [
-    "barcode",
+    "descriere",
     "stoc",
     "cod",
     "categorie",
     "brand",
-    "tip",
     "gramaj",
-    "pret",
-    "total",
+    "pretFaraTva",
+    "pretAchizitie",
   ];
 
-
   const handleAdauga = (e) => {
-    handleAdaugaProdus(e)
-    setInputDisabled(true)
-  }
+    handleAdaugaProdus(e);
+  };
 
   return (
     <PagePreview className="form-produse">
       <Form>
         {inputsOrder.map((keyName) => {
-          if (keyName !== "total" && keyName !== "cantitateGr" && keyName !== "cod") {
-            return (
-              <Input
-                className="input"
-                key={keyName}
-                id={keyName}
-                type="text"
-                name={keyName}
-                placeholder={handlePlaceHolder(keyName)}
-                onChange={handleChangeProdus}
-                value={stateProdus[keyName]}
-                disabled={handleDisableInputs(keyName)}
-                autoComplete="off"
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleSubmit(e);
-                  }
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
+          return (
+            <Input
+              className="input"
+              key={keyName}
+              id={keyName}
+              type="text"
+              name={keyName}
+              placeholder={handlePlaceHolder(keyName)}
+              onChange={handleChangeProdus}
+              value={stateProdus[keyName]}
+              disabled={
+                (keyName !== "descriere" &&
+                  (activateInputs || keyName === "cod")) ||
+                (keyName === "cod" && true)
+              }
+              autoComplete="off"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit(e);
+                }
+              }}
+            />
+          );
         })}
       </Form>
       <Button

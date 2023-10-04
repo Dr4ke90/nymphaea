@@ -2,8 +2,14 @@ import { Button } from "@mui/material";
 import React from "react";
 import PagePreview from "../PagePreview/PagePreview";
 import "./modalController.css";
+import Input from "../Input/Input";
 
-export default function ModalController({ state, closeModal, inregistreaza }) {
+export default function ModalController({
+  state,
+  closeModal,
+  inregistreaza,
+  total,
+}) {
   const checkForEmptyFields = (obj) => {
     if (state === null) return;
     if (
@@ -43,6 +49,20 @@ export default function ModalController({ state, closeModal, inregistreaza }) {
       <Button variant="contained" color="info" onClick={closeModal}>
         Close
       </Button>
+
+      {(state.tip === "produse" || state.tip === "protocol") && (
+        <Input
+          value={total}
+          style={{
+            padding: "5px",
+            width: "100px",
+            textAlign: "center",
+            fontSize: "20px",
+          }}
+          disabled
+        />
+      )}
+
       {state.tip !== "" && (
         <Button
           variant="contained"
