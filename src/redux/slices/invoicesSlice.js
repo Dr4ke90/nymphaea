@@ -94,7 +94,7 @@ export const addInvoice = createAsyncThunk(
       }
       return invoice;
     } catch (error) {
-      throw new Error("Eroare la adaugarea Facturii" + invoice.nr, error);
+      throw new Error("Eroare la adaugarea Facturii" + invoice.cod, error);
     }
   }
 );

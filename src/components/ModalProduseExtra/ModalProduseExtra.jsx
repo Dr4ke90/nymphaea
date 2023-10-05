@@ -125,7 +125,7 @@ export default function ModalProduseExtra({
         return prod.cantitateUtilizata;
       }
     }
-    return ""; 
+    return "";
   };
 
   return (
@@ -184,7 +184,19 @@ export default function ModalProduseExtra({
           </Table>
         </div>
         <div className="buttons-wrapper">
-          <Button variant="contained" color="info" onClick={closeModal}>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={closeModal}
+            disabled={
+              service.produseExtra.length !== 0 &&
+              !service.produseExtra.every(
+                (produs) =>
+                  produs.hasOwnProperty("cantitateUtilizata") &&
+                  produs.cantitateUtilizata !== ""
+              )
+            }
+          >
             Close
           </Button>
         </div>

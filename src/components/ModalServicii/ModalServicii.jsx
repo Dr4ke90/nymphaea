@@ -74,6 +74,8 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
     }
   };
 
+  
+
   return (
     <div className="modal-servicii-overlay">
       <div className="modal-servicii-content">
@@ -95,7 +97,7 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
                       />
                     </td>
                     {Object.entries(service).map(([key, value]) => {
-                      if (key === "cod" || key === "tip") {
+                      if (key === "cod" || key === "descriere") {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}
@@ -112,7 +114,11 @@ export default function ModalServicii({ closeModal, dateFisa, setDateFisa }) {
           </Table>
         </div>
         <div className="buttons-wrapper">
-          <Button variant="contained" color="info" onClick={closeModal}>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={closeModal}
+          >
             Close
           </Button>
         </div>

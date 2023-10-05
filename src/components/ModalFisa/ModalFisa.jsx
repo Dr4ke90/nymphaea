@@ -81,8 +81,14 @@ export default function ModalFisa({ closeModal, appointment }) {
     dispatch(fetchAllSales());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (appointment) {
+      setFoundedEmployee(true)
+    }
+  },[appointment]) 
+
   const [openModalServicii, setOpenModalServicii] = useState(false);
-  const handleModalServicii = () => {
+  const handleOpenModalServicii = () => {
     setOpenModalServicii(!openModalServicii);
   };
 
@@ -114,18 +120,21 @@ export default function ModalFisa({ closeModal, appointment }) {
   useEffect(() => {
     const updatedServicii = dateFisa.produse.map((serviciu) => {
       if (serviciu.produseExtra && serviciu.produseExtra.length !== 0) {
-        const totalProduseExtra = serviciu.produseExtra.reduce((acc, produs) => {
-          const pret = parseFloat(produs.pret);
-          const gramaj = parseInt(produs.gramaj);
-          const cantitate = parseFloat(produs.cantitateUtilizata);
+        const totalProduseExtra = serviciu.produseExtra.reduce(
+          (acc, produs) => {
+            const pret = parseFloat(produs.pret);
+            const gramaj = parseInt(produs.gramaj);
+            const cantitate = parseFloat(produs.cantitateUtilizata);
 
-          if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
-            const totalProdus = (pret / gramaj) * cantitate;
-            return acc + totalProdus;
-          } else {
-            return acc;
-          }
-        }, 0);
+            if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
+              const totalProdus = (pret / gramaj) * cantitate;
+              return acc + totalProdus;
+            } else {
+              return acc;
+            }
+          },
+          0
+        );
 
         serviciu.totalServiciu =
           (parseFloat(serviciu.pret) + totalProduseExtra) *
@@ -184,10 +193,14 @@ export default function ModalFisa({ closeModal, appointment }) {
     console.log(dateFisa);
   };
 
+  const searchEmployee = (value) => {
+    return angajati.find((angajat) => angajat.cod === value);
+  };
+
   const handleChangeAngajat = (e) => {
     const { name, value } = e.target;
     if (name === "codAngajat") {
-      const angajat = angajati.find((angajat) => angajat.cod === value);
+      const angajat = searchEmployee(value);
 
       if (angajat) {
         setDateFisa({
@@ -208,7 +221,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   };
 
   const headerFieldOrder = ["codAngajat", "numeClient", "codClient", "codFisa"];
-  const tableFieldOrder = ["nr", "cod", "tip", "produs"];
+  const tableFieldOrder = ["nr", "cod", "descriere", "produs"];
   return (
     <div className="modal-fisa-overlay">
       <div className="modal-fisa-content">
@@ -236,8 +249,8 @@ export default function ModalFisa({ closeModal, appointment }) {
             <Button
               variant="contained"
               color="info"
-              onClick={handleModalServicii}
-              disabled={dateFisa.codAngajat === ""}
+              onClick={handleOpenModalServicii}
+              disabled={!foundedEmployye}
             >
               Servicii
             </Button>
@@ -288,7 +301,9 @@ export default function ModalFisa({ closeModal, appointment }) {
                             <FaSlidersH
                               size={21}
                               style={{ cursor: "pointer" }}
-                              onClick={() => handleOpenModalProduseExtra(service)}
+                              onClick={() =>
+                                handleOpenModalProduseExtra(service)
+                              }
                             />
                           )}
                           <FaTrash
@@ -330,7 +345,7 @@ export default function ModalFisa({ closeModal, appointment }) {
         </div>
         {openModalServicii && (
           <ModalServicii
-            closeModal={handleModalServicii}
+            closeModal={handleOpenModalServicii}
             dateFisa={dateFisa}
             setDateFisa={setDateFisa}
           />
