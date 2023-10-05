@@ -46,78 +46,48 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     }
   }, [item]);
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
+  const findClientByCode = (code) => clienti.find((client) => client.cod.toUpperCase() === code.toUpperCase());
+const findClientByName = (name) => clienti.find((client) => `${client.nume} ${client.prenume}`.toLowerCase() === name.toLowerCase());
+const findEmployeeByCode = (code) => angajati.find((angajat) => angajat.cod === code);
 
-    if (name === "client") {
-      if (value.startsWith("c") || value.startsWith("C")) {
-        const capitalizeValue = value.toUpperCase();
-        const client = clienti.find((client) => client.cod === capitalizeValue);
+const handleClientChange = (name, value) => {
+  const uppercasedValue = value.toUpperCase();
+  const client = value.startsWith("c") || value.startsWith("C")
+    ? findClientByCode(uppercasedValue)
+    : findClientByName(value);
 
-        if (client) {
-          setNewAppointment({
-            ...newAppointment,
-            [name]: value,
-            numeClient: `${client.nume} ${client.prenume}`,
-          });
-          setShowCreateClientButton(false);
-        } else {
-          setNewAppointment({
-            ...newAppointment,
-            [name]: value,
-            numeClient: value,
-          });
-          setShowCreateClientButton(true);
-        }
-      } else {
-        const client = clienti.find(
-          (client) =>
-            `${client.nume} ${client.prenume}`.toLowerCase() ===
-            value.toLowerCase()
-        );
+  const numeClient = client ? `${client.nume} ${client.prenume}` : value;
+  setShowCreateClientButton(!client);
+  return numeClient;
+};
 
-        if (client) {
-          setNewAppointment({
-            ...newAppointment,
-            [name]: value,
-            numeClient: `${client.nume} ${client.prenume}`,
-          });
-          setShowCreateClientButton(false);
-        } else {
-          setNewAppointment({
-            ...newAppointment,
-            [name]: value,
-            numeClient: value,
-          });
-          setShowCreateClientButton(true);
-        }
-      }
-    } else if (name === "angajat") {
-      const angajat = angajati.find((angajat) => angajat.cod === value);
+const handleEmployeeChange = (name, value) => {
+  const angajat = findEmployeeByCode(value);
+  setShowEmployeeError(!angajat);
+  return angajat ? `${angajat.nume} ${angajat.prenume}` : value;
+};
 
-      if (angajat) {
-        setNewAppointment({
-          ...newAppointment,
-          [name]: value,
-          numeAngajat: `${angajat.nume} ${angajat.prenume}`,
-        });
-        setShowEmployeeError(false);
-      } else {
-        setNewAppointment({
-          ...newAppointment,
-          [name]: value,
-          numeAngajat: value,
-        });
-        setShowEmployeeError(true);
-      }
-    } else {
-      setNewAppointment({
-        ...newAppointment,
-        [name]: value,
-      });
-    }
-  };
+const handleChange = (e) => {
+  e.preventDefault();
+  const { name, value } = e.target;
+
+  let updatedValue;
+  if (name === "client") {
+    updatedValue = handleClientChange(name, value);
+  } else if (name === "angajat") {
+    updatedValue = handleEmployeeChange(name, value);
+  } else {
+    updatedValue = value;
+  }
+
+  setNewAppointment({
+    ...newAppointment,
+    [name]: value,
+    numeClient: name === "client" ? updatedValue : newAppointment.numeClient,
+    numeAngajat: name === "angajat" ? updatedValue : newAppointment.numeAngajat,
+  });
+};
+
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
@@ -276,7 +246,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
               }
               disabled={Object.values(newAppointment).some(
                 (value) => typeof value === "string" && value.trim() === ""
-              ) || newAppointment.status === "Terminat"}
+              ) || newAppointment.status === "Terminat" || showEmployeeError}
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>
