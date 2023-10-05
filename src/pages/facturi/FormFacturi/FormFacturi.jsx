@@ -200,6 +200,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         alert("Totalul produselor nu este egal cu totalul facturii");
         return;
       }
+
     }
 
     const tipUpperCase =

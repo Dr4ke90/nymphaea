@@ -3,7 +3,10 @@ import "./formProdus.css";
 import Input from "../../../components/Input/Input";
 import Form from "../../../components/Formular/Form";
 import { useDispatch } from "react-redux";
-import { addProduct, updateInventory } from "../../../redux/slices/inventorySlice";
+import {
+  addProduct,
+  updateInventory,
+} from "../../../redux/slices/inventorySlice";
 import PagePreview from "../../../components/PagePreview/PagePreview";
 import { Button } from "@mui/material";
 
@@ -14,9 +17,9 @@ export default function FormProdus({ cod, closeModal, item, setItem }) {
     brand: "",
     descriere: "",
     gramaj: "",
-    pretFaraTva: 0.00,
-    pret: 0.00,
-    pretAchizitie: 0.00,
+    pretFaraTva: parseFloat(0).toFixed(2),
+    pret: parseFloat(0).toFixed(2),
+    pretAchizitie: parseFloat(0).toFixed(2),
     stoc: 0,
     stocInGr: 0,
   };
@@ -39,15 +42,6 @@ export default function FormProdus({ cod, closeModal, item, setItem }) {
         [name]: value,
       };
 
-      if (name === "pretFaraTva") {
-        updatedProdus.pretFaraTva = value;
-        if (value) {
-          updatedProdus.pret = (parseFloat(value) * 1.19).toFixed(2);
-        } else {
-          updatedProdus.pret = 0.00;
-        }
-      }
-
       return updatedProdus;
     });
   };
@@ -62,6 +56,7 @@ export default function FormProdus({ cod, closeModal, item, setItem }) {
   const handleInregistreaza = () => {
     dispatch(addProduct(produs));
     handleCloseModal();
+    console.log(produs);
   };
 
   const handleUpdateProduct = () => {
