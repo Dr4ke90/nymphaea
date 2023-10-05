@@ -66,7 +66,7 @@ export default function ModalFisa({ closeModal, appointment }) {
     codClient: appointment ? appointment.client : "",
     numeClient: appointment ? appointment.numeClient : "",
     data: appointment ? appointment.data : "",
-    codProgramare: appointment ? appointment.nr : "",
+    codProgramare: appointment ? appointment.cod : "",
     codAngajat: appointment ? appointment.angajat : "",
     produse: [],
   };
@@ -190,7 +190,8 @@ export default function ModalFisa({ closeModal, appointment }) {
       })
     );
     closeModal();
-    console.log(dateFisa);
+
+    console.log(getHour())
   };
 
   const searchEmployee = (value) => {

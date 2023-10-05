@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getDate } from "../../utils/getDate";
+import { getHour } from "../../utils/getHour";
 
 const cashRegisterSlice = createSlice({
   name: "cashRegister",
@@ -26,8 +28,6 @@ const cashRegisterSlice = createSlice({
   },
 });
 
-const date = new Date().toLocaleDateString("ro", "RO");
-const ora = new Date().toLocaleTimeString("ro", "RO");
 
 export const fetchAllReceipes = createAsyncThunk(
   "cashRegister/fetchAllReceipes",
@@ -48,8 +48,8 @@ export const addRceceipe = createAsyncThunk(
   async (receipe) => {
     const updates = {
       ...receipe,
-      data_creat: date,
-      ora_creat: ora,
+      data_creat: getDate(),
+      ora_creat: getHour(),
     };
 
     try {
@@ -100,7 +100,6 @@ export const addRceceipe = createAsyncThunk(
                 const appUpdate = {
                   status: status,
                   tip_update: tip_update,
-                  terminat: ora,
                 };
 
                 const response = await axios.put(
@@ -129,8 +128,8 @@ export const updateReceipe = createAsyncThunk(
   async (appointment) => {
     const updates = {
       ...appointment,
-      data_update: date,
-      ora_update: ora,
+      data_update: getDate(),
+      ora_update: getHour(),
     };
     delete updates._id;
 
@@ -145,7 +144,7 @@ export const updateReceipe = createAsyncThunk(
 
         const appointemntUpdate = {
           programari: getEmployyeRespons.data.response.programari.filter(
-            (item) => item.nr !== appointment.nr
+            (item) => item.nr !== appointment.cod
           ),
         };
 
@@ -156,14 +155,14 @@ export const updateReceipe = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+        `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.cod}`,
         updates
       );
       console.log(response.data.message);
       return appointment;
     } catch (error) {
       throw new Error(
-        "Eroare la actualizarea Programarii " + appointment.nr,
+        "Eroare la actualizarea Programarii " + appointment.cod,
         error
       );
     }

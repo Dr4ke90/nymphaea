@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getDate } from "../../utils/getDate";
+import { getHour } from "../../utils/getHour";
 
 const appointmentsSlice = createSlice({
   name: "appointments",
@@ -26,9 +28,6 @@ const appointmentsSlice = createSlice({
   },
 });
 
-const date = new Date().toLocaleDateString("ro", "RO");
-const ora = new Date().toLocaleTimeString("ro", "RO");
-
 export const fetchAllAppointments = createAsyncThunk(
   "appointments/fetchAllAppointments",
   async () => {
@@ -48,8 +47,8 @@ export const addAppointment = createAsyncThunk(
   async (appointment) => {
     const updates = {
       ...appointment,
-      data_creat: date,
-      ora_creat: ora,
+      data_creat: getDate(),
+      ora_creat: getHour(),
     };
 
     try {
@@ -82,7 +81,7 @@ export const addAppointment = createAsyncThunk(
       }
     } catch (error) {
       throw new Error(
-        "Eroare la adaugarea Programarii " + appointment.nr,
+        "Eroare la adaugarea Programarii " + appointment.cod,
         error
       );
     }
@@ -94,8 +93,8 @@ export const updateAppointment = createAsyncThunk(
   async (appointment) => {
     const updates = {
       ...appointment,
-      data_update: date,
-      ora_update: ora,
+      data_update: getDate(),
+      ora_update: getHour(),
     };
     delete updates._id;
 
@@ -105,7 +104,7 @@ export const updateAppointment = createAsyncThunk(
         appointment.status.includes("Terminat")
       ) {
         const response = await axios.put(
-          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.cod}`,
           updates
         );
         console.log(response.data.message);
@@ -116,7 +115,7 @@ export const updateAppointment = createAsyncThunk(
           );
 
           const updatedAppointments = getEmployeeResponse.data.response.programari.filter(
-            (item) => item.nr !== appointment.nr
+            (item) => item.nr !== appointment.cod
           );
 
           const appointmentUpdate = {
@@ -130,7 +129,7 @@ export const updateAppointment = createAsyncThunk(
         }
       } else if (appointment.status.includes("Activ")) {
         const response = await axios.put(
-          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.cod}`,
           updates
         );
         console.log(response.data.message);
@@ -157,7 +156,7 @@ export const updateAppointment = createAsyncThunk(
         }
       } else {
         const response = await axios.put(
-          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.nr}`,
+          `http://127.0.0.1:3001/api/nymphaea/appointments/${appointment.cod}`,
           updates
         );
         console.log(response.data.message);
@@ -166,7 +165,7 @@ export const updateAppointment = createAsyncThunk(
       return appointment;
     } catch (error) {
       throw new Error(
-        "Eroare la actualizarea Programarii " + appointment.nr,
+        "Eroare la actualizarea Programarii " + appointment.cod,
         error
       );
     }
@@ -178,13 +177,13 @@ export const deleteAppointment = createAsyncThunk(
   async (appointment) => {
     try {
       const appointmentRes = await axios.delete(
-        `http://52.3.55.96:3001/api/nymphaea/appointments/${appointment.nr}`
+        `http://52.3.55.96:3001/api/nymphaea/appointments/${appointment.cod}`
       );
       console.log(appointmentRes.data.message);
       return appointment;
     } catch (error) {
       throw new Error(
-        "Eroare la stergerea Programarii " + appointment.nr,
+        "Eroare la stergerea Programarii " + appointment.cod,
         error
       );
     }

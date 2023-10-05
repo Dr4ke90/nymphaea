@@ -21,7 +21,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const [showEmployeeError, setShowEmployeeError] = useState(false);
 
   const initialState = {
-    nr: cod,
+    cod: cod,
     data: "",
     ora: "",
     timp: "",
@@ -183,7 +183,7 @@ const handleChange = (e) => {
                     onChange={handleChange}
                     value={newAppointment[key]}
                     disabled={
-                      key === "nr" ||
+                      key === "cod" ||
                       newAppointment.status === "Terminat" ||
                       (key === "client" &&
                         (newAppointment.status === "Anulat" ||

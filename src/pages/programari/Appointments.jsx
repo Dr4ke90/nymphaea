@@ -15,7 +15,7 @@ import { getHour } from "../../utils/getHour";
 
 export default function Appointments() {
   const thead = [
-    "nr",
+    "cod",
     "data",
     "ora",
     "timp",
@@ -48,8 +48,8 @@ export default function Appointments() {
   }, [appointments]);
 
   let code = 0;
-  const nr = appointments.length + 1;
-  const paddedNr = nr.toString().padStart(3, "0");
+  const cod = appointments.length + 1;
+  const paddedNr = cod.toString().padStart(3, "0");
   code = "A" + paddedNr;
 
   const toggleModal = () => {
@@ -67,7 +67,7 @@ export default function Appointments() {
 
   const handleStartAppointment = (item) => {
     const confirm = window.confirm(
-      `Incepi Programarea ${item.nr} - ${item.client} ??`
+      `Incepi Programarea ${item.cod} - ${item.client} ??`
     );
     if (!confirm) return;
     const status = "In curs";
@@ -84,7 +84,7 @@ export default function Appointments() {
 
   const handleCancelAppointment = (item) => {
     const confirm = window.confirm(
-      `Esti sigur ca vrei sa anulezi Programarea ${item.nr} - ${item.client}`
+      `Esti sigur ca vrei sa anulezi Programarea ${item.cod} - ${item.client}`
     );
     if (!confirm) return;
     const status = "Anulat";
@@ -100,7 +100,7 @@ export default function Appointments() {
 
   const handleFinishAppointment = (item) => {
     const confirm = window.confirm(
-      `Ai terminat Programarea ${item.nr} - ${item.numeClient}??`
+      `Ai terminat Programarea ${item.cod} - ${item.numeClient}??`
     );
     if (!confirm) return;
     setCurrentAppointment(item);
