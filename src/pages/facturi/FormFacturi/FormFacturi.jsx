@@ -95,51 +95,63 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     });
   };
 
+  const cleanInputValue = (value) => {
+    return value.toLowerCase().charAt(0).toUpperCase() + value.slice(1);
+  };
+
+  const calculateTotal = (updatedProdus) => {
+    const pretNumeric = parseFloat(updatedProdus.pret) || 0;
+    const stocNumeric = parseInt(updatedProdus.stoc) || 0;
+    return (pretNumeric * stocNumeric).toFixed(2);
+  };
+
+  const calculateStocInGr = (stoc, gramaj) => {
+    return stoc * gramaj || 0;
+  };
+
+  const updateProdus = (prevProduse, name, value) => {
+    let updatedProdus = {
+      ...prevProduse,
+      [name]: value,
+    };
+
+    if (name === "pretFaraTva") {
+      updatedProdus.pret = value ? (parseFloat(value) * 1.19).toFixed(2) : "";
+    }
+
+    if (
+      (name === "stoc" && prevProduse.gramaj) ||
+      (name === "gramaj" && prevProduse.stoc)
+    ) {
+      updatedProdus.stocInGr = calculateStocInGr(
+        updatedProdus.stoc,
+        updatedProdus.gramaj
+      );
+    } else {
+      updatedProdus.stocInGr = prevProduse.stocInGr || 0;
+    }
+
+    updatedProdus.total = calculateTotal(updatedProdus);
+
+    if (updatedProdus.descriere === "") {
+      updatedProdus = { ...initialStateProdus };
+    }
+
+    return updatedProdus;
+  };
+
   const handleChangeProdus = (e) => {
-    const { name, value } = e.target;
     e.preventDefault();
-    let newValue = value.toLowerCase();
+    const { name, value } = e.target;
+    let cleanedValue = value;
 
-    if (name === "pret")
-      newValue = newValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
+    if (name === "pret") {
+      cleanedValue = cleanedValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
+    }
 
-    newValue = newValue.charAt(0).toUpperCase() + newValue.slice(1);
+    cleanedValue = cleanInputValue(cleanedValue);
 
-    setProdus((prevProduse) => {
-      let updatedProdus = {
-        ...prevProduse,
-        [name]: newValue,
-      };
-
-      if (name === "pretFaraTva") {
-        updatedProdus.pret = value ? (parseFloat(value) * 1.19).toFixed(2) : "";
-      }
-
-      if (name === "stoc" && prevProduse.gramaj) {
-        updatedProdus.stocInGr = value * prevProduse.gramaj;
-      } else if (name === "gramaj" && prevProduse.stoc) {
-        updatedProdus.stocInGr = prevProduse.stoc * value;
-      } else {
-        updatedProdus.stocInGr = prevProduse.stocInGr || 0;
-      }
-
-      const pretNumeric = parseFloat(updatedProdus.pret) || 0;
-      const stocNumeric = parseInt(updatedProdus.stoc) || 0;
-
-      if (name === "stoc" && updatedProdus.pretFaraTva) {
-        updatedProdus.total = (stocNumeric * pretNumeric).toFixed(2);
-      } else if (name === "pretFaraTva" && updatedProdus.stoc) {
-        updatedProdus.total = (pretNumeric * stocNumeric).toFixed(2);
-      } else {
-        updatedProdus.total = prevProduse.total || 0;
-      }
-
-      if (updatedProdus.descriere === "" ) {
-        updatedProdus = {...initialStateProdus}
-      }
-
-      return updatedProdus;
-    });
+    setProdus((prevProduse) => updateProdus(prevProduse, name, cleanedValue));
   };
 
   const handleChangeProtocol = (e) => {
@@ -200,7 +212,6 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
         alert("Totalul produselor nu este egal cu totalul facturii");
         return;
       }
-
     }
 
     const tipUpperCase =
