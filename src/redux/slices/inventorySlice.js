@@ -64,17 +64,13 @@ export const updateInventory = createAsyncThunk(
       console.log(response.data.message);
       return product;
     } catch (error) {
-      throw new Error(
-        "Eroare la actualizarea Produsului ",
-        product.cod,
-        error
-      );
+      throw new Error("Eroare la actualizarea Produsului ", product.cod, error);
     }
   }
 );
 
 export const updateInventoryRecursively = createAsyncThunk(
-  "inventory/updateProduct",
+  "inventory/updateProductRecursively",
   async (sale) => {
     try {
       const inventoryResponse = await axios.get(
@@ -82,66 +78,76 @@ export const updateInventoryRecursively = createAsyncThunk(
       );
 
       if (sale.produse && sale.produse.length > 0) {
-        const promises = [];
+        const updateInventoryItem = async (itemCod, quantity, quantityInGr) => {
+          const inventoryItem = inventoryResponse.data.find(
+            (item) => item.cod === itemCod
+          );
 
-        for (const productInSale of sale.produse) {
-          if (productInSale.produseExtra) {
-            for (const itemReteta of productInSale.produseExtra) {
-              const inventoryItem = inventoryResponse.data.find(
-                (item) => item.cod === itemReteta.cod
+          console.log(inventoryItem)
+
+          if (inventoryItem) {
+            const stoc = inventoryItem.stoc - quantity;
+            const stocInGr = inventoryItem.stocInGr - quantityInGr;
+
+            const updatedInventory = {
+              ...inventoryItem,
+              stoc,
+              stocInGr,
+            };
+
+            delete updatedInventory._id;
+
+            try {
+              const response = await axios.put(
+                `http://127.0.0.1:3001/api/nymphaea/inventory/${itemCod}`,
+                updatedInventory
               );
-              if (inventoryItem) {
-                const stoc =
-                  inventoryItem.stoc - itemReteta.cantitateUtilizata / 100;
-                const stocInGr =
-                  inventoryItem.stocInGr - itemReteta.cantitateUtilizata;
-
-                const updatedInventory = {
-                  ...inventoryItem,
-                  stoc,
-                  stocInGr,
-                };
-
-                delete updatedInventory._id;
-
-                promises.push(
-                  axios.put(
-                    `http://127.0.0.1:3001/api/nymphaea/inventory/${itemReteta.cod}`,
-                    updatedInventory
-                  )
-                );
+              if (Object.keys(response.data).length !== 0) {
+                console.log(`Actualizare cu succes pentru produsul ${itemCod}`);
+              } else {
+                console.error(`Eroare la actualizarea produsului ${itemCod}`);
               }
-            }
-          } else if (productInSale.cod.startsWith("P")) {
-            const inventoryItem = inventoryResponse.data.find(
-              (item) => item.cod === productInSale.cod
-            );
-            if (inventoryItem) {
-              const stoc =
-                inventoryItem.stoc - productInSale.cantitateUtilizata;
-              const stocInGr =
-                inventoryItem.stocInGr -
-                productInSale.gramaj * productInSale.cantitateUtilizata;
-
-              const updatedInventory = {
-                ...inventoryItem,
-                stoc,
-                stocInGr,
-              };
-
-              delete updatedInventory._id;
-
-              promises.push(
-                axios.put(
-                  `http://127.0.0.1:3001/api/nymphaea/inventory/${productInSale.cod}`,
-                  updatedInventory
-                )
+            } catch (error) {
+              console.error(
+                `Eroare la actualizarea produsului ${itemCod}:`,
+                error
               );
             }
           }
-        }
+        };
 
-        await Promise.all(promises);
+        for (const productInSale of sale.produse) {
+          if (productInSale.produseDeBaza) {
+            for (const itemFromProduseDeBaza of productInSale.produseDeBaza) {
+              console.log(itemFromProduseDeBaza);
+              await updateInventoryItem(
+                itemFromProduseDeBaza.cod,
+                itemFromProduseDeBaza.cantitate / 100,
+                itemFromProduseDeBaza.cantitate
+              );
+            }
+          }
+
+          if (productInSale.produseExtra) {
+            for (const itemFromProduseExtra of productInSale.produseExtra) {
+              console.log("itemFromProduseExtra");
+              await updateInventoryItem(
+                itemFromProduseExtra.cod,
+                itemFromProduseExtra.cantitateUtilizata / 100,
+                itemFromProduseExtra.cantitateUtilizata
+              );
+            }
+          }
+
+          if (productInSale.cod.startsWith("P")) {
+            console.log("productInSale");
+            await updateInventoryItem(
+              productInSale.cod,
+              productInSale.cantitateUtilizata,
+              productInSale.gramaj * productInSale.cantitateUtilizata
+            );
+          }
+        }
       }
     } catch (error) {
       throw new Error("Eroare la actualizarea produselor ", error);

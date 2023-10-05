@@ -19,7 +19,7 @@ const cashRegisterSlice = createSlice({
     });
     builder.addCase(updateReceipe.fulfilled, (state, action) => {
       const index = state.findIndex(
-        (appointemnt) => appointemnt.nr === action.payload.nr
+        (appointemnt) => appointemnt.cod === action.payload.cod
       );
       if (index !== -1) {
         state[index] = action.payload;
@@ -27,7 +27,6 @@ const cashRegisterSlice = createSlice({
     });
   },
 });
-
 
 export const fetchAllReceipes = createAsyncThunk(
   "cashRegister/fetchAllReceipes",
@@ -59,64 +58,77 @@ export const addRceceipe = createAsyncThunk(
       );
       console.log(response.data.message);
 
-      if (response.data.response) {
-        const getEmployyeRespons = await axios.get(
-          `http://127.0.0.1:3001/api/nymphaea/employees/${receipe.codAngajat}`
-        );
-
-        if (Object.keys(getEmployyeRespons.data.response).length !== 0) {
-          const appointemntUpdate = {
-            programari: getEmployyeRespons.data.response.programari.filter(
-              (item) => item.nr !== receipe.codProgramare
-            ),
-          };
-
-          const updateEmployyeResponse = await axios.put(
-            `http://127.0.0.1:3001/api/nymphaea/employees/${receipe.codAngajat}`,
-            appointemntUpdate
-          );
-
-          if (updateEmployyeResponse.data.response !== 0) {
-            const getCustomerResponse = await axios.get(
-              `http://127.0.0.1:3001/api/nymphaea/customers/${receipe.codClient}`
-            );
-
-            if (Object.keys(getCustomerResponse.data.response).length !== 0) {
-              const customerUpdate = {
-                fise: [
-                  ...getCustomerResponse.data.response.fise,
-                  { ...receipe },
-                ],
-              };
-
-              const customerUpdateResponse = await axios.put(
-                `http://127.0.0.1:3001/api/nymphaea/customers/${receipe.codClient}`,
-                customerUpdate
-              );
-
-              if (customerUpdateResponse.data.response !== 0) {
-                const status = "Terminat";
-                const tip_update = `Modificare status: ${status}`;
-                const appUpdate = {
-                  status: status,
-                  tip_update: tip_update,
-                };
-
-                const response = await axios.put(
-                  `http://127.0.0.1:3001/api/nymphaea/appointments/${receipe.codProgramare}`,
-                  appUpdate
-                );
-                console.log(response.data.message);
-              }
-            }
-          }
-        }
+      if (response.data.response && receipe.codProgramare !== "") {
+        updateEmployee(receipe);
       }
 
       return receipe;
     } catch (error) {
       throw new Error(
-        "Eroare la adaugarea programarii " + receipe.nrBon,
+        "Eroare la adaugarea Programarii " + receipe.nrBon,
+        error
+      );
+    }
+  }
+);
+
+const updateEmployee = createAsyncThunk(
+  "employees/updateEmployees",
+  async (receipe) => {
+    try {
+      const getEmployyeRespons = await axios.get(
+        `http://127.0.0.1:3001/api/nymphaea/employees/${receipe.codAngajat}`
+      );
+
+      if (Object.keys(getEmployyeRespons.data.response).length !== 0) {
+        const appointemntUpdate = {
+          programari: getEmployyeRespons.data.response.programari.filter(
+            (item) => item.cod !== receipe.codProgramare
+          ),
+        };
+
+        const updateEmployyeResponse = await axios.put(
+          `http://127.0.0.1:3001/api/nymphaea/employees/${receipe.codAngajat}`,
+          appointemntUpdate
+        );
+
+        if (
+          updateEmployyeResponse.data.response !== 0 &&
+          receipe.codClient !== ""
+        ) {
+          updateCustomer(receipe);
+        }
+      }
+    } catch (error) {
+      throw new Error(
+        "Eroare la actualizarea Angajatului " + receipe.codAngajat,
+        error
+      );
+    }
+  }
+);
+
+const updateCustomer = createAsyncThunk(
+  "customers/updateCustomer",
+  async (receipe) => {
+    try {
+      const getCustomerResponse = await axios.get(
+        `http://127.0.0.1:3001/api/nymphaea/customers/${receipe.codClient}`
+      );
+
+      if (Object.keys(getCustomerResponse.data.response).length !== 0) {
+        const customerUpdate = {
+          fise: [...getCustomerResponse.data.response.fise, { ...receipe }],
+        };
+
+        await axios.put(
+          `http://127.0.0.1:3001/api/nymphaea/customers/${receipe.codClient}`,
+          customerUpdate
+        );
+      }
+    } catch (error) {
+      throw new Error(
+        "Eroare la actualizarea Clientului " + receipe.codClient,
         error
       );
     }
@@ -144,7 +156,7 @@ export const updateReceipe = createAsyncThunk(
 
         const appointemntUpdate = {
           programari: getEmployyeRespons.data.response.programari.filter(
-            (item) => item.nr !== appointment.cod
+            (item) => item.cod !== appointment.cod
           ),
         };
 

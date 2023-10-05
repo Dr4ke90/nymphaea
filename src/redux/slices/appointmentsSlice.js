@@ -19,7 +19,7 @@ const appointmentsSlice = createSlice({
     });
     builder.addCase(updateAppointment.fulfilled, (state, action) => {
       const index = state.findIndex(
-        (appointemnt) => appointemnt.nr === action.payload.nr
+        (appointemnt) => appointemnt.cod === action.payload.cod
       );
       if (index !== -1) {
         state[index] = action.payload;
@@ -115,7 +115,7 @@ export const updateAppointment = createAsyncThunk(
           );
 
           const updatedAppointments = getEmployeeResponse.data.response.programari.filter(
-            (item) => item.nr !== appointment.cod
+            (item) => item.cod !== appointment.cod
           );
 
           const appointmentUpdate = {

@@ -33,7 +33,7 @@ export default function CashRegister() {
       return {
         ...prevBon,
         incasat: input,
-        rest: input !== "" ? input - prevBon.totalDePlata : "",
+        rest: input !== "" ? (input - prevBon.totalDePlata).toFixed(2) : "",
       };
     });
   }, [input]);
@@ -71,6 +71,7 @@ export default function CashRegister() {
     dispatch(deleteReceipe(bonCurent));
     dispatch(updateInventoryRecursively(bonCurent));
     setInput("");
+    setBonCurrent({})
   };
 
   const handleChangeInputnIncasat = (e) => {
@@ -120,7 +121,7 @@ export default function CashRegister() {
                   const listOrder = [
                     "nr",
                     "cod",
-                    "tip",
+                    "descriere",
                     "cantitateUtilizata",
                     "pret",
                     "totalServiciu",

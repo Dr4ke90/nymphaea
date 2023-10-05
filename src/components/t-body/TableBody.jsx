@@ -31,14 +31,14 @@ const Tbody = ({
     setTableBody(reversedTableBody);
   }, [tbody]);
 
-  const handleSelectRow = (cod) => {
-    setSelectedRow(cod);
-    console.log(cod)
+  const handleSelectRow = (id) => {
+    setSelectedRow(id);
+    console.log(id)
   };
 
-  const handleContextMenu = (e, cod) => {
+  const handleContextMenu = (e, id) => {
     e.preventDefault();
-    setSelectedRow(cod);
+    setSelectedRow(id);
   };
 
   const [openFormAppointment, setOpenFormAppointment] = useState(false);
@@ -156,9 +156,9 @@ const Tbody = ({
             key={item._id ? item._id : index}
           >
             <tr
-              className={selectedRow === item.cod ? "selected" : ""}
-              onClick={() => handleSelectRow(item.cod)}
-              onContextMenu={(e) => handleContextMenu(e, item.cod)}
+              className={selectedRow === item._id ? "selected" : ""}
+              onClick={() => handleSelectRow(item._id)}
+              onContextMenu={(e) => handleContextMenu(e, item._id)}
             >
               {listOrder?.map((key) => {
                 if (

@@ -83,9 +83,9 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   useEffect(() => {
     if (appointment) {
-      setFoundedEmployee(true)
+      setFoundedEmployee(true);
     }
-  },[appointment]) 
+  }, [appointment]);
 
   const [openModalServicii, setOpenModalServicii] = useState(false);
   const handleOpenModalServicii = () => {
@@ -190,8 +190,6 @@ export default function ModalFisa({ closeModal, appointment }) {
       })
     );
     closeModal();
-
-    console.log(getHour())
   };
 
   const searchEmployee = (value) => {
