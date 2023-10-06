@@ -13,9 +13,6 @@ import {
 export default function FormEmployees({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
 
-  const date = new Date().toLocaleDateString("ro", "RO");
-  const ora = new Date().toLocaleTimeString("ro", "RO");
-
   const initialState = {
     cod: cod,
     nume: "",
@@ -25,10 +22,10 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
     data_nasterii: "",
     cnp: "",
     adresa: "",
-    data_creat: date,
-    ora_creat: ora,
-    data_update: date,
-    ora_update: ora,
+    data_creat: getDate(),
+    ora_creat: getHour(),
+    data_update: getDate(),
+    ora_update: getHour(),
     programari: [],
   };
 
@@ -36,7 +33,12 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
 
   useEffect(() => {
     if (item !== null) {
-      setNewAngajat(item);
+      setNewAngajat((prevEmployee) => {
+        return {
+          ...prevEmployee,
+          ...item,
+        };
+      });
     }
   }, [item]);
 

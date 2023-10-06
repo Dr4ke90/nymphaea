@@ -13,8 +13,6 @@ import { getDate } from "../../../utils/getDate";
 import { getHour } from "../../../utils/getHour";
 
 export default function FromCustomer({ closeModal, cod, item, setItem }) {
-  const date = new Date().toLocaleDateString("ro", "RO");
-  const ora = new Date().toLocaleTimeString("ro", "RO");
   const dispatch = useDispatch();
 
   const initialState = {
