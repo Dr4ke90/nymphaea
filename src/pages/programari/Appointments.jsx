@@ -66,10 +66,6 @@ export default function Appointments() {
   };
 
   const handleStartAppointment = (item) => {
-    const confirm = window.confirm(
-      `Incepi Programarea ${item.cod} - ${item.client} ??`
-    );
-    if (!confirm) return;
     const status = "In curs";
     const tip_update = `Modificare status: ${status}`;
     dispatch(
@@ -83,10 +79,6 @@ export default function Appointments() {
   };
 
   const handleCancelAppointment = (item) => {
-    const confirm = window.confirm(
-      `Esti sigur ca vrei sa anulezi Programarea ${item.cod} - ${item.client}`
-    );
-    if (!confirm) return;
     const status = "Anulat";
     const tip_update = `Modificare status: ${status}`;
     dispatch(
@@ -99,10 +91,6 @@ export default function Appointments() {
   };
 
   const handleFinishAppointment = (item) => {
-    const confirm = window.confirm(
-      `Ai terminat Programarea ${item.cod} - ${item.numeClient}??`
-    );
-    if (!confirm) return;
     setCurrentAppointment(item);
 
     toggleModalFisa();
