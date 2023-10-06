@@ -54,7 +54,7 @@ export default function ModalProduseDeBaza({
   };
 
   const handleCheckboxChange = (product) => {
-    const { cod } = product;
+    const { cod, stocInGr } = product;
 
     setService((prevService) => {
       const { produseDeBaza } = prevService;
@@ -69,12 +69,12 @@ export default function ModalProduseDeBaza({
 
         return { ...prevService, produseDeBaza: updatedProducts };
       } else {
-        // Dacă produsul nu există în listă, adaugă-l cu proprietatea valoare setată la 0
         const newProduct = {
           nr: produseDeBaza.length + 1,
           cod,
+          stocInGr,
           cantitate: 0,
-          valoare: 0, // Adaugă proprietatea valoare cu valoarea implicită 0
+          valoare: 0,
         };
 
         return {
@@ -130,7 +130,7 @@ export default function ModalProduseDeBaza({
   };
 
   const getProductValue = (product) => {
-    const prod = service.produseDeBaza.find((p) => p.cod === product.cod);
+    const prod = service.produseDeBaza?.find((p) => p.cod === product.cod);
 
     if (prod) {
       return prod.valoare;
@@ -153,7 +153,7 @@ export default function ModalProduseDeBaza({
                       <Input
                         type="checkbox"
                         name={product.cod}
-                        checked={service.produseDeBaza.some(
+                        checked={service.produseDeBaza?.some(
                           (p) => p.cod === product.cod
                         )}
                         onChange={() => handleCheckboxChange(product)}
@@ -166,36 +166,31 @@ export default function ModalProduseDeBaza({
                             {value}
                           </td>
                         );
-                      } else if (key === "stoc") {
-                        return (
-                          <td key={key}>
-                            <Input
-                              type="text"
-                              name="cantitate"
-                              className="small"
-                              value={getCantitate(product)}
-                              onChange={(e) =>
-                                handleChangeCantitate(e, product)
-                              }
-                              autoComplete="off"
-                              disabled={
-                                !service.produseDeBaza.some(
-                                  (p) => p.cod === product.cod
-                                )
-                              }
-                            />
-                          </td>
-                        );
                       } else {
                         return null;
                       }
                     })}
+                    <td key={"cantitate"}>
+                      <Input
+                        type="text"
+                        name="cantitate"
+                        className="small"
+                        defaultValue={getCantitate(product)}
+                        onChange={(e) => handleChangeCantitate(e, product)}
+                        autoComplete="off"
+                        disabled={
+                          !service.produseDeBaza?.some(
+                            (p) => p.cod === product.cod
+                          )
+                        }
+                      />
+                    </td>
                     <td key={"valoare"}>
                       <Input
                         type="text"
                         name="valoare"
                         className="small"
-                        value={getProductValue(product)}
+                        defaultValue={getProductValue(product)}
                         autoComplete="off"
                         disabled
                       />
@@ -208,7 +203,15 @@ export default function ModalProduseDeBaza({
         </div>
         <div className="total">Total : {totalProdDebaza} lei</div>
         <div className="buttons-wrapper">
-          <Button variant="contained" color="info" onClick={closeModal}>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={closeModal}
+            disabled={
+              service.produseDeBaza.length !== 0 &&
+              !service.produseDeBaza.every((produs) => produs.cantitate > 0)
+            }
+          >
             Close
           </Button>
         </div>

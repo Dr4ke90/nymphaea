@@ -52,7 +52,6 @@ export default function ModalFisa({ closeModal, appointment }) {
         return "F" + paddedNr;
       }
     }
-
     return "";
   };
 
@@ -108,7 +107,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   const handleChangeCantitate = (event, index) => {
     const { value } = event.target;
     const updatedServicii = [...dateFisa.produse];
-    updatedServicii[index].cantitateUtilizata = value;
+    updatedServicii[index].cantitate = value;
     setDateFisa({
       ...dateFisa,
       produse: updatedServicii,
@@ -124,7 +123,7 @@ export default function ModalFisa({ closeModal, appointment }) {
           (acc, produs) => {
             const pret = parseFloat(produs.pret);
             const gramaj = parseInt(produs.gramaj);
-            const cantitate = parseFloat(produs.cantitateUtilizata);
+            const cantitate = parseFloat(produs.cantitate);
 
             if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
               const totalProdus = (pret / gramaj) * cantitate;
@@ -137,11 +136,10 @@ export default function ModalFisa({ closeModal, appointment }) {
         );
 
         serviciu.totalServiciu =
-          (parseFloat(serviciu.pret) + totalProduseExtra) *
-          serviciu.cantitateUtilizata;
+          (parseFloat(serviciu.pret) + totalProduseExtra) * serviciu.cantitate;
       } else {
         serviciu.totalServiciu =
-          parseFloat(serviciu.pret) * parseInt(serviciu.cantitateUtilizata);
+          parseFloat(serviciu.pret) * parseInt(serviciu.cantitate);
       }
       return serviciu;
     });
@@ -232,7 +230,7 @@ export default function ModalFisa({ closeModal, appointment }) {
                   key={key}
                   type="text"
                   disabled={appointment || key !== "codAngajat"}
-                  placeHolder={key}
+                  placeholder={key}
                   value={dateFisa[key]}
                   name={key}
                   onChange={handleChangeAngajat}
@@ -278,7 +276,7 @@ export default function ModalFisa({ closeModal, appointment }) {
                       <td key={"input"}>
                         <Input
                           type="text"
-                          name="cantitateUtilizata"
+                          name="cantitate"
                           className="small"
                           onChange={(e) => handleChangeCantitate(e, index)}
                           autoComplete="off"
@@ -296,7 +294,7 @@ export default function ModalFisa({ closeModal, appointment }) {
                             justifyContent: "space-around",
                           }}
                         >
-                          {service.produseExtra && (
+                          {service.cod.startsWith("S") && (
                             <FaSlidersH
                               size={21}
                               style={{ cursor: "pointer" }}
@@ -331,8 +329,7 @@ export default function ModalFisa({ closeModal, appointment }) {
               dateFisa.produse.length === 0 ||
               !dateFisa.produse.every(
                 (produs) =>
-                  produs.hasOwnProperty("cantitateUtilizata") &&
-                  produs.cantitateUtilizata !== ""
+                  produs.hasOwnProperty("cantitate") && produs.cantitate !== ""
               )
             }
           >

@@ -13,7 +13,7 @@ export default function ModalProduseExtra({
   setDateFisa,
   dateFisa,
 }) {
-  const thead = ["#", "cod", "descriere", "cantitate"];
+  const thead = ["#", "cod", "descriere", "stocInGr", "cantitate", "valoare"];
   const stocuri = useSelector((state) => state.stocuri);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -46,18 +46,6 @@ export default function ModalProduseExtra({
   };
 
   const handleCheckboxChange = (product) => {
-    const productIndex = service.produseExtra.findIndex(
-      (p) => p.cod === product.cod
-    );
-
-    const updateProduseExtra = [...service.produseExtra];
-
-    if (productIndex !== -1) {
-      updateProduseExtra.splice(productIndex, 1);
-    } else {
-      updateProduseExtra.push(product);
-    }
-
     setDateFisa((prevDateFisa) => {
       const { produse } = prevDateFisa;
 
@@ -65,9 +53,36 @@ export default function ModalProduseExtra({
         (serv) => serv.cod === service.cod
       );
 
+      if (!service.produseExtra) {
+        service.produseExtra = [];
+      }
+
+      const productIndex = service.produseExtra.findIndex(
+        (p) => p.cod === product.cod
+      );
+
+      const updateProduseExtra = [...service.produseExtra];
+
+      if (productIndex !== -1) {
+        updateProduseExtra.splice(productIndex, 1);
+      } else {
+        const { cod, gramaj, stocInGr, pret } = product;
+        const newProduct = {
+          cod,
+          gramaj,
+          stocInGr,
+          pret,
+          cantitate: "",
+          valoare: 0,
+        };
+        updateProduseExtra.push(newProduct);
+        console.log(newProduct);
+      }
+
+      service.produseExtra = updateProduseExtra;
+
       if (serviceIndex !== -1) {
         produse[serviceIndex].produseExtra = updateProduseExtra;
-
         return { ...prevDateFisa, produse: [...produse] };
       } else {
         return { ...prevDateFisa };
@@ -78,6 +93,7 @@ export default function ModalProduseExtra({
   const handleChangeCantiate = (e, product) => {
     e.preventDefault();
     const { value } = e.target;
+    const parsedValue = value !== "" ? parseFloat(value) : 0;
 
     setDateFisa((prevDateFisa) => {
       const { produse } = prevDateFisa;
@@ -92,7 +108,11 @@ export default function ModalProduseExtra({
           if (p.cod === product.cod) {
             return {
               ...p,
-              cantitateUtilizata: value,
+              cantitate: parsedValue,
+              valoare: (
+                (product.pret / product.gramaj) *
+                parseFloat(parsedValue)
+              ).toFixed(2),
             };
           } else {
             return p;
@@ -107,25 +127,35 @@ export default function ModalProduseExtra({
   };
 
   const handleClassName = (key) => {
-    if (key !== "tip") {
+    if (key !== "descriere") {
       return "small";
     }
   };
 
   const getCantitate = (product) => {
-    const serv = dateFisa.produse.find((s) => s.cod === service.cod);
-    if (serv.produseExtra.length !== 0) {
+    const serv = dateFisa.produse?.find((s) => s.cod === service.cod);
+    if (serv.produseExtra && serv.produseExtra.length !== 0) {
       const prod = serv.produseExtra.find((p) => p.cod === product.cod);
 
       if (
         prod &&
         typeof prod === "object" &&
-        prod.hasOwnProperty("cantitateUtilizata")
+        prod.hasOwnProperty("cantitate")
       ) {
-        return prod.cantitateUtilizata;
+        return prod.cantitate;
       }
     }
     return "";
+  };
+
+  const getProductValue = (product) => {
+    const prod = service.produseExtra?.find((p) => p.cod === product.cod);
+
+    if (prod) {
+      return prod.valoare;
+    } else {
+      return;
+    }
   };
 
   return (
@@ -142,41 +172,53 @@ export default function ModalProduseExtra({
                       <Input
                         type="checkbox"
                         name={product.cod}
-                        checked={service.produseExtra.some(
+                        checked={service.produseExtra?.some(
                           (p) => p.cod === product.cod
                         )}
                         onChange={() => handleCheckboxChange(product)}
                       />
                     </td>
                     {Object.entries(product).map(([key, value]) => {
-                      if (key === "cod" || key === "descriere") {
+                      if (
+                        key === "cod" ||
+                        key === "descriere" ||
+                        key === "valoare" ||
+                        key === "stocInGr"
+                      ) {
                         return (
                           <td key={key} className={handleClassName(key)}>
                             {value}
-                          </td>
-                        );
-                      } else if (key === "stoc") {
-                        return (
-                          <td key={"cantitate"}>
-                            <Input
-                              type="text"
-                              name="cantitate"
-                              className="small"
-                              value={getCantitate(product)}
-                              onChange={(e) => handleChangeCantiate(e, product)}
-                              autoComplete="off"
-                              disabled={
-                                !service.produseExtra.some(
-                                  (p) => p.cod === product.cod
-                                )
-                              }
-                            />
                           </td>
                         );
                       } else {
                         return null;
                       }
                     })}
+                    <td key={"cantitate"}>
+                      <Input
+                        type="text"
+                        name="cantitate"
+                        className="small"
+                        defaultValue={getCantitate(product)}
+                        onChange={(e) => handleChangeCantiate(e, product)}
+                        autoComplete="off"
+                        disabled={
+                          !service.produseExtra?.some(
+                            (p) => p.cod === product.cod
+                          )
+                        }
+                      />
+                    </td>
+                    <td key={"valoare"}>
+                      <Input
+                        type="text"
+                        name="valoare"
+                        className="small"
+                        defaultValue={getProductValue(product)}
+                        autoComplete="off"
+                        disabled
+                      />
+                    </td>
                   </tr>
                 );
               })}
@@ -189,11 +231,11 @@ export default function ModalProduseExtra({
             color="info"
             onClick={closeModal}
             disabled={
+              service.produseExtra &&
               service.produseExtra.length !== 0 &&
               !service.produseExtra.every(
                 (produs) =>
-                  produs.hasOwnProperty("cantitateUtilizata") &&
-                  produs.cantitateUtilizata !== ""
+                  produs.hasOwnProperty("cantitate") && produs.cantitate !== ""
               )
             }
           >

@@ -130,7 +130,6 @@ export const updateInventoryRecursively = createAsyncThunk(
 
           if (productInSale.produseExtra) {
             for (const itemFromProduseExtra of productInSale.produseExtra) {
-              console.log("itemFromProduseExtra");
               await updateInventoryItem(
                 itemFromProduseExtra.cod,
                 itemFromProduseExtra.cantitateUtilizata / 100,
@@ -140,7 +139,6 @@ export const updateInventoryRecursively = createAsyncThunk(
           }
 
           if (productInSale.cod.startsWith("P")) {
-            console.log("productInSale");
             await updateInventoryItem(
               productInSale.cod,
               productInSale.cantitateUtilizata,

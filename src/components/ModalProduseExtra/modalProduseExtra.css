@@ -14,13 +14,13 @@
   .modal-produseExtra-overlay .modal-produseExtra-content {
     background-color: white;
     height: 300px;
-    width: 375px;
+    width: 550px;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     position: relative;
-    left: 250px;
+    left: 100px;
     top: 30px;
   }
   

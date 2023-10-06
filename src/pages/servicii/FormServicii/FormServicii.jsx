@@ -7,30 +7,32 @@ import "./formServicii.css";
 import { useDispatch } from "react-redux";
 import { addService, updateService } from "../../../redux/slices/servicesSlice";
 import ModalProduseDeBaza from "../../../components/ModalProduseBaza/ModalProduseDeBaza";
+import { getDate } from "../../../utils/getDate";
+import { getHour } from "../../../utils/getHour";
 
 export default function FormServicii({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
-  const date = new Date().toLocaleDateString("ro", "RO");
-  const ora = new Date().toLocaleTimeString("ro", "RO");
 
   const initialState = {
     cod: cod,
     departament: "",
     descriere: "",
     pret: "",
-    data_creat: date,
-    ora_creat: ora,
-    data_update: date,
-    ora_update: ora,
+    data_creat: getDate(),
+    ora_creat: getHour(),
+    data_update: getDate(),
+    ora_update: getHour(),
     produseDeBaza: [],
-    produseExtra: []
+    produseExtra: [],
   };
 
   const [newService, setNewService] = useState(initialState);
 
   useEffect(() => {
     if (item !== null) {
-      setNewService(item);
+      setNewService((prevService) => {
+        return { ...prevService, ...item };
+      });
     }
   }, [item]);
 
