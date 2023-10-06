@@ -9,6 +9,8 @@ import {
   addCustomer,
   updateCustomer,
 } from "../../../redux/slices/customersSlice";
+import { getDate } from "../../../utils/getDate";
+import { getHour } from "../../../utils/getHour";
 
 export default function FromCustomer({ closeModal, cod, item, setItem }) {
   const date = new Date().toLocaleDateString("ro", "RO");
@@ -21,10 +23,10 @@ export default function FromCustomer({ closeModal, cod, item, setItem }) {
     prenume: "",
     telefon: "",
     nascut: "",
-    data_creat: date,
-    ora_creat: ora,
-    data_update: date,
-    ora_update: ora,
+    data_creat: getDate(),
+    ora_creat: getHour(),
+    data_update: getDate(),
+    ora_update: getHour(),
     fise: [],
   };
 
@@ -32,7 +34,12 @@ export default function FromCustomer({ closeModal, cod, item, setItem }) {
 
   useEffect(() => {
     if (item !== null) {
-      setNewClient(item);
+      setNewClient((prevclient) => {
+        return {
+          ...prevclient,
+          ...item,
+        };
+      });
     }
   }, [item]);
 
