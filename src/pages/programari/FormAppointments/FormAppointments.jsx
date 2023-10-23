@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../../redux/slices/customersSlice";
 import FromCustomer from "../../clienti/FormClienti/FormCustomer";
 import { fetchAllEmployees } from "../../../redux/slices/employeesSlice";
+import { getDate } from "../../../utils/getDate";
+import { getHour } from "../../../utils/getHour";
 
 export default function FormAppointment({ closeModal, cod, item, setItem }) {
   const dispatch = useDispatch();
@@ -26,9 +28,19 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     ora: "",
     timp: "",
     client: "",
+    descriere: "",
     angajat: "",
   };
   const [newAppointment, setNewAppointment] = useState(initialState);
+
+  function getRandomColor() {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
   let code = 0;
   const nr = clienti.length + 1;
@@ -46,48 +58,55 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     }
   }, [item]);
 
-  const findClientByCode = (code) => clienti.find((client) => client.cod.toUpperCase() === code.toUpperCase());
-const findClientByName = (name) => clienti.find((client) => `${client.nume} ${client.prenume}`.toLowerCase() === name.toLowerCase());
-const findEmployeeByCode = (code) => angajati.find((angajat) => angajat.cod === code);
+  const findClientByCode = (code) =>
+    clienti.find((client) => client.cod.toUpperCase() === code.toUpperCase());
+  const findClientByName = (name) =>
+    clienti.find(
+      (client) =>
+        `${client.nume} ${client.prenume}`.toLowerCase() === name.toLowerCase()
+    );
+  const findEmployeeByCode = (code) =>
+    angajati.find((angajat) => angajat.cod === code);
 
-const handleClientChange = (name, value) => {
-  const uppercasedValue = value.toUpperCase();
-  const client = value.startsWith("c") || value.startsWith("C")
-    ? findClientByCode(uppercasedValue)
-    : findClientByName(value);
+  const handleClientChange = (name, value) => {
+    const uppercasedValue = value.toUpperCase();
+    const client =
+      value.startsWith("c") || value.startsWith("C")
+        ? findClientByCode(uppercasedValue)
+        : findClientByName(value);
 
-  const numeClient = client ? `${client.nume} ${client.prenume}` : value;
-  setShowCreateClientButton(!client);
-  return numeClient;
-};
+    const numeClient = client ? `${client.nume} ${client.prenume}` : value;
+    setShowCreateClientButton(!client);
+    return numeClient;
+  };
 
-const handleEmployeeChange = (name, value) => {
-  const angajat = findEmployeeByCode(value);
-  setShowEmployeeError(!angajat);
-  return angajat ? `${angajat.nume} ${angajat.prenume}` : value;
-};
+  const handleEmployeeChange = (name, value) => {
+    const angajat = findEmployeeByCode(value);
+    setShowEmployeeError(!angajat);
+    return angajat ? `${angajat.nume} ${angajat.prenume}` : value;
+  };
 
-const handleChange = (e) => {
-  e.preventDefault();
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
 
-  let updatedValue;
-  if (name === "client") {
-    updatedValue = handleClientChange(name, value);
-  } else if (name === "angajat") {
-    updatedValue = handleEmployeeChange(name, value);
-  } else {
-    updatedValue = value;
-  }
+    let updatedValue;
+    if (name === "client") {
+      updatedValue = handleClientChange(name, value);
+    } else if (name === "angajat") {
+      updatedValue = handleEmployeeChange(name, value);
+    } else {
+      updatedValue = value;
+    }
 
-  setNewAppointment({
-    ...newAppointment,
-    [name]: value,
-    numeClient: name === "client" ? updatedValue : newAppointment.numeClient,
-    numeAngajat: name === "angajat" ? updatedValue : newAppointment.numeAngajat,
-  });
-};
-
+    setNewAppointment({
+      ...newAppointment,
+      [name]: value,
+      numeClient: name === "client" ? updatedValue : newAppointment.numeClient,
+      numeAngajat:
+        name === "angajat" ? updatedValue : newAppointment.numeAngajat,
+    });
+  };
 
   const handleCloseModal = () => {
     setNewAppointment(initialState);
@@ -104,6 +123,7 @@ const handleChange = (e) => {
       addAppointment({
         ...newAppointment,
         status: "Activ",
+        color: getRandomColor(),
       })
     );
     setNewAppointment(initialState);
@@ -112,12 +132,16 @@ const handleChange = (e) => {
 
   const handleUpdateAppointment = (e) => {
     e.preventDefault();
+    const data_update = getDate();
+    const ora_update = getHour();
     let newApp = {};
     if (newAppointment.status === "Anulat") {
       newApp = {
         ...newAppointment,
         status: "Activ",
         tip_update: "Modificare status: Reprogramare",
+        data_update,
+        ora_update,
       };
     }
 
@@ -125,8 +149,12 @@ const handleChange = (e) => {
       newApp = {
         ...newAppointment,
         tip_update: "Modificare date",
+        data_update,
+        ora_update,
       };
     }
+
+    delete newApp._id;
     handleCloseModal();
     dispatch(updateAppointment(newApp));
   };
@@ -173,7 +201,7 @@ const handleChange = (e) => {
       <PagePreview className="modal-content">
         <Form className="new-appointment-form">
           {Object.keys(initialState).map((key) => {
-            if (key !== "status") {
+            if (key !== "status" && key !== "color") {
               return (
                 <div key={key} className="input-wrapper">
                   <Input
@@ -244,9 +272,13 @@ const handleChange = (e) => {
               onClick={
                 item !== null ? handleUpdateAppointment : handleAdaugaProgramare
               }
-              disabled={Object.values(newAppointment).some(
-                (value) => typeof value === "string" && value.trim() === ""
-              ) || newAppointment.status === "Terminat" || showEmployeeError}
+              disabled={
+                Object.values(newAppointment).some(
+                  (value) => typeof value === "string" && value.trim() === ""
+                ) ||
+                newAppointment.status === "Terminat" ||
+                showEmployeeError
+              }
             >
               {item !== null ? "Update" : "Adauga"}
             </Button>

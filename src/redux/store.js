@@ -7,6 +7,7 @@ import appointmentsSlice from './slices/appointmentsSlice';
 import invoicesSlice from './slices/invoicesSlice';
 import cashRegisterSlice from './slices/cashRegisterSlice';
 import salesSlice from './slices/salesSlice';
+import echipamentSlice from './slices/echipamentSlice';
 
 
 
@@ -19,7 +20,8 @@ const store = configureStore({
      programari: appointmentsSlice,
      facturi:invoicesSlice,
      casa: cashRegisterSlice,
-     incasari: salesSlice
+     incasari: salesSlice,
+     echipament: echipamentSlice
     },
   });
   

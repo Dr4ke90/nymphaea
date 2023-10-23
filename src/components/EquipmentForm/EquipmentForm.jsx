@@ -2,47 +2,47 @@ import React, { useEffect, useState } from "react";
 import PagePreview from "../PagePreview/PagePreview";
 import Form from "../Formular/Form";
 import Input from "../Input/Input";
-import "./productsInvoiceForm.css";
+import "./equipmentForm.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllInventory } from "../../redux/slices/inventorySlice";
+import { fetchAllEquipment } from "../../redux/slices/echipamentSlice";
 
-export default function ProductsInvoiceForm({
-  stateProdus,
-  setStateProdus,
-  setCodProdus,
-  handleChangeProdus,
+
+export default function EquipmentForm({
+  stateEquipment,
+  setStateEquipment,
+  setCodEquip,
+  handleChangeEquipment
 }) {
-  const inventory = useSelector((state) => state.stocuri);
+  const equipment = useSelector((state) => state.echipament);
   const [activateInputs, setActivateInputs] = useState(true);
 
-  const inputsOrder = [
-    "descriere",
+
+  useEffect(() => {
+    if (stateEquipment.model === "") {
+      setActivateInputs(true);
+    }
+  },[stateEquipment.model]);
+
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAllEquipment());
+  }, [dispatch]);
+
+  const equipmentInputsOrder = [
+    "model",
     "stoc",
     "cod",
-    "categorie",
-    "brand",
-    "gramaj",
+    "descriere",
     "pretFaraTva",
     "pretAchizitie",
   ];
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchAllInventory());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (stateProdus.descriere === "") {
-      setActivateInputs(true);
-    }
-  }, [stateProdus.descriere]);
 
   const handlePlaceHolder = (key) => {
     let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
 
     if (key === "stoc") placeholder = "Cantitate";
-
-    if (key === "gramaj") placeholder = "Gramaj / BUC";
 
     if (key === "pretFaraTva") placeholder = "Pret fara TVA";
 
@@ -54,31 +54,29 @@ export default function ProductsInvoiceForm({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (stateProdus.descriere !== "") {
+    if (stateEquipment.model !== "") {
       setActivateInputs(false);
     }
 
-    const findedProduct = inventory.find(
+    const findedProduct = equipment.find(
       (item) =>
-        item.descriere.toLowerCase() === stateProdus.descriere.toLowerCase()
+        item.model.toLowerCase() === stateEquipment.model.toLowerCase()
     );
 
     if (findedProduct) {
-      setStateProdus(findedProduct);
+      setStateEquipment(findedProduct);
     } else {
-      setStateProdus({
-        ...stateProdus,
-        cod: stateProdus.descriere !== "" ? setCodProdus() : "",
+      setStateEquipment({
+        ...stateEquipment,
+        cod: stateEquipment.model !== "" ? setCodEquip() : "",
       });
     }
   };
 
-
-
   return (
     <PagePreview className="form-produse">
       <Form>
-        {inputsOrder.map((keyName) => {
+        {equipmentInputsOrder.map((keyName) => {
           return (
             <Input
               className="input"
@@ -87,10 +85,10 @@ export default function ProductsInvoiceForm({
               type="text"
               name={keyName}
               placeholder={handlePlaceHolder(keyName)}
-              onChange={handleChangeProdus}
-              value={stateProdus[keyName]}
+              onChange={handleChangeEquipment}
+              value={stateEquipment[keyName]}
               disabled={
-                (keyName !== "descriere" &&
+                (keyName !== "model" &&
                   (activateInputs || keyName === "cod")) ||
                 keyName === "cod"
               }

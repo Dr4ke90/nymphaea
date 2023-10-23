@@ -28,6 +28,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
+
   const getCodFisa = () => {
     if (clienti.length === 0 || !appointment) return "";
 
@@ -333,7 +334,7 @@ export default function ModalFisa({ closeModal, appointment }) {
               )
             }
           >
-            Trimite catre casa
+            Inregistreaza
           </Button>
           <Button variant="contained" color="info" onClick={closeModal}>
             Close

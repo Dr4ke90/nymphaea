@@ -42,62 +42,69 @@ export const fetchAllInvoices = createAsyncThunk(
   }
 );
 
+
+
 export const addInvoice = createAsyncThunk(
-  "services/addInvoice",
+  'services/addInvoice',
   async (invoice) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:3001/api/nymphaea/invoices",
+        'http://127.0.0.1:3001/api/nymphaea/invoices',
         invoice
       );
       console.log(response.data.message);
 
-      if (
-        Object.keys(response.data.response).length !== 0 &&
-        invoice.tip === "Produse"
-      ) {
-        await Promise.all(
-          invoice.produse.map(async (produs) => {
-            delete produs.nr;
-            delete produs.total;
-            delete produs._id;
+      if (invoice.tip === 'Inventar') {
+        const updateOrCreateItem = async (item, endpoint) => {
 
-            console.log(produs)
+          delete item.nr;
+          delete item.total;
+          delete item._id;
 
-            const inventoryResponse = await axios.get(
-              `http://127.0.0.1:3001/api/nymphaea/inventory/${produs.cod}`
-            );
+          try {
+            const inventoryResponse = await axios.get(`${endpoint}/${item.cod}`);
 
             if (Object.keys(inventoryResponse.data.response).length !== 0) {
-              const existingProduct = inventoryResponse.data.response;
-              const updatedProduct = {
-                ...produs,
-                stoc: parseInt(existingProduct.stoc) + parseInt(produs.stoc)
-               };
+              const existingItem = inventoryResponse.data.response;
+              const updatedItem = {
+                ...item,
+                stoc: parseInt(existingItem.stoc) + parseInt(item.stoc),
+                referintaFactura: [...existingItem.referintaFactura, ...item.referintaFactura]
+              };
 
-              const updateResponse = await axios.put(
-                `http://127.0.0.1:3001/api/nymphaea/inventory/${existingProduct.cod}`,
-                updatedProduct
-              );
-
+              const updateResponse = await axios.put(`${endpoint}/${item.cod}`, updatedItem);
               console.log(updateResponse.data.message);
             } else {
-              const addResponse = await axios.post(
-                `http://127.0.0.1:3001/api/nymphaea/inventory`,
-                produs
-              );
-
+              const addResponse = await axios.post(endpoint, item);
               console.log(addResponse.data.message);
             }
-          })
-        );
+          } catch (error) {
+            console.error('Eroare la adăugarea produsului/echipamentului:', error);
+            throw new Error('Eroare la adăugarea produsului/echipamentului: ' + error);
+          }
+        };
+
+        for (const product of invoice.produse) {
+          const { nr, total, _id, ...productData } = product;
+          const endpoint = `http://127.0.0.1:3001/api/nymphaea/inventory`;
+          await updateOrCreateItem(productData, endpoint);
+        }
+
+        for (const equipment of invoice.echipament) {
+          const { nr, total, _id, ...equipmentData } = equipment;
+          const endpoint = `http://127.0.0.1:3001/api/nymphaea/equipment`;
+          await updateOrCreateItem(equipmentData, endpoint);
+        }
       }
+
       return invoice;
     } catch (error) {
-      throw new Error("Eroare la adaugarea Facturii" + invoice.cod, error);
+      console.error('Eroare la adăugarea Facturii ' + invoice.cod, error);
+      throw new Error('Eroare la adăugarea Facturii ' + invoice.cod + ': ' + error);
     }
   }
 );
+
 
 export const deleteInvoice = createAsyncThunk(
   "services/deleteInvoice",

@@ -1,0 +1,11 @@
+select {
+    text-align: center;
+    width: 280px;
+    padding: 5px;
+    margin-left: 10px;
+  }
+
+
+  select .option {
+    text-align: center;
+  }

@@ -12,6 +12,7 @@ import Sales from "./pages/incasari/Sales";
 import Invoices from "./pages/facturi/Invoices";
 import CashRegister from "./pages/casa/CashRegister";
 import Dashboard from "./pages/dashboard/Dashboard";
+import Echipament from "./pages/echipament/Echipament";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/casa" element={<CashRegister />}></Route>
             <Route path="/" element={<Dashboard />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/echipament" element={<Echipament />}></Route>
           </Routes>
         </PagePreview>
       </div>

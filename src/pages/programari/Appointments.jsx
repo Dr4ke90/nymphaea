@@ -1,29 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import TableDisplay from "../../components/table-display/TableDisplay";
-import { Button } from "@mui/material";
 import "./appointments.css";
 import FormAppointment from "./FormAppointments/FormAppointments";
 import {
   fetchAllAppointments,
   updateAppointment,
 } from "../../redux/slices/appointmentsSlice";
-import PagePreview from "../../components/PagePreview/PagePreview";
-import ModalFisa from "../../components/ModalFisa/ModalFisa";
+import { Button } from "@mui/material";
+import BigCalendar from "../../components/Calendar/Calendar";
+import { getDate } from "../../utils/getDate";
 import { getHour } from "../../utils/getHour";
+import ModalFisa from "../../components/ModalFisa/ModalFisa";
 
 export default function Appointments() {
-  const thead = [
-    "cod",
-    "data",
-    "ora",
-    "timp",
-    "numeClient",
-    "numeAngajat",
-    "status",
-    "#",
-  ];
   const location = useLocation();
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
@@ -32,24 +22,16 @@ export default function Appointments() {
   const [modalFisa, setModalFisa] = useState(false);
   const [receivedAppointemnt, setReceivedAppointemnt] = useState(null);
   const appointments = useSelector((state) => state.programari);
-  const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [currentAppointment, setCurrentAppointment] = useState({});
-
+  const [currentAppointment, setCurrentAppointment] = useState({})
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllAppointments());
   }, [dispatch]);
 
-  useEffect(() => {
-    setFilteredAppointments(
-      appointments.filter((item) => item.status === "Activ")
-    );
-  }, [appointments]);
-
   let code = 0;
   const cod = appointments.length + 1;
-  const paddedNr = cod.toString().padStart(3, "0");
+  const paddedNr = cod.toString().padStart(5, "0");
   code = "A" + paddedNr;
 
   const toggleModal = () => {
@@ -65,58 +47,41 @@ export default function Appointments() {
     setModal(true);
   };
 
-  const handleStartAppointment = (item) => {
-    const status = "In curs";
-    const tip_update = `Modificare status: ${status}`;
-    dispatch(
-      updateAppointment({
-        ...item,
-        status: status,
-        tip_update: tip_update,
-        inceput: getHour(),
-      })
-    );
-  };
-
   const handleCancelAppointment = (item) => {
     const status = "Anulat";
     const tip_update = `Modificare status: ${status}`;
-    dispatch(
-      updateAppointment({
-        ...item,
-        status: status,
-        tip_update: tip_update,
-      })
-    );
+    const data_update = getDate();
+    const ora_update = getHour();
+
+    const newApp = {
+      ...item,
+      status: status,
+      tip_update,
+      data_update,
+      ora_update,
+    };
+
+    delete newApp._id;
+    dispatch(updateAppointment(newApp));
   };
 
   const handleFinishAppointment = (item) => {
-    setCurrentAppointment(item);
+    const data_update = getDate();
+    const ora_update = getHour();
+    const status = "Terminat";
+    const tip_update = `Modificare status: ${status}`;
 
-    toggleModalFisa();
-    
-  };
+    const newApp = {
+      ...item,
+      status: status,
+      tip_update,
+      data_update,
+      ora_update,
+    };
 
-  const handleFilterAll = () => {
-    setFilteredAppointments(appointments);
-  };
+    delete newApp._id;
 
-  const handleFilterActive = () => {
-    setFilteredAppointments(
-      appointments.filter((item) => item.status === "Activ")
-    );
-  };
-
-  const handleFilterInCurs = () => {
-    setFilteredAppointments(
-      appointments.filter((item) => item.status === "In curs")
-    );
-  };
-
-  const handleFilterCancel = () => {
-    setFilteredAppointments(
-      appointments.filter((item) => item.status === "Anulat")
-    );
+    dispatch(updateAppointment(newApp));
   };
 
   return (
@@ -127,21 +92,15 @@ export default function Appointments() {
         </Button>
 
         <h2>{title}</h2>
-        <PagePreview className="buttons-wrapper">
-          <Button variant="outlined" onClick={handleFilterActive}>
-            Active
-          </Button>
-          <Button variant="outlined" onClick={handleFilterInCurs}>
-            In curs
-          </Button>
-          <Button variant="outlined" onClick={handleFilterCancel}>
-            Anulate
-          </Button>
-          <Button variant="outlined" onClick={handleFilterAll}>
-            Toate
-          </Button>
-        </PagePreview>
       </div>
+      <BigCalendar
+        appointments={appointments}
+        edit={handleEditAppointment}
+        cancel={handleCancelAppointment}
+        finish={handleFinishAppointment}
+        toggleModalFisa={toggleModalFisa}
+        setCurrentAppointment={setCurrentAppointment}
+      />
       {modal && (
         <FormAppointment
           closeModal={toggleModal}
@@ -150,17 +109,8 @@ export default function Appointments() {
           setItem={setReceivedAppointemnt}
         />
       )}
-      <TableDisplay
-        thead={thead}
-        tbody={filteredAppointments}
-        editItem={handleEditAppointment}
-        cancel={handleCancelAppointment}
-        finish={handleFinishAppointment}
-        start={handleStartAppointment}
-        listOrder={thead}
-      />
 
-      {modalFisa && (
+      {modalFisa && currentAppointment.status === "Activ" && (
         <ModalFisa
           closeModal={toggleModalFisa}
           appointment={currentAppointment}

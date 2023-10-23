@@ -1,7 +1,8 @@
 import React from "react";
 import Form from "../Formular/Form";
+import "./typeModal.css"
 
-export default function TypeModal({ initial, optionsList, stateFactura, setDateFactura }) {
+export default function TypeModal({ initial, optionsList, dateFactura, setDateFactura }) {
   const handleChangeTip = (e) => {
     const selectedVal = e.target.value;
     const newFacturaData = {
@@ -18,7 +19,7 @@ export default function TypeModal({ initial, optionsList, stateFactura, setDateF
 
   return (
     <Form className="type-modal">
-      {Object.keys(stateFactura).map((key) => {
+      {Object.keys(dateFactura).map((key) => {
         if (key === "tip") {
           return (
             <select
@@ -26,12 +27,12 @@ export default function TypeModal({ initial, optionsList, stateFactura, setDateF
               id={key}
               name={key}
               onChange={handleChangeTip}
-              value={stateFactura.tip}
+              value={dateFactura.tip}
             >
               <option value="">Setelcteaza tip</option>
               {optionsList.map((option) => {
                 return (
-                  <option key={option} value={option}>
+                  <option key={option}  className="option" value={option}>
                     {option.charAt(0).toUpperCase() + option.slice(1)}
                   </option>
                 );

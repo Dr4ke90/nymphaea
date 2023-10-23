@@ -4,12 +4,15 @@ import PagePreview from "../PagePreview/PagePreview";
 import "./modalController.css";
 import Input from "../Input/Input";
 
+
 export default function ModalController({
   state,
   closeModal,
   inregistreaza,
   total,
 }) {
+
+  
   const checkForEmptyFields = (obj) => {
     if (state === null) return;
     if (
@@ -31,26 +34,30 @@ export default function ModalController({
       state.vendor &&
       state.valoare &&
       state.tva &&
-      state.produse.length > 0;
+      (state.produse.length > 0 ||
+      state.echipament.length > 0)
 
     return !isAllFieldsFilled;
   }
 
   const handleCheck = (state) => {
-    if (state.tip === "produse" || state.tip === "protocol") {
+    if (state.tip === "inventar" || state.tip === "protocol") {
       return checkForDisabled(state);
     }
 
     return checkForEmptyFields(state);
   };
 
+  
+  
   return (
     <PagePreview className="footer">
       <Button variant="contained" color="info" onClick={closeModal}>
         Close
       </Button>
 
-      {(state.tip === "produse" || state.tip === "protocol") && (
+
+      {(state.tip === "inventar" || state.tip === "protocol") && (
         <Input
           value={total}
           style={{

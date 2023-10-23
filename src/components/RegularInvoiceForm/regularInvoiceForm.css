@@ -2,15 +2,27 @@
     display: flex;
     flex-wrap: wrap; 
     justify-content: space-between;
-    margin-right: 10px;
+    width: 50%;
+  }
+
+  .fullSize {
+    width: 100%;
   }
   
   .regular-invoce-form .input {
-    width: 45%; 
-    height: 20px;
+    width: 45%;
+    padding: 2px;
     margin-left: 9px;
+    margin-bottom: 2px;
   }
   
+  .regular-invoce-form .lists {
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+
   @media (max-width: 1019px) {
 
     .invoices-page .modal-overlay .modal-content .table-display-container {

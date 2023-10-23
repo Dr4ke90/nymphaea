@@ -14,6 +14,7 @@ export default function MainMenu() {
     "programari",
     "incasari",
     "cheltuieli",
+    "echipament",
     'comenzi',
     'notificari'
   ];

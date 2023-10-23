@@ -31,9 +31,9 @@ const Tbody = ({
     setTableBody(reversedTableBody);
   }, [tbody]);
 
+ 
   const handleSelectRow = (id) => {
     setSelectedRow(id);
-    console.log(id)
   };
 
   const handleContextMenu = (e, id) => {
@@ -49,6 +49,8 @@ const Tbody = ({
     }
     setOpenFormAppointment(!openFormAppointment);
   };
+
+  
 
   const handleChangeButton = (item) => {
     if (item.status === "Activ") {

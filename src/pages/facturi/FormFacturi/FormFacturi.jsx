@@ -10,8 +10,11 @@ import ProductsInvoiceForm from "../../../components/ProductsInvoiceForm/Product
 import { useDispatch } from "react-redux";
 import { addInvoice } from "../../../redux/slices/invoicesSlice";
 import ProtocolProductsFrom from "../../../components/ProtocolProducsForm/ProtocolProductsFrom";
+import EquipmentForm from "../../../components/EquipmentForm/EquipmentForm";
+import Input from "../../../components/Input/Input";
+import { Button } from "@mui/material";
 
-const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
+const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
   const thead = [
     "nr",
     "cod",
@@ -23,8 +26,24 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     "pret",
     "#",
   ];
-  const headProtocol = ["nr", "produs", "pret", "cantitate", "total", "#"];
-  const optionsList = ["produse", "protocol", "utilitati", "chirie", "salarii"];
+
+  const headEchipament = [
+    "nr",
+    "cod",
+    "descriere",
+    "model",
+    "stoc",
+    "pret",
+    "#",
+  ];
+  const headProtocol = ["nr", "produs", "cantitate", "pret", "total", "#"];
+  const optionsList = [
+    "inventar",
+    "protocol",
+    "utilitati",
+    "chirie",
+    "salarii",
+  ];
   const date = new Date().toISOString().slice(0, 10);
   const dispatch = useDispatch();
 
@@ -39,6 +58,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     tva: "",
     total: "",
     produse: [],
+    echipament: [],
   };
   const [dateFactura, setDateFactura] = useState(initialStateFactura);
 
@@ -65,6 +85,28 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
   };
   const [prodProtocol, setProdProtocol] = useState(initialStateProtocol);
 
+  const [isEquipment, setIsEquipment] = useState(false);
+
+  const initialStateEquipment = {
+    cod: "",
+    descriere: "",
+    model: "",
+    stoc: "",
+    pretFaraTva: "",
+    pret: "",
+    pretAchizitie: "",
+    total: 0,
+  };
+
+  const [equipment, setEquipment] = useState(initialStateEquipment);
+
+  const [tableHead, setTableHead] = useState(thead);
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  useEffect(() => {
+    setFilteredItems(dateFactura.produse);
+  }, [dateFactura.produse, dateFactura.echipament]);
+
   const handleChangeFactura = (event) => {
     const { name, value } = event.target;
     let newValue = value.toLocaleLowerCase();
@@ -82,11 +124,13 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
       };
 
       if (updateFactura.valoare && updateFactura.tva) {
-        updateFactura.total =
-          parseFloat(updateFactura.valoare) + parseFloat(updateFactura.tva);
+        updateFactura.total = (
+          parseFloat(updateFactura.valoare) + parseFloat(updateFactura.tva)
+        ).toFixed(2);
       } else if (updateFactura.tip === "chirie") {
-        updateFactura.total =
-          parseInt(updateFactura.valoare) + parseInt(updateFactura.tva);
+        updateFactura.total = (
+          parseInt(updateFactura.valoare) + parseInt(updateFactura.tva)
+        ).toFixed(2);
       } else {
         updateFactura.total = "";
       }
@@ -99,10 +143,10 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     return value.toLowerCase().charAt(0).toUpperCase() + value.slice(1);
   };
 
-  const calculateTotal = (updatedProdus) => {
-    const pretNumeric = parseFloat(updatedProdus.pret) || 0;
-    const stocNumeric = parseInt(updatedProdus.stoc) || 0;
-    return (pretNumeric * stocNumeric).toFixed(2);
+  const calculateTotal = (updated) => {
+    const pretNumeric = parseFloat(updated.pret) || 0;
+    const stocNumeric = parseInt(updated.stoc) || 0;
+    return (pretNumeric * stocNumeric).toFixed(2) || 0;
   };
 
   const calculateStocInGr = (stoc, gramaj) => {
@@ -154,6 +198,10 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     setProdus((prevProduse) => updateProdus(prevProduse, name, cleanedValue));
   };
 
+  const handleChangeCheckBox = () => {
+    setIsEquipment(!isEquipment);
+  };
+
   const handleChangeProtocol = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -168,72 +216,130 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     });
   };
 
+  const updateEchipament = (prevEquip, name, value) => {
+    let updateEquip = {
+      ...prevEquip,
+      [name]: value,
+    };
+
+    if (name === "pretFaraTva") {
+      updateEquip.pret = value ? (parseFloat(value) * 1.19).toFixed(2) : "";
+    }
+
+    updateEquip.total = calculateTotal(updateEquip);
+
+    if (updateEquip.model === "") {
+      updateEquip = { ...initialStateEquipment};
+    }
+
+    return updateEquip;
+  };
+
+  const handleChangeEchipament = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    let cleanedValue = value;
+
+    if (name === "pret") {
+      cleanedValue = cleanedValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
+    }
+
+    cleanedValue = cleanInputValue(cleanedValue);
+
+    setEquipment((prevEquip) =>
+      updateEchipament(prevEquip, name, cleanedValue)
+    );
+  };
+
   const handleAdaugaProdus = (e) => {
     e.preventDefault();
 
     let product;
-    if (dateFactura.tip !== "protocol") {
-      product = produs;
-    } else {
+    if (isEquipment) {
+      product = equipment;
+    }
+    if (!isEquipment && dateFactura.tip === "protocol") {
       product = prodProtocol;
     }
 
-    setDateFactura({
-      ...dateFactura,
-      produse: [
-        ...dateFactura.produse,
-        {
-          nr: dateFactura.produse.length + 1,
-          ...product,
-        },
-      ],
-    });
+    if (!isEquipment && dateFactura.tip !== "protocol") {
+      product = produs;
+    }
 
-    setProdus(initialStateProdus);
+    const newItem = {
+      nr: isEquipment
+        ? dateFactura.echipament.length + 1
+        : dateFactura.produse.length + 1,
+      ...product,
+      referintaFactura: [dateFactura.cod],
+    };
+
+    setDateFactura((prevState) => ({
+      ...prevState,
+      echipament: isEquipment
+        ? [...prevState.echipament, newItem]
+        : prevState.echipament,
+      produse: isEquipment
+        ? prevState.produse
+        : [...prevState.produse, newItem],
+    }));
+
+    if (isEquipment) {
+      setEquipment(initialStateEquipment);
+    } else {
+      setProdus(initialStateProdus);
+    }
   };
 
-  const [totalGenproduse, setTotalGenProduse] = useState(0);
+  const [totalGenProduse, setTotalGenProduse] = useState(0);
+
   useEffect(() => {
-    setTotalGenProduse(
-      dateFactura.produse.reduce(
-        (suma, produs) => suma + parseFloat(produs.total),
-        0
-      )
+    const totalProduse = dateFactura.produse.reduce(
+      (suma, produs) => suma + parseFloat(produs.total),
+      0
     );
-  }, [dateFactura.produse]);
+
+    const totalEchipament = dateFactura.echipament.reduce(
+      (suma, produs) => suma + parseFloat(produs.total),
+      0
+    );
+
+    const totalGeneral = totalProduse + totalEchipament;
+
+    setTotalGenProduse(totalGeneral);
+  }, [dateFactura.produse, dateFactura.echipament]);
 
   const handleInregistreaza = (event) => {
     event.preventDefault();
 
-    if (dateFactura.tip !== "chirie" && dateFactura.tip !== "utilitati") {
-      if (
-        totalGenproduse.toFixed(1) !== parseFloat(dateFactura.total).toFixed(1)
-      ) {
-        alert("Totalul produselor nu este egal cu totalul facturii");
-        return;
-      }
-    }
-
     const tipUpperCase =
       dateFactura.tip.charAt(0).toUpperCase() + dateFactura.tip.slice(1);
 
-    dispatch(addInvoice({ ...dateFactura, tip: tipUpperCase }));
+    dispatch(
+      addInvoice({
+        ...dateFactura,
+        tip: tipUpperCase,
+      })
+    );
     setDateFactura(initialStateFactura);
     closeModal();
   };
 
   const handleRemoveProdus = (produs) => {
     setDateFactura((prev) => {
-      const updateProduse = prev.produse.filter(
-        (item) => item.nr !== produs.nr
-      );
+      const listaActualizata = !isEquipment
+        ? renumerotareLista(
+            prev.produse.filter((item) => item.nr !== produs.nr)
+          )
+        : renumerotareLista(
+            prev.echipament.filter((item) => item.nr !== produs.nr)
+          );
 
-      const updateFactura = {
+      return {
         ...prev,
-        produse: renumerotareLista(updateProduse),
+        produse: !isEquipment ? listaActualizata : prev.produse,
+        echipament: isEquipment ? listaActualizata : prev.echipament,
       };
-
-      return updateFactura;
     });
 
     const cod =
@@ -248,14 +354,28 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     });
   };
 
+  const setProductCode = () => {
+    let cod;
+    let paddedCod;
+    if (isEquipment) {
+      cod = parseInt(codEquip.substring(2)) + dateFactura.echipament.length;
+      paddedCod = "EQ" + cod.toString().padStart(4, "0");
+    } else {
+      cod = parseInt(codProdus.substring(1)) + dateFactura.produse.length;
+      paddedCod = "P" + cod.toString().padStart(4, "0");
+    }
+
+    return paddedCod;
+  };
+
   const handleChangeClassname = () => {
     let className = "";
 
-    if (dateFactura.tip !== "" && dateFactura.tip === "produse") {
+    if (dateFactura.tip !== "" && dateFactura.tip === "inventar") {
       className = "modal-large";
     }
 
-    if (dateFactura.tip !== "" && dateFactura.tip !== "produse") {
+    if (dateFactura.tip !== "" && dateFactura.tip !== "inventar") {
       className = "modal-medium";
     }
 
@@ -265,30 +385,82 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
     return className;
   };
 
+  const handleChangeTbodyWithProducts = () => {
+    setFilteredItems(dateFactura.produse);
+    setTableHead(thead);
+  };
+
+  const handleChangeTbodyWithEquipment = () => {
+    setFilteredItems(dateFactura.echipament);
+    setTableHead(headEchipament);
+  };
+
   return (
     <PagePreview className="modal-overlay">
       <PagePreview className={`modal-content ${handleChangeClassname()}`}>
         <TypeModal
-          stateFactura={dateFactura}
+          dateFactura={dateFactura}
           setDateFactura={setDateFactura}
           initial={initialStateFactura}
           optionsList={optionsList}
         />
         <hr />
         <PagePreview className="container">
-          {dateFactura.tip === "produse" && (
+          {dateFactura.tip === "inventar" && (
             <>
               <RegularInvoiceForm
                 stateFactura={dateFactura}
                 handleChangeFactura={handleChangeFactura}
+                setProducts={handleChangeTbodyWithProducts}
+                setEquipment={handleChangeTbodyWithEquipment}
               />
-              <hr />
-              <ProductsInvoiceForm
-                stateProdus={produs}
-                setStateProdus={setProdus}
-                handleAdaugaProdus={handleAdaugaProdus}
-                handleChangeProdus={handleChangeProdus}
-              />
+              <div className="products-wrapper">
+                <div className="check">
+                  <Input
+                    key="check"
+                    id="check"
+                    type="checkbox"
+                    name="echipament"
+                    onChange={handleChangeCheckBox}
+                  />
+                  <label>Echipament</label>
+                </div>
+
+                <div className="products-form">
+                  {!isEquipment && (
+                    <ProductsInvoiceForm
+                      stateProdus={produs}
+                      setStateProdus={setProdus}
+                      setCodProdus={setProductCode}
+                      handleChangeProdus={handleChangeProdus}
+                    />
+                  )}
+                  {isEquipment && (
+                    <EquipmentForm
+                      stateEquipment={equipment}
+                      setStateEquipment={setEquipment}
+                      setCodEquip={setProductCode}
+                      handleChangeEquipment={handleChangeEchipament}
+                    />
+                  )}
+                </div>
+                <div className="adauga">
+                  <Button
+                    className="adauga-produs"
+                    variant="contained"
+                    color="success"
+                    onClick={(e) => handleAdaugaProdus(e)}
+                    disabled={Object.values(
+                      isEquipment ? equipment : produs
+                    ).some(
+                      (value) =>
+                        typeof value === "string" && value.trim() === ""
+                    )}
+                  >
+                    Adauga
+                  </Button>
+                </div>
+              </div>
             </>
           )}
 
@@ -298,7 +470,6 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
                 stateFactura={dateFactura}
                 handleChangeFactura={handleChangeFactura}
               />
-              <hr />
               <ProtocolProductsFrom
                 stateProtocol={prodProtocol}
                 handleChangeProtocol={handleChangeProtocol}
@@ -308,7 +479,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
           )}
 
           {dateFactura.tip !== "" &&
-            dateFactura.tip !== "produse" &&
+            dateFactura.tip !== "inventar" &&
             dateFactura.tip !== "protocol" && (
               <RegularInvoiceForm
                 stateFactura={dateFactura}
@@ -317,11 +488,13 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
             )}
         </PagePreview>
 
-        {(dateFactura.tip === "produse" || dateFactura.tip === "protocol") && (
+        {(dateFactura.tip === "inventar" || dateFactura.tip === "protocol") && (
           <TableDisplay
-            thead={dateFactura.tip === "protocol" ? headProtocol : thead}
-            tbody={dateFactura.produse}
-            listOrder={dateFactura.tip === "protocol" ? headProtocol : thead}
+            thead={dateFactura.tip === "protocol" ? headProtocol : tableHead}
+            tbody={filteredItems}
+            listOrder={
+              dateFactura.tip === "protocol" ? headProtocol : tableHead
+            }
             removeItem={handleRemoveProdus}
           />
         )}
@@ -330,7 +503,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus }) => {
           state={dateFactura}
           inregistreaza={handleInregistreaza}
           closeModal={closeModal}
-          total={totalGenproduse}
+          total={totalGenProduse}
         />
       </PagePreview>
     </PagePreview>

@@ -1,5 +1,5 @@
 .invoices-page .modal-overlay .modal-content {
-  height: 90px;
+  height: 100px;
   width: 300px;
   display: flex;
   flex-direction: column;
@@ -25,8 +25,35 @@
   .container {
     display: flex;
     flex-direction: row;
+    margin-top: 10px;
   }
 
+  .invoices-page
+  .modal-overlay
+  .modal-content
+  .container .products-wrapper{
+    position: relative;
+    width: 50%;
+  }
+
+  
+  .invoices-page
+  .modal-overlay
+  .modal-content
+  .container .products-wrapper .adauga{
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+
+  .invoices-page
+  .modal-overlay
+  .modal-content
+  .container .products-form {
+    display: flex;
+    flex-direction: row;
+  }
 
 
 .invoices-page
