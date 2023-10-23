@@ -24,7 +24,7 @@ export default function FormEmployees({ closeModal, cod, item, setItem }) {
     data_nasterii: "",
     cnp: "",
     adresa: "",
-    data_creat: getDate(),
+    data_creat: getDate,
     ora_creat: getHour(),
     data_update: getDate(),
     ora_update: getHour(),
