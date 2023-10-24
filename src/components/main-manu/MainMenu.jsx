@@ -7,15 +7,15 @@ export default function MainMenu() {
   const MAIN_MENU = [
     "dashboard",
     "casa",
-    "angajati",
     "servicii",
-    "stocuri",
+    "produse",
+    "echipament",
+    'comenzi',
+    "angajati",
     "clienti",
     "programari",
     "incasari",
     "cheltuieli",
-    "echipament",
-    'comenzi',
     'notificari'
   ];
 

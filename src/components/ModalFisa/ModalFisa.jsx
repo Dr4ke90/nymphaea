@@ -28,6 +28,12 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
+  const [codFisa, setCodFisa] = useState("")
+
+  useEffect(() => {
+    setCodFisa(getCodFisa)
+  },[getCodFisa])
+
 
   const getCodFisa = () => {
     if (clienti.length === 0 || !appointment) return "";
@@ -62,7 +68,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   nrBon = paddedNr;
 
   const initialStateFisa = {
-    codFisa: getCodFisa(),
+    codFisa: codFisa,
     codClient: appointment ? appointment.client : "",
     numeClient: appointment ? appointment.numeClient : "",
     data: appointment ? appointment.data : "",
@@ -128,7 +134,7 @@ export default function ModalFisa({ closeModal, appointment }) {
 
             if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
               const totalProdus = (pret / gramaj) * cantitate;
-              return acc + totalProdus;
+              return (acc + totalProdus).toFixed(2);
             } else {
               return acc;
             }
@@ -137,10 +143,10 @@ export default function ModalFisa({ closeModal, appointment }) {
         );
 
         serviciu.totalServiciu =
-          (parseFloat(serviciu.pret) + totalProduseExtra) * serviciu.cantitate;
+          ((parseFloat(serviciu.pret) + totalProduseExtra) * serviciu.cantitate).toFixed(2);
       } else {
         serviciu.totalServiciu =
-          parseFloat(serviciu.pret) * parseInt(serviciu.cantitate);
+         ( parseFloat(serviciu.pret) * parseInt(serviciu.cantitate)).toFixed(2);
       }
       return serviciu;
     });

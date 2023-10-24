@@ -25,7 +25,7 @@ function App() {
           <Routes>
             <Route path="/angajati" element={<EmployeesList />}></Route>
             <Route path="/servicii" element={<ServicesList />}></Route>
-            <Route path="/stocuri" element={<Inventory />}></Route>
+            <Route path="/produse" element={<Inventory />}></Route>
             <Route path="/clienti" element={<Customers />}></Route>
             <Route path="/programari" element={<Appointments />}></Route>
             <Route path="/incasari" element={<Sales />}></Route>
