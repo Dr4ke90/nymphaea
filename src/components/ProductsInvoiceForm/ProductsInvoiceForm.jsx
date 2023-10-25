@@ -53,18 +53,25 @@ export default function ProductsInvoiceForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (stateProdus.descriere !== "") {
       setActivateInputs(false);
     }
-
-    const findedProduct = inventory.find(
-      (item) =>
-        item.descriere.toLowerCase() === stateProdus.descriere.toLowerCase()
-    );
-
+  
+    const searchedString = inventory
+      .map((item) => `${item.categorie} ${item.brand} ${item.descriere} ${item.gramaj}`)
+      .join(' ')
+      .toLowerCase();
+  
+    const findedProduct = searchedString.includes(stateProdus.descriere.toLowerCase());
+  
     if (findedProduct) {
-      setStateProdus(findedProduct);
+      const foundItem = inventory.find((item) => {
+        const itemString = `${item.categorie} ${item.brand} ${item.descriere} ${item.gramaj}`.toLowerCase();
+        return itemString.includes(stateProdus.descriere.toLowerCase());
+      });
+  
+      setStateProdus(foundItem);
     } else {
       setStateProdus({
         ...stateProdus,
@@ -72,8 +79,7 @@ export default function ProductsInvoiceForm({
       });
     }
   };
-
-
+  
 
   return (
     <PagePreview className="form-produse">
