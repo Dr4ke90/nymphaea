@@ -29,6 +29,15 @@
   margin-bottom: 5px;
 }
 
+.modal-fisa-overlay .modal-header .info label{
+  padding: 0;
+  margin: 0;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
 .modal-fisa-overlay .footer {
   display: flex;
   align-items: center;

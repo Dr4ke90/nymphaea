@@ -10,29 +10,21 @@ import ModalProduse from "../ModalProduse/ModalProduse";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCustomers } from "../../redux/slices/customersSlice";
 import ModalProduseExtra from "../ModalProduseExtra/ModalProduseExtra";
-import {
-  addRceceipe,
-  fetchAllReceipes,
-} from "../../redux/slices/cashRegisterSlice";
-import { updateAppointment } from "../../redux/slices/appointmentsSlice";
-import { getHour } from "../../utils/getHour";
 import { fetchAllEmployees } from "../../redux/slices/employeesSlice";
 import { getDate } from "../../utils/getDate";
-import { fetchAllSales } from "../../redux/slices/salesSlice";
+import { addNewSale, fetchAllSales } from "../../redux/slices/salesSlice";
+import { updateAppointment } from "../../redux/slices/appointmentsSlice";
+import { getHour } from "../../utils/getHour";
 
 export default function ModalFisa({ closeModal, appointment }) {
   const thead = ["nr", "cod", "serviciu/produs", "cantitate", "#"];
   const clienti = useSelector((state) => state.clienti);
-  const bonuri = useSelector((state) => state.casa);
   const angajati = useSelector((state) => state.angajati);
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
- 
-
-
   const getCodFisa = () => {
-    if (clienti.length === 0 || !appointment) return "";
+    if (clienti.length === 0)  return "";
 
     if (appointment.client.startsWith("C0")) {
       const client = clienti.find(
@@ -55,35 +47,69 @@ export default function ModalFisa({ closeModal, appointment }) {
         return "F" + paddedNr;
       }
     }
-    return "";
+    return "N/A";
   };
 
-  let nrBon;
-  const nr = bonuri.length + 1 + incasari.length;
-  const paddedNr = nr.toString().padStart(6, "0");
-  nrBon = paddedNr;
+  const getCodClient = () => {
+    if (clienti.length === 0) return "";
+
+    const client = clienti.find((client) => client.cod === appointment.client);
+
+    if (client) {
+      return client.cod;
+    } else {
+      return "N/A";
+    }
+  };
 
   const initialStateFisa = {
     codFisa: getCodFisa(),
-    codClient: appointment ? appointment.client : "",
-    numeClient: appointment ? appointment.numeClient : "",
-    data: appointment ? appointment.data : "",
-    codProgramare: appointment ? appointment.cod : "",
-    codAngajat: appointment ? appointment.angajat : "",
+    codClient: getCodClient(),
+    numeClient: "",
+    data: "",
+    codProgramare: "",
+    codAngajat: "",
     produse: [],
   };
 
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchAllCustomers());
-    dispatch(fetchAllReceipes());
-    dispatch(fetchAllEmployees());
-    dispatch(fetchAllSales());
-  }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchAllEmployees());
+    dispatch(fetchAllSales());
+  
+    if (clienti.length === 0) {
+      dispatch(fetchAllCustomers()).then(() => {
+        setDateFisa({
+          codFisa: getCodFisa(),
+          codClient: getCodClient(),
+          numeClient: appointment.numeClient || "",
+          data: appointment.data || "",
+          codProgramare: appointment.cod || "",
+          codAngajat: appointment.angajat || "",
+          produse: appointment.list || [],
+        });
+      });
+    } else {
+      setDateFisa({
+        codFisa: getCodFisa(),
+        codClient: getCodClient(),
+        numeClient: appointment.numeClient || "",
+        data: appointment.data || "",
+        codProgramare: appointment.cod || "",
+        codAngajat: appointment.angajat || "",
+        produse: appointment.list || [],
+      });
+    }
+  
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    console.log("effect 3");
+
     if (appointment) {
       setFoundedEmployee(true);
     }
@@ -138,11 +164,14 @@ export default function ModalFisa({ closeModal, appointment }) {
           0
         );
 
-        serviciu.totalServiciu =
-          ((parseFloat(serviciu.pret) + totalProduseExtra) * serviciu.cantitate).toFixed(2);
+        serviciu.totalServiciu = (
+          (parseFloat(serviciu.pret) + totalProduseExtra) *
+          serviciu.cantitate
+        ).toFixed(2);
       } else {
-        serviciu.totalServiciu =
-         ( parseFloat(serviciu.pret) * parseInt(serviciu.cantitate)).toFixed(2);
+        serviciu.totalServiciu = (
+          parseFloat(serviciu.pret) * parseInt(serviciu.cantitate)
+        ).toFixed(2);
       }
       return serviciu;
     });
@@ -172,24 +201,35 @@ export default function ModalFisa({ closeModal, appointment }) {
     });
   };
 
+  let nrIncasare;
+  const nr = incasari.length + 1;
+  const paddedNr = nr.toString().padStart(6, "0");
+  nrIncasare = paddedNr;
+
   const handleInregistreaza = (e) => {
     e.preventDefault();
     dispatch(
-      addRceceipe({
-        nrBon: nrBon,
+      addNewSale({
         ...dateFisa,
+        nr: nrIncasare,
         totalDePlata: totalFisa,
         data: getDate(),
       })
     );
-    dispatch(
-      updateAppointment({
-        ...appointment,
-        status: "Terminat",
-        tip_update: "Modificare status: Terminat",
-        terminat: getHour(),
-      })
-    );
+
+    const newApp = {
+      ...appointment,
+      status: "Terminat",
+      tip_update: "Modificare status",
+      data_update: getDate(),
+      ora_update: getHour(),
+    };
+
+    delete newApp._id;
+    delete newApp.start;
+    delete newApp.end;
+    delete newApp.list;
+    dispatch(updateAppointment(newApp));
     closeModal();
   };
 
@@ -220,6 +260,27 @@ export default function ModalFisa({ closeModal, appointment }) {
     }
   };
 
+  const setPlaceholder = (key) => {
+    let label;
+    if (key === "codAngajat") {
+      label = "Cod angajat";
+    }
+
+    if (key === "numeClient") {
+      label = "Nume client";
+    }
+
+    if (key === "codClient") {
+      label = "Cod client";
+    }
+
+    if (key === "codFisa") {
+      label = "Numar fisa";
+    }
+
+    return label;
+  };
+
   const headerFieldOrder = ["codAngajat", "numeClient", "codClient", "codFisa"];
   const tableFieldOrder = ["nr", "cod", "descriere", "produs"];
   return (
@@ -229,15 +290,17 @@ export default function ModalFisa({ closeModal, appointment }) {
           {headerFieldOrder.map((key) => {
             if (dateFisa.hasOwnProperty(key)) {
               return (
-                <Input
-                  key={key}
-                  type="text"
-                  disabled={appointment || key !== "codAngajat"}
-                  placeholder={key}
-                  value={dateFisa[key]}
-                  name={key}
-                  onChange={handleChangeAngajat}
-                />
+                <div key={key} className="info">
+                  <label htmlFor={key}>{setPlaceholder(key)}</label>
+                  <Input
+                    type="text"
+                    disabled={appointment || key !== "codAngajat"}
+                    placeholder={key}
+                    value={dateFisa[key]}
+                    name={key}
+                    onChange={handleChangeAngajat}
+                  />
+                </div>
               );
             } else {
               return null;

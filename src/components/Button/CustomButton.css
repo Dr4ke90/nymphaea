@@ -1,7 +1,7 @@
 .custom-link {
     display: inline-block;
     width: fit-content; 
-    height: fit-content; /* sau o valoare specifică, dacă este necesar */
+    height: fit-content; 
     text-decoration: none;
     color: inherit;
   }
