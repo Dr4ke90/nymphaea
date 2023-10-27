@@ -23,7 +23,6 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
-
   useEffect(() => {
     if (appointment) {
       setDateFisa({
@@ -36,7 +35,7 @@ export default function ModalFisa({ closeModal, appointment }) {
         produse: [],
       });
     }
-  }, [clienti,appointment]);
+  }, [clienti, appointment]);
 
   useEffect(() => {
     if (appointment) {
@@ -102,7 +101,6 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
 
-
   const [openModalServicii, setOpenModalServicii] = useState(false);
   const handleOpenModalServicii = () => {
     setOpenModalServicii(!openModalServicii);
@@ -123,7 +121,7 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleChangeCantitate = (event, index) => {
     const { value } = event.target;
-    const updatedServicii = [...dateFisa.produse]; 
+    const updatedServicii = [...dateFisa.produse];
 
     updatedServicii[index] = {
       ...updatedServicii[index],
@@ -150,12 +148,15 @@ export default function ModalFisa({ closeModal, appointment }) {
           return acc + totalProdus;
         }, 0);
       }
-      
-      totalServiciu += parseFloat(serviciu.pret) * parseInt(serviciu.cantitate);
+
+      if (serviciu.cantitate !== undefined) {
+        totalServiciu +=
+          parseFloat(serviciu.pret) * parseInt(serviciu.cantitate);
+      }
 
       return {
         ...serviciu,
-        totalServiciu: totalServiciu.toFixed(2)
+        totalServiciu: totalServiciu.toFixed(2),
       };
     });
 
@@ -167,7 +168,7 @@ export default function ModalFisa({ closeModal, appointment }) {
   }, [dateFisa]);
 
 
-
+  
   const handleRemoveItem = (service) => {
     setDateFisa((prevFisa) => {
       const updatedServicii = prevFisa.produse.filter(
@@ -217,7 +218,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     dispatch(updateAppointment(newApp));
     closeModal();
   };
-
 
   const searchEmployee = (value) => {
     return angajati.find((angajat) => angajat.cod === value);
