@@ -30,7 +30,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     client: "",
     descriere: "",
     angajat: "",
-    list: []
   };
   const [newAppointment, setNewAppointment] = useState(initialState);
 
@@ -127,6 +126,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
         color: getRandomColor(),
       })
     );
+
     setNewAppointment(initialState);
     handleCloseModal();
   };
@@ -202,7 +202,7 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
       <PagePreview className="modal-content">
         <Form className="new-appointment-form">
           {Object.keys(initialState).map((key) => {
-            if (key !== "status" && key !== "color" && key !== "list") {
+            if (key !== "status" && key !== "color") {
               return (
                 <div key={key} className="input-wrapper">
                   <Input

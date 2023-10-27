@@ -23,8 +23,36 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
+
+  useEffect(() => {
+    if (appointment) {
+      setDateFisa({
+        codFisa: getCodFisa(),
+        codClient: getCodClient(),
+        numeClient: appointment.numeClient,
+        data: appointment.data,
+        codProgramare: appointment.cod,
+        codAngajat: appointment.angajat,
+        produse: [],
+      });
+    }
+  }, [clienti,appointment]);
+
+  useEffect(() => {
+    if (appointment) {
+      setFoundedEmployee(true);
+    }
+  }, [appointment]);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAllEmployees());
+    dispatch(fetchAllSales());
+    dispatch(fetchAllCustomers());
+  }, [dispatch]);
+
   const getCodFisa = () => {
-    if (clienti.length === 0)  return "";
+    if (clienti.length === 0) return "";
 
     if (appointment.client.startsWith("C0")) {
       const client = clienti.find(
@@ -63,8 +91,8 @@ export default function ModalFisa({ closeModal, appointment }) {
   };
 
   const initialStateFisa = {
-    codFisa: getCodFisa(),
-    codClient: getCodClient(),
+    codFisa: "",
+    codClient: "",
     numeClient: "",
     data: "",
     codProgramare: "",
@@ -74,46 +102,6 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const [dateFisa, setDateFisa] = useState(initialStateFisa);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchAllEmployees());
-    dispatch(fetchAllSales());
-  
-    if (clienti.length === 0) {
-      dispatch(fetchAllCustomers()).then(() => {
-        setDateFisa({
-          codFisa: getCodFisa(),
-          codClient: getCodClient(),
-          numeClient: appointment.numeClient || "",
-          data: appointment.data || "",
-          codProgramare: appointment.cod || "",
-          codAngajat: appointment.angajat || "",
-          produse: appointment.list || [],
-        });
-      });
-    } else {
-      setDateFisa({
-        codFisa: getCodFisa(),
-        codClient: getCodClient(),
-        numeClient: appointment.numeClient || "",
-        data: appointment.data || "",
-        codProgramare: appointment.cod || "",
-        codAngajat: appointment.angajat || "",
-        produse: appointment.list || [],
-      });
-    }
-  
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    console.log("effect 3");
-
-    if (appointment) {
-      setFoundedEmployee(true);
-    }
-  }, [appointment]);
 
   const [openModalServicii, setOpenModalServicii] = useState(false);
   const handleOpenModalServicii = () => {
@@ -135,8 +123,13 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleChangeCantitate = (event, index) => {
     const { value } = event.target;
-    const updatedServicii = [...dateFisa.produse];
-    updatedServicii[index].cantitate = value;
+    const updatedServicii = [...dateFisa.produse]; 
+
+    updatedServicii[index] = {
+      ...updatedServicii[index],
+      cantitate: value,
+    };
+
     setDateFisa({
       ...dateFisa,
       produse: updatedServicii,
@@ -147,41 +140,33 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   useEffect(() => {
     const updatedServicii = dateFisa.produse.map((serviciu) => {
+      let totalServiciu = 0;
       if (serviciu.produseExtra && serviciu.produseExtra.length !== 0) {
-        const totalProduseExtra = serviciu.produseExtra.reduce(
-          (acc, produs) => {
-            const pret = parseFloat(produs.pret);
-            const gramaj = parseInt(produs.gramaj);
-            const cantitate = parseFloat(produs.cantitate);
-
-            if (!isNaN(pret) && !isNaN(gramaj) && !isNaN(cantitate)) {
-              const totalProdus = (pret / gramaj) * cantitate;
-              return (acc + totalProdus).toFixed(2);
-            } else {
-              return acc;
-            }
-          },
-          0
-        );
-
-        serviciu.totalServiciu = (
-          (parseFloat(serviciu.pret) + totalProduseExtra) *
-          serviciu.cantitate
-        ).toFixed(2);
-      } else {
-        serviciu.totalServiciu = (
-          parseFloat(serviciu.pret) * parseInt(serviciu.cantitate)
-        ).toFixed(2);
+        totalServiciu = serviciu.produseExtra.reduce((acc, produs) => {
+          const pret = parseFloat(produs.pret) || 0;
+          const gramaj = parseInt(produs.gramaj) || 1;
+          const cantitate = parseFloat(produs.cantitate) || 1;
+          const totalProdus = (pret / gramaj) * cantitate;
+          return acc + totalProdus;
+        }, 0);
       }
-      return serviciu;
+      
+      totalServiciu += parseFloat(serviciu.pret) * parseInt(serviciu.cantitate);
+
+      return {
+        ...serviciu,
+        totalServiciu: totalServiciu.toFixed(2)
+      };
     });
 
     const totalGeneral = updatedServicii.reduce((acc, serviciu) => {
-      return acc + (parseFloat(serviciu.totalServiciu) || 0.0);
+      return acc + parseFloat(serviciu.totalServiciu);
     }, 0.0);
 
     setTotalFisa(parseFloat(totalGeneral.toFixed(2)));
-  }, [dateFisa.produse]);
+  }, [dateFisa]);
+
+
 
   const handleRemoveItem = (service) => {
     setDateFisa((prevFisa) => {
@@ -232,6 +217,7 @@ export default function ModalFisa({ closeModal, appointment }) {
     dispatch(updateAppointment(newApp));
     closeModal();
   };
+
 
   const searchEmployee = (value) => {
     return angajati.find((angajat) => angajat.cod === value);
@@ -341,11 +327,12 @@ export default function ModalFisa({ closeModal, appointment }) {
                       })}
                       <td key={"input"}>
                         <Input
-                          type="text"
+                          type="number"
                           name="cantitate"
                           className="small"
                           onChange={(e) => handleChangeCantitate(e, index)}
                           autoComplete="off"
+                          defaultValue={service.cantitate}
                         />
                       </td>
                       <td
