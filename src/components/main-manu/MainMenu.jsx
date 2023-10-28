@@ -6,7 +6,6 @@ import Stack from "@mui/material/Stack";
 export default function MainMenu() {
   const MAIN_MENU = [
     "dashboard",
-    "casa",
     "servicii",
     "produse",
     "echipament",

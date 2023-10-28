@@ -83,8 +83,6 @@ export const updateInventoryRecursively = createAsyncThunk(
             (item) => item.cod === itemCod
           );
 
-          console.log(inventoryItem)
-
           if (inventoryItem) {
             const stoc = inventoryItem.stoc - quantity;
             const stocInGr = inventoryItem.stocInGr - quantityInGr;

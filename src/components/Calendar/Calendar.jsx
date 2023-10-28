@@ -58,6 +58,8 @@ export default function BigCalendar({
     }
   };
 
+
+
   const eventPropGetter = (event, start, end, isSelected) => {
     let style = {
       backgroundColor: event.color,
@@ -106,7 +108,6 @@ export default function BigCalendar({
   };
 
   const handleSelectEvent = (event) => {
-    console.log( event);
     setCurrentAppointment(event);
   };
 
