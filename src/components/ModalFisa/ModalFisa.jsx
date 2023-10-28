@@ -28,11 +28,6 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
-  const [codFisa, setCodFisa] = useState("")
-
-  useEffect(() => {
-    setCodFisa(getCodFisa)
-  },[getCodFisa])
 
 
   const getCodFisa = () => {
@@ -62,13 +57,15 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "";
   };
 
+
+
   let nrBon;
   const nr = bonuri.length + 1 + incasari.length;
   const paddedNr = nr.toString().padStart(6, "0");
   nrBon = paddedNr;
 
   const initialStateFisa = {
-    codFisa: codFisa,
+    codFisa: getCodFisa(),
     codClient: appointment ? appointment.client : "",
     numeClient: appointment ? appointment.numeClient : "",
     data: appointment ? appointment.data : "",
