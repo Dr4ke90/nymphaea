@@ -121,11 +121,16 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   const handleChangeCantitate = (event, index) => {
     const { value } = event.target;
+
+    const parsedValue = parseInt(value);
+
+    const newCantitate = parsedValue < 0 ? 0 : parsedValue;
+
     const updatedServicii = [...dateFisa.produse];
 
     updatedServicii[index] = {
       ...updatedServicii[index],
-      cantitate: value,
+      cantitate: newCantitate,
     };
 
     setDateFisa({
@@ -167,8 +172,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     setTotalFisa(parseFloat(totalGeneral.toFixed(2)));
   }, [dateFisa]);
 
-
-  
   const handleRemoveItem = (service) => {
     setDateFisa((prevFisa) => {
       const updatedServicii = prevFisa.produse.filter(
@@ -332,7 +335,7 @@ export default function ModalFisa({ closeModal, appointment }) {
                           className="small"
                           onChange={(e) => handleChangeCantitate(e, index)}
                           autoComplete="off"
-                          defaultValue={service.cantitate}
+                          value={service.cantitate}
                         />
                       </td>
                       <td
