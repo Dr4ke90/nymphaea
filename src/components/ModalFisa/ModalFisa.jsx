@@ -23,8 +23,6 @@ export default function ModalFisa({ closeModal, appointment }) {
   const incasari = useSelector((state) => state.incasari);
   const [foundedEmployye, setFoundedEmployee] = useState(false);
 
-<<<<<<< HEAD
-=======
   useEffect(() => {
     if (appointment) {
       setDateFisa({
@@ -44,7 +42,6 @@ export default function ModalFisa({ closeModal, appointment }) {
       setFoundedEmployee(true);
     }
   }, [appointment]);
->>>>>>> 79ec3d295c8cd64433b12a84e32fc0531aa6f284
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -80,22 +77,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     return "N/A";
   };
 
-<<<<<<< HEAD
-
-
-  let nrBon;
-  const nr = bonuri.length + 1 + incasari.length;
-  const paddedNr = nr.toString().padStart(6, "0");
-  nrBon = paddedNr;
-
-  const initialStateFisa = {
-    codFisa: getCodFisa(),
-    codClient: appointment ? appointment.client : "",
-    numeClient: appointment ? appointment.numeClient : "",
-    data: appointment ? appointment.data : "",
-    codProgramare: appointment ? appointment.cod : "",
-    codAngajat: appointment ? appointment.angajat : "",
-=======
   const getCodClient = () => {
     if (clienti.length === 0) return "";
 
@@ -115,7 +96,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     data: "",
     codProgramare: "",
     codAngajat: "",
->>>>>>> 79ec3d295c8cd64433b12a84e32fc0531aa6f284
     produse: [],
   };
 
