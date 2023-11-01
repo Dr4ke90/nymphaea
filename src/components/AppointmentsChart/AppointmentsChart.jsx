@@ -14,7 +14,7 @@ const AppointmentsChart = ({ appointments }) => {
     return app.status.toLowerCase() === "anulat" ? acc + 1 : acc;
   }, 0);
 
-  let totalGeneral = appointments.length + 1;
+  let totalGeneral = appointments.length;
 
   const data = [
     { name: "Activ", value: totalActives, fill: "#b0a8b9" },
