@@ -25,14 +25,17 @@ export default function ModalFisa({ closeModal, appointment }) {
 
   useEffect(() => {
     if (appointment) {
-      setDateFisa({
-        codFisa: getCodFisa(),
-        codClient: getCodClient(),
-        numeClient: appointment.numeClient,
-        data: appointment.data,
-        codProgramare: appointment.cod,
-        codAngajat: appointment.angajat,
-        produse: [],
+      setDateFisa((prevFisa) => {
+        return {
+          ...prevFisa,
+          codFisa: getCodFisa(),
+          codClient: getCodClient(),
+          numeClient: appointment.numeClient,
+          data: appointment.data,
+          codProgramare: appointment.cod,
+          codAngajat: appointment.angajat,
+          produse: [],
+        };
       });
     }
   }, [clienti, appointment]);
@@ -96,6 +99,7 @@ export default function ModalFisa({ closeModal, appointment }) {
     data: "",
     codProgramare: "",
     codAngajat: "",
+    tipPlata: "",
     produse: [],
   };
 
@@ -217,7 +221,6 @@ export default function ModalFisa({ closeModal, appointment }) {
     delete newApp._id;
     delete newApp.start;
     delete newApp.end;
-    delete newApp.list;
     dispatch(updateAppointment(newApp));
     closeModal();
   };
@@ -247,6 +250,12 @@ export default function ModalFisa({ closeModal, appointment }) {
     } else {
       return;
     }
+  };
+
+  const handleChangeTip = (e) => {
+    setDateFisa((prevFisa) => {
+      return { ...prevFisa, tipPlata: e.target.value };
+    });
   };
 
   const setPlaceholder = (key) => {
@@ -295,6 +304,19 @@ export default function ModalFisa({ closeModal, appointment }) {
               return null;
             }
           })}
+          <div className="info">
+            <label htmlFor="tipPlata">Tip Plata</label>
+            <select
+              name="tipPlata"
+              onChange={handleChangeTip}
+              value={dateFisa.tipPlata}
+              className="tipPlata"
+            >
+              <option value="">Tip Plata</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+            </select>
+          </div>
         </div>
         <div className="modal-fisa-container">
           <div className="buttons-wrapper">
@@ -383,6 +405,7 @@ export default function ModalFisa({ closeModal, appointment }) {
             onClick={(e) => handleInregistreaza(e)}
             disabled={
               dateFisa.produse.length === 0 ||
+              dateFisa.tipPlata === "" ||
               !dateFisa.produse.every(
                 (produs) =>
                   produs.hasOwnProperty("cantitate") && produs.cantitate !== ""

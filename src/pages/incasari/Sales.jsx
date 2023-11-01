@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { fetchAllSales } from "../../redux/slices/salesSlice";
 
 export default function Sales() {
-  const thead = ["nr", "data", "codAngajat", "numeClient", "codFisa", "totalDePlata"];
+  const thead = ["nr", "data", "codAngajat", "numeClient", "codFisa", "totalDePlata", 'tipPlata'];
   const location = useLocation();
   const name = location.pathname.substring(1,2).toUpperCase() + location.pathname.substring(1).slice(1)
   const incasari = useSelector(state => state.incasari)
