@@ -22,6 +22,7 @@ export const fetchAllSales = createAsyncThunk(
       const response = await axios.get(
         "http://127.0.0.1:3001/api/nymphaea/sales"
       );
+      console.log(response.data)
       return response.data;
     } catch (error) {
       throw new Error("Eroare la incarcarea stocurilor", error);

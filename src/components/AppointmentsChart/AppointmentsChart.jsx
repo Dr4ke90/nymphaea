@@ -26,7 +26,7 @@ const AppointmentsChart = ({ appointments }) => {
   return (
     <div className="chart-box">
       <input type="text" value="Programari" disabled />
-      <PieChart width={250} height={230}>
+      <PieChart width={210} height={210}>
         <Pie
           dataKey="value"
           data={data}

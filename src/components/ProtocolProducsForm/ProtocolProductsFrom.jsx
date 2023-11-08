@@ -1,8 +1,7 @@
 import Input from "../Input/Input";
 import Form from "../Formular/Form";
 import { Button } from "@mui/material";
-import './protocolProductsForm.css'
-
+import "./protocolProductsForm.css";
 
 export default function ProtocolProductsFrom({
   stateProtocol,
@@ -16,7 +15,11 @@ export default function ProtocolProductsFrom({
   return (
     <Form className="form-protocol">
       {Object.keys(stateProtocol).map((keyName) => {
-        if (keyName !== "nr") {
+        if (
+          keyName !== "nr" &&
+          keyName !== "pret" &&
+          keyName !== "pretAchizitie"
+        ) {
           return (
             <Input
               key={keyName}
@@ -39,8 +42,12 @@ export default function ProtocolProductsFrom({
         variant="contained"
         color="success"
         onClick={handleAdaugaProdus}
-        disabled={Object.values(stateProtocol).some(
-          (value) => typeof value === "string" && value.trim() === ""
+        disabled={Object.entries(stateProtocol).some(
+          ([key, value]) =>
+            key !== "pret" &&
+            key !== "pretAchizitie" &&
+            key !== "total" &&
+            (typeof value === "string" ? value.trim() === "" : !value)
         )}
       >
         Adauga

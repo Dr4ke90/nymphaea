@@ -1,20 +1,22 @@
 import React from "react";
 import { PieChart, Pie, Tooltip } from "recharts";
 
-const SalesChart = ({ sales }) => {
-  const totalCard = sales.reduce((acc, sale) => {
+const SalesChart = (props) => {
+
+
+  const totalCard = props.sales.reduce((acc, sale) => {
     return sale.tipPlata.toLowerCase() === "card"
       ? acc + parseFloat(sale.totalDePlata)
       : acc;
   }, 0);
 
-  const totalCash = sales.reduce((acc, sale) => {
+  const totalCash = props.sales.reduce((acc, sale) => {
     return sale.tipPlata.toLowerCase() === "cash"
       ? acc + parseFloat(sale.totalDePlata)
       : acc;
   }, 0);
 
-  const totalGeneral = sales.reduce((acc, sale) => {
+  const totalGeneral = props.sales.reduce((acc, sale) => {
     return acc + parseFloat(sale.totalDePlata);
   }, 0);
 
@@ -26,7 +28,7 @@ const SalesChart = ({ sales }) => {
 
   return (
     <div className="chart-box">
-      <input type="text"  value="Incasari" disabled/>
+      <input type="text" value="Incasari" disabled />
       <PieChart width={230} height={210}>
         <Pie
           dataKey="value"
@@ -42,5 +44,6 @@ const SalesChart = ({ sales }) => {
     </div>
   );
 };
+
 
 export default SalesChart;

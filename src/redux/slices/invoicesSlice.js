@@ -42,45 +42,61 @@ export const fetchAllInvoices = createAsyncThunk(
   }
 );
 
-
-
 export const addInvoice = createAsyncThunk(
-  'services/addInvoice',
+  "services/addInvoice",
   async (invoice) => {
     try {
       const response = await axios.post(
-        'http://127.0.0.1:3001/api/nymphaea/invoices',
+        "http://127.0.0.1:3001/api/nymphaea/invoices",
         invoice
       );
       console.log(response.data.message);
 
-      if (invoice.tip === 'Inventar') {
+      if (invoice.tip === "Inventar") {
         const updateOrCreateItem = async (item, endpoint) => {
-
           delete item.nr;
           delete item.total;
           delete item._id;
 
           try {
-            const inventoryResponse = await axios.get(`${endpoint}/${item.cod}`);
+            const inventoryResponse = await axios.get(
+              `${endpoint}/${item.cod}`
+            );
 
             if (Object.keys(inventoryResponse.data.response).length !== 0) {
               const existingItem = inventoryResponse.data.response;
+              let referintaFactura;
+              if (existingItem.referintaFactura) {
+                referintaFactura = [
+                  ...existingItem.referintaFactura,
+                  ...item.referintaFactura,
+                ];
+              } else {
+                referintaFactura = item.referintaFactura;
+              }
               const updatedItem = {
                 ...item,
                 stoc: parseInt(existingItem.stoc) + parseInt(item.stoc),
-                referintaFactura: [...existingItem.referintaFactura, ...item.referintaFactura]
+                referintaFactura,
               };
 
-              const updateResponse = await axios.put(`${endpoint}/${item.cod}`, updatedItem);
+              const updateResponse = await axios.put(
+                `${endpoint}/${item.cod}`,
+                updatedItem
+              );
               console.log(updateResponse.data.message);
             } else {
               const addResponse = await axios.post(endpoint, item);
               console.log(addResponse.data.message);
             }
           } catch (error) {
-            console.error('Eroare la adăugarea produsului/echipamentului:', error);
-            throw new Error('Eroare la adăugarea produsului/echipamentului: ' + error);
+            console.error(
+              "Eroare la adăugarea produsului/echipamentului:",
+              error
+            );
+            throw new Error(
+              "Eroare la adăugarea produsului/echipamentului: " + error
+            );
           }
         };
 
@@ -99,24 +115,25 @@ export const addInvoice = createAsyncThunk(
 
       return invoice;
     } catch (error) {
-      console.error('Eroare la adăugarea Facturii ' + invoice.cod, error);
-      throw new Error('Eroare la adăugarea Facturii ' + invoice.cod + ': ' + error);
+      console.error("Eroare la adăugarea Facturii " + invoice.cod, error);
+      throw new Error(
+        "Eroare la adăugarea Facturii " + invoice.cod + ": " + error
+      );
     }
   }
 );
-
 
 export const deleteInvoice = createAsyncThunk(
   "services/deleteInvoice",
   async (invoice) => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:3000/api/nymphaea/invoices/${invoice.nr}`
+        `http://127.0.0.1:3000/api/nymphaea/invoices/${invoice.cod}`
       );
       console.log(response.data.message);
       return invoice;
     } catch (error) {
-      throw new Error("Eroare la ștergerea Facturii " + invoice.nr, error);
+      throw new Error("Eroare la ștergerea Facturii " + invoice.cod, error);
     }
   }
 );

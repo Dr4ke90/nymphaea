@@ -13,6 +13,7 @@ import { fetchAllEquipment } from "../../redux/slices/echipamentSlice";
 import { fetchAllServices } from "../../redux/slices/servicesSlice";
 import InventoryChart from "../../components/InventoryChart/InventoryChart";
 import ProductsChart from "../../components/ProductsChart/ProductsChart";
+import LossChart from "../../components/LossChart/LossChart";
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export default function Dashboard() {
   const echipament = useSelector((state) => state.echipament);
   const servicii = useSelector((state) => state.servicii);
 
+
   return (
     <div className="dashboard-page">
       <div className="title">
@@ -48,6 +50,7 @@ export default function Dashboard() {
           <div className="invoicesChart">
             <InvoicesChart invoices={invoices} />
           </div>
+          <LossChart />
         </div>
         <hr />
         <div className="down">
@@ -57,7 +60,7 @@ export default function Dashboard() {
             servicii={servicii}
             echipament={echipament}
           />
-          <ProductsChart produse={produse}/>
+          <ProductsChart produse={produse} />
         </div>
       </div>
     </div>

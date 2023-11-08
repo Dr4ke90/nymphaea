@@ -5,24 +5,26 @@ import Input from "../Input/Input";
 import "./equipmentForm.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllEquipment } from "../../redux/slices/echipamentSlice";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EquipmentForm({
   stateEquipment,
   setStateEquipment,
   setCodEquip,
-  handleChangeEquipment
+  handleChangeEquipment,
+  equipmentList,
 }) {
   const equipment = useSelector((state) => state.echipament);
   const [activateInputs, setActivateInputs] = useState(true);
 
+  const notify = () => toast.info("Produsul exista deja in lista!!!");
 
   useEffect(() => {
     if (stateEquipment.model === "") {
       setActivateInputs(true);
     }
-  },[stateEquipment.model]);
-
+  }, [stateEquipment.model]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -35,9 +37,8 @@ export default function EquipmentForm({
     "cod",
     "descriere",
     "pretFaraTva",
-    "pretAchizitie",
+    "discount",
   ];
-
 
   const handlePlaceHolder = (key) => {
     let placeholder = key.substring(0, 1).toUpperCase() + key.slice(1);
@@ -58,9 +59,18 @@ export default function EquipmentForm({
       setActivateInputs(false);
     }
 
-    const findedProduct = equipment.find(
-      (item) =>
-        item.model.toLowerCase() === stateEquipment.model.toLowerCase()
+    const finded = equipmentList.find(
+      (item) => item.model.toLowerCase() === stateEquipment.model.toLowerCase()
+    );
+
+    if (finded) {
+      notify()
+      setActivateInputs(true)
+    }
+
+    const combinedList = equipment.concat(equipmentList);
+    const findedProduct = combinedList.find(
+      (item) => item.model.toLowerCase() === stateEquipment.model.toLowerCase()
     );
 
     if (findedProduct) {
@@ -68,13 +78,14 @@ export default function EquipmentForm({
     } else {
       setStateEquipment({
         ...stateEquipment,
-        cod: stateEquipment.model !== "" ? setCodEquip() : "",
+        cod: stateEquipment.model !== "" ? setCodEquip(equipment) : "",
       });
     }
   };
 
   return (
     <PagePreview className="form-produse">
+      <ToastContainer />
       <Form>
         {equipmentInputsOrder.map((keyName) => {
           return (

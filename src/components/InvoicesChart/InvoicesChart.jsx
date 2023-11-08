@@ -1,48 +1,39 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import PropTypes from "prop-types";
 
-const InvoicesChart = ({ invoices }) => {
-  console.log(invoices);
-
-  const totalInventar = invoices.reduce((acc, invoice) => {
+const InvoicesChart = (props) => {
+  const totalInventar = props.invoices.reduce((acc, invoice) => {
     return invoice.tip.toLowerCase() === "inventar"
       ? acc + parseFloat(invoice.total)
       : acc;
   }, 0);
 
-  const totalProtocol = invoices.reduce((acc, invoice) => {
+  const totalProtocol = props.invoices.reduce((acc, invoice) => {
     return invoice.tip.toLowerCase() === "protocol"
       ? acc + parseFloat(invoice.total)
       : acc;
   }, 0);
 
-  const totalUtilitati = invoices.reduce((acc, invoice) => {
+  const totalUtilitati = props.invoices.reduce((acc, invoice) => {
     return invoice.tip.toLowerCase() === "utilitati"
       ? acc + parseFloat(invoice.total)
       : acc;
   }, 0);
 
-  const totalChirie = invoices.reduce((acc, invoice) => {
+  const totalChirie = props.invoices.reduce((acc, invoice) => {
     return invoice.tip.toLowerCase() === "chirie"
       ? acc + parseFloat(invoice.total)
       : acc;
   }, 0);
 
-  const totalSalarii = invoices.reduce((acc, invoice) => {
+  const totalSalarii = props.invoices.reduce((acc, invoice) => {
     return invoice.tip.toLowerCase() === "salarii"
       ? acc + parseFloat(invoice.total)
       : acc;
   }, 0);
 
-  const totalGeneral = invoices.reduce((acc, invoice) => {
+  const totalGeneral = props.invoices.reduce((acc, invoice) => {
     return acc + parseFloat(invoice.total);
   }, 0);
 
@@ -66,6 +57,15 @@ const InvoicesChart = ({ invoices }) => {
       </BarChart>
     </div>
   );
+};
+
+InvoicesChart.propTypes = {
+  invoices: PropTypes.arrayOf(
+    PropTypes.shape({
+      tip: PropTypes.string.isRequired,
+      total: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };
 
 export default InvoicesChart;

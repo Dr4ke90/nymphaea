@@ -13,8 +13,13 @@ import ProtocolProductsFrom from "../../../components/ProtocolProducsForm/Protoc
 import EquipmentForm from "../../../components/EquipmentForm/EquipmentForm";
 import Input from "../../../components/Input/Input";
 import { Button } from "@mui/material";
+import { calculateTva } from "../../../utils/calculateTva";
+import { calculateTotal } from "../../../utils/calculateTotal";
+import { cleanInputValue } from "../../../utils/cleanInputValue";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
+const FormFactura = ({ closeModal, codFacturi, codProdus, invoices }) => {
   const thead = [
     "nr",
     "cod",
@@ -36,7 +41,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     "pret",
     "#",
   ];
-  const headProtocol = ["nr", "produs", "cantitate", "pret", "total", "#"];
+  const headProtocol = ["nr", "produs", "stoc", "pret", "total", "#"];
   const optionsList = [
     "inventar",
     "protocol",
@@ -72,6 +77,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     stocInGr: 0,
     pretFaraTva: "",
     pret: "",
+    discount: "",
     pretAchizitie: "",
     total: 0,
   };
@@ -79,11 +85,15 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
 
   const initialStateProtocol = {
     produs: "",
+    stoc: "",
+    pretFaraTva: "",
     pret: "",
-    cantitate: "",
-    total: "",
+    discount: "",
+    pretAchizitie: "",
   };
   const [prodProtocol, setProdProtocol] = useState(initialStateProtocol);
+
+  const notify = () => toast.info("Factura exista in deja in baza de date");
 
   const [isEquipment, setIsEquipment] = useState(false);
 
@@ -94,6 +104,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     stoc: "",
     pretFaraTva: "",
     pret: "",
+    discount: "",
     pretAchizitie: "",
     total: 0,
   };
@@ -105,7 +116,11 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
 
   useEffect(() => {
     setFilteredItems(dateFactura.produse);
-  }, [dateFactura.produse, dateFactura.echipament]);
+  }, [dateFactura]);
+
+  const handleChangeCheckBox = () => {
+    setIsEquipment(!isEquipment);
+  };
 
   const handleChangeFactura = (event) => {
     const { name, value } = event.target;
@@ -114,7 +129,6 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     if (name === "valoare") {
       newValue = newValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
     }
-
     newValue = newValue.charAt(0).toUpperCase() + newValue.slice(1);
 
     setDateFactura((prevDateFactura) => {
@@ -135,71 +149,69 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
         updateFactura.total = "";
       }
 
+      const facturaExista = invoices.some(
+        (item) =>
+          item.serie + item.numar === updateFactura.serie + updateFactura.numar
+      );
+
+      if (facturaExista) {
+        notify();
+      }
+
       return updateFactura;
     });
-  };
-
-  const cleanInputValue = (value) => {
-    return value.toLowerCase().charAt(0).toUpperCase() + value.slice(1);
-  };
-
-  const calculateTotal = (updated) => {
-    const pretNumeric = parseFloat(updated.pret) || 0;
-    const stocNumeric = parseInt(updated.stoc) || 0;
-    return (pretNumeric * stocNumeric).toFixed(2) || 0;
-  };
-
-  const calculateStocInGr = (stoc, gramaj) => {
-    return stoc * gramaj || 0;
-  };
-
-  const updateProdus = (prevProduse, name, value) => {
-    let updatedProdus = {
-      ...prevProduse,
-      [name]: value,
-    };
-
-    if (name === "pretFaraTva") {
-      updatedProdus.pret = value ? (parseFloat(value) * 1.19).toFixed(2) : "";
-    }
-
-    if (
-      (name === "stoc" && prevProduse.gramaj) ||
-      (name === "gramaj" && prevProduse.stoc)
-    ) {
-      updatedProdus.stocInGr = calculateStocInGr(
-        updatedProdus.stoc,
-        updatedProdus.gramaj
-      );
-    } else {
-      updatedProdus.stocInGr = prevProduse.stocInGr || 0;
-    }
-
-    updatedProdus.total = calculateTotal(updatedProdus);
-
-    if (updatedProdus.descriere === "") {
-      updatedProdus = { ...initialStateProdus };
-    }
-
-    return updatedProdus;
   };
 
   const handleChangeProdus = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-    let cleanedValue = value;
 
-    if (name === "pret") {
-      cleanedValue = cleanedValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
-    }
+    setProdus((prevProdus) => {
+      let cleanedValue = value;
+      let updatedPret = prevProdus.pret;
+      let updatedPretAchizitie = prevProdus.pretAchizitie;
+      let updatedStocInGr = prevProdus.stocInGr;
 
-    cleanedValue = cleanInputValue(cleanedValue);
+      if (name === "pretFaraTva") {
+        cleanedValue = cleanedValue.replace(/[^\d.]/g, "");
+        updatedPret = (parseFloat(cleanedValue) * 1.19).toFixed(2);
+      }
 
-    setProdus((prevProduse) => updateProdus(prevProduse, name, cleanedValue));
-  };
+      if (name.toLowerCase() === "discount") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        cleanedValue =
+          cleanedValue !== ""
+            ? Math.min(parseInt(cleanedValue, 10), 100).toString()
+            : "";
+        updatedPretAchizitie =
+          cleanedValue !== ""
+            ? (
+                updatedPret -
+                (parseFloat(cleanedValue) / 100) * updatedPret
+              ).toFixed(2)
+            : null;
+      }
 
-  const handleChangeCheckBox = () => {
-    setIsEquipment(!isEquipment);
+      if (name === "gramaj") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        updatedStocInGr = parseInt(prevProdus.stoc) * parseInt(cleanedValue);
+      }
+
+      cleanedValue = cleanInputValue(cleanedValue);
+
+      const updatedProdus = {
+        ...prevProdus,
+        [name]: cleanedValue,
+        pret: updatedPret,
+        pretAchizitie: updatedPretAchizitie,
+        stocInGr: updatedStocInGr,
+      };
+
+      if (updatedProdus.descriere === "") {
+        return initialStateProdus;
+      }
+      return updatedProdus;
+    });
   };
 
   const handleChangeProtocol = (e) => {
@@ -207,48 +219,103 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     const { name, value } = e.target;
 
     setProdProtocol((prevProtocol) => {
-      const updateProtocol = {
+      let cleanedValue = value;
+      let updatedPret = prevProtocol.pret;
+      let updatedStoc = prevProtocol.stoc;
+      let updatedPretAchizitie = prevProtocol.pretAchizitie;
+
+      if (name === "pretFaraTva") {
+        cleanedValue = cleanedValue.replace(/[^\d.]/g, "");
+        updatedPret = calculateTva(cleanedValue);
+      }
+
+      if (name.toLowerCase() === "discount") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        cleanedValue =
+          cleanedValue !== ""
+            ? Math.min(parseInt(cleanedValue, 10), 100).toString()
+            : "";
+        updatedPretAchizitie =
+          cleanedValue !== ""
+            ? (
+                updatedPret -
+                (parseFloat(cleanedValue) / 100) * updatedPret
+              ).toFixed(2)
+            : null;
+      }
+
+      if (name === "stoc") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        updatedStoc = parseInt(cleanedValue);
+      }
+
+      cleanedValue = cleanInputValue(cleanedValue);
+
+      const updatedProtocol = {
         ...prevProtocol,
-        [name]: value,
+        [name]: cleanedValue,
+        pret: updatedPret,
+        stoc: updatedStoc,
+        pretAchizitie: updatedPretAchizitie,
       };
-      updateProtocol.total = updateProtocol.cantitate * updateProtocol.pret;
-      return updateProtocol;
+
+      if (updatedProtocol.produs === "") {
+        return initialStateProtocol;
+      }
+      return updatedProtocol;
     });
-  };
-
-  const updateEchipament = (prevEquip, name, value) => {
-    let updateEquip = {
-      ...prevEquip,
-      [name]: value,
-    };
-
-    if (name === "pretFaraTva") {
-      updateEquip.pret = value ? (parseFloat(value) * 1.19).toFixed(2) : "";
-    }
-
-    updateEquip.total = calculateTotal(updateEquip);
-
-    if (updateEquip.model === "") {
-      updateEquip = { ...initialStateEquipment};
-    }
-
-    return updateEquip;
   };
 
   const handleChangeEchipament = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-    let cleanedValue = value;
 
-    if (name === "pret") {
-      cleanedValue = cleanedValue.replace(/[^0-9.]|(?<=\.\d{2})\d+/g, "");
-    }
+    setEquipment((prevEquip) => {
+      let cleanedValue = value;
+      let updatedPret = prevEquip.pret;
+      let updatedPretAchizitie = prevEquip.pretAchizitie;
+      let updatedStoc = prevEquip.stoc;
 
-    cleanedValue = cleanInputValue(cleanedValue);
+      if (name === "pretFaraTva") {
+        cleanedValue = cleanedValue.replace(/[^\d.]/g, "");
+        updatedPret = calculateTva(cleanedValue);
+      }
 
-    setEquipment((prevEquip) =>
-      updateEchipament(prevEquip, name, cleanedValue)
-    );
+      if (name.toLowerCase() === "discount") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        cleanedValue =
+          cleanedValue !== ""
+            ? Math.min(parseInt(cleanedValue, 10), 100).toString()
+            : "";
+        updatedPretAchizitie =
+          cleanedValue !== ""
+            ? (
+                updatedPret -
+                (parseFloat(cleanedValue) / 100) * updatedPret
+              ).toFixed(2)
+            : null;
+      }
+
+      if (name === "stoc") {
+        cleanedValue = cleanedValue.replace(/\D/g, "");
+        updatedStoc = parseInt(cleanedValue);
+      }
+
+      cleanedValue = cleanInputValue(cleanedValue);
+
+      const updatedEquip = {
+        ...prevEquip,
+        [name]: cleanedValue,
+        pret: updatedPret,
+        pretAchizitie: updatedPretAchizitie,
+        stoc: updatedStoc,
+      };
+
+      if (updatedEquip.model === "") {
+        return initialStateEquipment;
+      }
+      return updatedEquip;
+    });
   };
 
   const handleAdaugaProdus = (e) => {
@@ -257,31 +324,44 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     let product;
     if (isEquipment) {
       product = equipment;
-    }
-    if (!isEquipment && dateFactura.tip === "protocol") {
+    } else if (dateFactura.tip === "protocol") {
       product = prodProtocol;
-    }
-
-    if (!isEquipment && dateFactura.tip !== "protocol") {
+    } else {
       product = produs;
     }
 
-    const newItem = {
+    const newProductItem = {
+      ...product,
       nr: isEquipment
         ? dateFactura.echipament.length + 1
         : dateFactura.produse.length + 1,
-      ...product,
       referintaFactura: [dateFactura.cod],
+      total: calculateTotal(product),
     };
+
+    const existingItemIndex = isEquipment
+      ? dateFactura.echipament.findIndex((item) => item.cod === product.cod)
+      : dateFactura.produse.findIndex((item) => item.cod === product.cod);
+
+    const updatedList = [
+      ...(isEquipment ? dateFactura.echipament : dateFactura.produse),
+    ];
+
+    if (existingItemIndex !== -1) {
+      updatedList[existingItemIndex] = {
+        ...updatedList[existingItemIndex],
+        stoc:
+          parseFloat(updatedList[existingItemIndex].stoc) +
+          parseInt(product.stoc),
+      };
+    } else {
+      updatedList.push(newProductItem);
+    }
 
     setDateFactura((prevState) => ({
       ...prevState,
-      echipament: isEquipment
-        ? [...prevState.echipament, newItem]
-        : prevState.echipament,
-      produse: isEquipment
-        ? prevState.produse
-        : [...prevState.produse, newItem],
+      echipament: isEquipment ? updatedList : prevState.echipament,
+      produse: isEquipment ? prevState.produse : updatedList,
     }));
 
     if (isEquipment) {
@@ -307,7 +387,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     const totalGeneral = totalProduse + totalEchipament;
 
     setTotalGenProduse(totalGeneral);
-  }, [dateFactura.produse, dateFactura.echipament]);
+  }, [dateFactura]);
 
   const handleInregistreaza = (event) => {
     event.preventDefault();
@@ -354,17 +434,22 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
     });
   };
 
-  const setProductCode = () => {
-    let cod;
-    let paddedCod;
-    if (isEquipment) {
-      cod = parseInt(codEquip.substring(2)) + dateFactura.echipament.length;
-      paddedCod = "EQ" + cod.toString().padStart(4, "0");
-    } else {
-      cod = parseInt(codProdus.substring(1)) + dateFactura.produse.length;
-      paddedCod = "P" + cod.toString().padStart(4, "0");
-    }
+  const setProductCode = (dbList) => {
+    const itemsArray = isEquipment
+      ? dateFactura.echipament
+      : dateFactura.produse;
 
+    const prefix = isEquipment ? "EQ" : "P";
+
+    const combinedList = itemsArray.concat(dbList);
+
+    const cod =
+      combinedList.reduce((max, item) => {
+        const itemNr = parseInt(item.cod.substring(isEquipment ? 2 : 1));
+        return Math.max(max, itemNr);
+      }, 0) + 1;
+
+    const paddedCod = prefix + cod.toString().padStart(4, "0");
     return paddedCod;
   };
 
@@ -386,18 +471,29 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
   };
 
   const handleChangeTbodyWithProducts = () => {
+    setIsEquipment(false);
     setFilteredItems(dateFactura.produse);
     setTableHead(thead);
   };
 
   const handleChangeTbodyWithEquipment = () => {
     setFilteredItems(dateFactura.echipament);
+    setIsEquipment(true);
     setTableHead(headEchipament);
   };
+
+  useEffect(() => {
+    if (isEquipment) {
+      handleChangeTbodyWithEquipment();
+    } else {
+      handleChangeTbodyWithProducts();
+    }
+  }, [isEquipment]);
 
   return (
     <PagePreview className="modal-overlay">
       <PagePreview className={`modal-content ${handleChangeClassname()}`}>
+        <ToastContainer />
         <TypeModal
           dateFactura={dateFactura}
           setDateFactura={setDateFactura}
@@ -414,6 +510,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
                 setProducts={handleChangeTbodyWithProducts}
                 setEquipment={handleChangeTbodyWithEquipment}
               />
+
               <div className="products-wrapper">
                 <div className="check">
                   <Input
@@ -421,6 +518,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
                     id="check"
                     type="checkbox"
                     name="echipament"
+                    checked={isEquipment}
                     onChange={handleChangeCheckBox}
                   />
                   <label>Echipament</label>
@@ -433,6 +531,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
                       setStateProdus={setProdus}
                       setCodProdus={setProductCode}
                       handleChangeProdus={handleChangeProdus}
+                      productsList={dateFactura.produse}
                     />
                   )}
                   {isEquipment && (
@@ -441,6 +540,7 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
                       setStateEquipment={setEquipment}
                       setCodEquip={setProductCode}
                       handleChangeEquipment={handleChangeEchipament}
+                      equipmentList={dateFactura.echipament}
                     />
                   )}
                 </div>
@@ -450,11 +550,17 @@ const FormFactura = ({ closeModal, codFacturi, codProdus, codEquip }) => {
                     variant="contained"
                     color="success"
                     onClick={(e) => handleAdaugaProdus(e)}
-                    disabled={Object.values(
+                    disabled={Object.entries(
                       isEquipment ? equipment : produs
                     ).some(
-                      (value) =>
-                        typeof value === "string" && value.trim() === ""
+                      ([key, value]) =>
+                        key !== "pret" &&
+                        key !== "stocInGr" &&
+                        key !== "pretAchizitie" &&
+                        key !== "total" &&
+                        (typeof value === "string"
+                          ? value.trim() === ""
+                          : !value)
                     )}
                   >
                     Adauga

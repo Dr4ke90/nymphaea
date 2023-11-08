@@ -17,7 +17,7 @@ const InventoryChart = ({ servicii, produse, echipament }) => {
   return (
     <div className="chart-box">
       <input type="text" value="Stocuri" disabled />
-      <PieChart width={250} height={230}>
+      <PieChart width={210} height={210}>
         <Pie
           dataKey="value"
           data={data}

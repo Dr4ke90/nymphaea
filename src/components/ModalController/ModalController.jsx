@@ -52,7 +52,7 @@ export default function ModalController({
   
   return (
     <PagePreview className="footer">
-      <Button variant="contained" color="info" onClick={closeModal}>
+      <Button variant="contained" color="info" onClick={(closeModal)}>
         Close
       </Button>
 

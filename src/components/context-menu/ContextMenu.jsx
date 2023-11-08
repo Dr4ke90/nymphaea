@@ -30,9 +30,12 @@ const ContextMenu = ({ item, editItem, cancelItem, finishItem }) => {
           Mai mult
         </Menu.Item>
 
-        <Menu.Item key="edit" onClick={handleEditItem} icon={<FiEdit3 />}>
-          Edit
-        </Menu.Item>
+        {(!location.pathname.includes("incasari") && !location.pathname.includes("cheltuieli"))  && (
+          <Menu.Item key="edit" onClick={handleEditItem} icon={<FiEdit3 />}>
+            Edit
+          </Menu.Item>
+        )}
+
         {location.pathname.includes("programari") && (
           <div>
             <Menu.Item

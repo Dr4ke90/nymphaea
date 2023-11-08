@@ -20,6 +20,7 @@
   .dashboard-page .charts-wrapper .up , .down {
     display: flex;
     justify-content: space-around;
+    height: 235px;
   }
 
   .dashboard-page .invoicesChart {
