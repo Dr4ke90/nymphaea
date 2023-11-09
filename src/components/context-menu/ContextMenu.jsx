@@ -5,7 +5,13 @@ import { GiCancel } from "react-icons/gi";
 import { FaFlagCheckered } from "react-icons/fa";
 import { useLocation } from "react-router";
 
-const ContextMenu = ({ item, editItem, cancelItem, finishItem }) => {
+const ContextMenu = ({
+  item,
+  editItem,
+  cancelItem,
+  finishItem,
+  openDetails,
+}) => {
   const location = useLocation();
 
   const handleEditItem = () => {
@@ -23,18 +29,28 @@ const ContextMenu = ({ item, editItem, cancelItem, finishItem }) => {
     finishItem(item);
   };
 
+  const handleOpenDetails = () => {
+    if (item === null) return;
+    openDetails(item);
+  };
+
   const renderMenu = () => {
     return (
       <Menu>
-        <Menu.Item key="detalii" icon={<FiBookOpen />}>
+        <Menu.Item
+          key="detalii"
+          onClick={handleOpenDetails}
+          icon={<FiBookOpen />}
+        >
           Mai mult
         </Menu.Item>
 
-        {(!location.pathname.includes("incasari") && !location.pathname.includes("cheltuieli"))  && (
-          <Menu.Item key="edit" onClick={handleEditItem} icon={<FiEdit3 />}>
-            Edit
-          </Menu.Item>
-        )}
+        {!location.pathname.includes("incasari") &&
+          !location.pathname.includes("cheltuieli") && (
+            <Menu.Item key="edit" onClick={handleEditItem} icon={<FiEdit3 />}>
+              Edit
+            </Menu.Item>
+          )}
 
         {location.pathname.includes("programari") && (
           <div>

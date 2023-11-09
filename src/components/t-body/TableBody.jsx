@@ -19,6 +19,7 @@ const Tbody = ({
   cancel,
   finish,
   start,
+  openDetails,
   listOrder,
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
@@ -152,6 +153,7 @@ const Tbody = ({
                 item={item}
                 editItem={editItem}
                 removeItem={removeItem}
+                openDetails={openDetails}
               />
             }
             trigger={["contextMenu"]}
