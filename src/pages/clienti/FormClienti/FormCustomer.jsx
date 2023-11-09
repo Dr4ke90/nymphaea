@@ -60,7 +60,6 @@ export default function FromCustomer({ closeModal, cod, item, setItem }) {
 
   const handleAdauga = (e) => {
     e.preventDefault();
-    console.log(newClient);
     dispatch(addCustomer(newClient));
     handleCloseModal();
   };

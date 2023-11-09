@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PagePreview from "../PagePreview/PagePreview";
 import TableDisplay from "../table-display/TableDisplay";
 import "./modalClientProfile.css";
 import Input from "../Input/Input";
 import { Button } from "@mui/material";
+import ModalFileDetails from "../ModalFileDetails/ModalFileDetails";
 
 const ModalClientProfile = ({ client, closeModal }) => {
   const headFise = [
@@ -13,6 +14,18 @@ const ModalClientProfile = ({ client, closeModal }) => {
     "tipPlata",
     "totalDePlata",
   ];
+
+  const [openFileDetails, setOpenFileDetails] = useState(false);
+  const handleOpenFileDetailes = () => {
+    setOpenFileDetails(!openFileDetails);
+  };
+
+  const [receivedFile, setReceivedFile] = useState({});
+
+  const handleOpenFileDetails = (file) => {
+    setReceivedFile(file);
+    handleOpenFileDetailes();
+  };
 
   return (
     <div className="modal-client-profile">
@@ -79,6 +92,7 @@ const ModalClientProfile = ({ client, closeModal }) => {
             thead={headFise}
             tbody={client.fise}
             listOrder={headFise}
+            openDetails={handleOpenFileDetails}
           />
           <hr />
           <div className="close">
@@ -86,6 +100,13 @@ const ModalClientProfile = ({ client, closeModal }) => {
               Close
             </Button>
           </div>
+
+          {openFileDetails && (
+            <ModalFileDetails
+              file={receivedFile}
+              closeModal={handleOpenFileDetailes}
+            />
+          )}
         </PagePreview>
       </PagePreview>
     </div>
