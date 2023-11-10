@@ -9,6 +9,7 @@ import {
   deleteService,
   fetchAllServices,
 } from "../../redux/slices/servicesSlice";
+import ModalServiceDetails from "../../components/ModalServiceDetails/ModalServiceDetails";
 
 export default function ServicesList() {
   const thead = ["cod", "departament", "descriere", "pret"];
@@ -17,7 +18,6 @@ export default function ServicesList() {
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
-  const [modal, setModal] = useState(false);
   const [receivedService, setReceivedService] = useState(null);
 
   const dispatch = useDispatch();
@@ -30,8 +30,14 @@ export default function ServicesList() {
   const paddedNr = nr.toString().padStart(3, "0");
   code = "S" + paddedNr;
 
+  const [modal, setModal] = useState(false);
   const toggleModal = () => {
     setModal(!modal);
+  };
+
+  const [openModalServiceDetails, setOpenModalSeviceDetails] = useState(false);
+  const toggleModalDetails = () => {
+    setOpenModalSeviceDetails(!openModalServiceDetails);
   };
 
   const handleDeleteService = (item) => {
@@ -52,6 +58,11 @@ export default function ServicesList() {
       setReceivedService(item);
     }
     setModal(true);
+  };
+
+  const handleOpenServiceDetails = (item) => {
+    setReceivedService(item);
+    toggleModalDetails();
   };
 
   return (
@@ -76,7 +87,15 @@ export default function ServicesList() {
         removeItem={handleDeleteService}
         editItem={handleEditService}
         listOrder={thead}
+        openDetails={handleOpenServiceDetails}
       />
+
+      {openModalServiceDetails && (
+        <ModalServiceDetails
+          service={receivedService}
+          closeModal={toggleModalDetails}
+        />
+      )}
     </div>
   );
 }

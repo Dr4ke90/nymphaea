@@ -32,14 +32,13 @@ const Tbody = ({
     setTableBody(reversedTableBody);
   }, [tbody]);
 
- 
-  const handleSelectRow = (id) => {
-    setSelectedRow(id);
+  const handleSelectRow = (cod) => {
+    setSelectedRow(cod);
   };
 
-  const handleContextMenu = (e, id) => {
+  const handleContextMenu = (e, cod) => {
     e.preventDefault();
-    setSelectedRow(id);
+    setSelectedRow(cod);
   };
 
   const [openFormAppointment, setOpenFormAppointment] = useState(false);
@@ -50,8 +49,6 @@ const Tbody = ({
     }
     setOpenFormAppointment(!openFormAppointment);
   };
-
-  
 
   const handleChangeButton = (item) => {
     if (item.status === "Activ") {
@@ -160,9 +157,15 @@ const Tbody = ({
             key={item._id ? item._id : index}
           >
             <tr
-              className={selectedRow === item._id ? "selected" : ""}
-              onClick={() => handleSelectRow(item._id)}
-              onContextMenu={(e) => handleContextMenu(e, item._id)}
+              className={
+                selectedRow === (item.cod ? item.cod : item.nr)
+                  ? "selected"
+                  : ""
+              }
+              onClick={() => handleSelectRow(item.cod ? item.cod : item.nr)}
+              onContextMenu={(e) =>
+                handleContextMenu(e, item.cod ? item.cod : item.nr)
+              }
             >
               {listOrder?.map((key) => {
                 if (
@@ -177,7 +180,7 @@ const Tbody = ({
                   );
                 } else if (key === "#") {
                   return (
-                    <td className="buttons-wrapper" key={key} >
+                    <td className="buttons-wrapper" key={key}>
                       {handleChangeButton(item)}
                     </td>
                   );

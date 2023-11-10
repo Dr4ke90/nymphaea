@@ -1,0 +1,61 @@
+.modal-client-profile .modal-overlay .modal-content {
+  height: 550px !important;
+  width: 950px !important;
+}
+
+.modal-service-details .modal-overlay .modal-content .service-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.modal-service-details .modal-overlay .modal-content .row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.modal-service-details .modal-overlay .modal-content .row label {
+  width: 130px;
+}
+.modal-service-details .modal-overlay .modal-content .row span {
+  margin-right: 10px;
+}
+
+.modal-service-details .modal-overlay .modal-content .row input {
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: black;
+}
+
+.modal-service-details .modal-overlay .modal-content .service-info hr {
+  margin: 10px;
+}
+
+.modal-service-details .modal-overlay .modal-content .table-display-container {
+  height: 53vh;
+}
+
+.modal-service-details .modal-overlay .modal-content .close {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-product-details .modal-overlay .modal-content {
+  height: 220px;
+  width: 800px;
+}
+
+.modal-service-details .modal-overlay .modal-content .info {
+  width: 100%;
+  color: rgb(43, 72, 197);
+  margin-bottom: 5px;
+}
+
+.modal-service-details .modal-overlay .modal-content .title {
+  display: flex;
+  justify-content: center;
+  height: 10px;
+}

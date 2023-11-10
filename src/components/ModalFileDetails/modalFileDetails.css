@@ -1,66 +1,44 @@
-.modal-file-details .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-file-details .modal-overlay .modal-content {
-    background-color: white;
-    height: 550px;
-    width: 850px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    position: relative;
-    left: 100px;
-    top: 30px;
-  }
-  
+.modal-client-profile .modal-overlay .modal-content {
+  height: 550px !important;
+  width: 850px !important;
+}
 
-  .modal-file-details .modal-overlay .modal-content .file-info { 
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
+.modal-file-details .modal-overlay .modal-content .file-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
 
-  .modal-file-details .modal-overlay .modal-content .row { 
-    display: flex;
-    flex-direction: row;
-    justify-content:flex-start;
-  }
+.modal-file-details .modal-overlay .modal-content .row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
 
-  .modal-file-details .modal-overlay .modal-content .row label { 
-    width: 100px;
-  }
-  .modal-file-details .modal-overlay .modal-content .row span { 
-    margin-right: 10px;
-  }
+.modal-file-details .modal-overlay .modal-content .row label {
+  width: 130px;
+}
+.modal-file-details .modal-overlay .modal-content .row span {
+  margin-right: 10px;
+}
 
-  .modal-file-details .modal-overlay .modal-content .row input { 
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: black;
-  }
+.modal-file-details .modal-overlay .modal-content .row input {
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: black;
+}
 
-  .modal-file-details .modal-overlay .modal-content .file-info hr { 
-    margin: 10px;
-  }
+.modal-file-details .modal-overlay .modal-content .file-info hr {
+  margin: 10px;
+}
 
-  .modal-file-details .modal-overlay .modal-content .table-display-container {
-    height: 45vh;
-  }
+.modal-file-details .modal-overlay .modal-content .table-display-container {
+  height: 47vh;
+}
 
-  .modal-file-details .modal-overlay .modal-content .close {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
+.modal-file-details .modal-overlay .modal-content .close {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

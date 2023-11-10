@@ -30,7 +30,6 @@ export default function FormAppointment({ closeModal, cod, item, setItem }) {
     client: "",
     descriere: "",
     angajat: "",
-    servicii: []
   };
   const [newAppointment, setNewAppointment] = useState(initialState);
 

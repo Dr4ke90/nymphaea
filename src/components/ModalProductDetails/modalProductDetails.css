@@ -1,0 +1,58 @@
+
+  .modal-product-details .modal-overlay .modal-content {
+    height: 220px !important;
+    width: 850px !important;
+
+  }
+  
+
+  .modal-product-details .modal-overlay .modal-content .product-info { 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .row { 
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .row label { 
+    width: 130px;
+  }
+  .modal-product-details .modal-overlay .modal-content .row span { 
+    margin-right: 10px;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .row input { 
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .product-info hr { 
+    margin: 10px;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .table-display-container {
+    height: 50vh;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .close {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .info {
+    width: 100%;
+    color: rgb(43, 72, 197);
+    margin-bottom: 5px;
+  }
+
+  .modal-product-details .modal-overlay .modal-content .invoices-list #title { 
+    text-decoration: underline;
+    color: rgb(43, 72, 197);
+  }

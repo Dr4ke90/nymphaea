@@ -216,11 +216,14 @@ export default function ModalFisa({ closeModal, appointment }) {
       tip_update: "Modificare status",
       data_update: getDate(),
       ora_update: getHour(),
+      servicii: dateFisa.produse,
+      nrIncasare,
     };
 
     delete newApp._id;
     delete newApp.start;
     delete newApp.end;
+    delete newApp.description;
     dispatch(updateAppointment(newApp));
     closeModal();
   };

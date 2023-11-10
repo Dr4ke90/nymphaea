@@ -12,17 +12,16 @@ import BigCalendar from "../../components/Calendar/Calendar";
 import { getDate } from "../../utils/getDate";
 import { getHour } from "../../utils/getHour";
 import ModalFisa from "../../components/ModalFisa/ModalFisa";
+import ModalAppointmentDetails from "../../components/ModalAppointmentDetails/ModalAppointmentDetails";
 
 export default function Appointments() {
   const location = useLocation();
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
-  const [modal, setModal] = useState(false);
-  const [modalFisa, setModalFisa] = useState(false);
   const [receivedAppointemnt, setReceivedAppointemnt] = useState(null);
   const appointments = useSelector((state) => state.programari);
-  const [currentAppointment, setCurrentAppointment] = useState({})
+  const [currentAppointment, setCurrentAppointment] = useState({});
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -34,12 +33,19 @@ export default function Appointments() {
   const paddedNr = cod.toString().padStart(5, "0");
   code = "A" + paddedNr;
 
+  const [modal, setModal] = useState(false);
   const toggleModal = () => {
     setModal(!modal);
   };
 
+  const [modalFisa, setModalFisa] = useState(false);
   const toggleModalFisa = () => {
     setModalFisa(!modalFisa);
+  };
+
+  const [openModalDetails, setOpenModalDetails] = useState(false);
+  const toggleModalDetails = () => {
+    setOpenModalDetails(!openModalDetails);
   };
 
   const handleEditAppointment = (item) => {
@@ -84,6 +90,11 @@ export default function Appointments() {
     dispatch(updateAppointment(newApp));
   };
 
+  const handleOpenAppDetails = (item) => {
+    setReceivedAppointemnt(item);
+    toggleModalDetails();
+  };
+
   return (
     <div className="appointments-page">
       <div className="title">
@@ -98,6 +109,7 @@ export default function Appointments() {
         edit={handleEditAppointment}
         cancel={handleCancelAppointment}
         finish={handleFinishAppointment}
+        openDetails={handleOpenAppDetails}
         toggleModalFisa={toggleModalFisa}
         setCurrentAppointment={setCurrentAppointment}
       />
@@ -114,6 +126,13 @@ export default function Appointments() {
         <ModalFisa
           closeModal={toggleModalFisa}
           appointment={currentAppointment}
+        />
+      )}
+
+      {openModalDetails && (
+        <ModalAppointmentDetails
+          appointment={receivedAppointemnt}
+          closeModal={toggleModalDetails}
         />
       )}
     </div>

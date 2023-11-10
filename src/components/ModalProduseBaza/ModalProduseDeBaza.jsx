@@ -54,7 +54,7 @@ export default function ModalProduseDeBaza({
   };
 
   const handleCheckboxChange = (product) => {
-    const { cod, stocInGr } = product;
+    const { cod, stocInGr, descriere } = product;
 
     setService((prevService) => {
       const { produseDeBaza } = prevService;
@@ -75,6 +75,7 @@ export default function ModalProduseDeBaza({
           stocInGr,
           cantitate: 0,
           valoare: 0,
+          descriere
         };
 
         return {

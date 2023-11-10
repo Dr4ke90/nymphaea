@@ -6,6 +6,7 @@ import { fetchAllInventory } from "../../redux/slices/inventorySlice";
 import TableDisplay from "../../components/table-display/TableDisplay";
 import { Button } from "@mui/material";
 import FormProdus from "./FormProdus/FormProdus";
+import ModalProductDetails from "../../components/ModalProductDetails/ModalProductDetails";
 
 export default function Inventory() {
   const thead = [
@@ -23,7 +24,7 @@ export default function Inventory() {
   const title =
     location.pathname.substring(1, 2).toUpperCase() +
     location.pathname.substring(1).slice(1);
-  const [receivedProduct, setReceivedProduct] = useState(null);
+  const [receivedProduct, setReceivedProduct] = useState({});
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,15 +37,24 @@ export default function Inventory() {
   codProdus = "P" + paddedNrProd;
 
   const [openFormProdus, setOpenFormProdus] = useState(false);
+  const [openProductDetails, setOpenProductDetails] = useState(false);
 
   const toggleModalFormProdus = () => {
     setOpenFormProdus(!openFormProdus);
   };
 
+  const toggleModalProductDetails = () => {
+    setOpenProductDetails(!openProductDetails);
+  };
+
   const handleEditProduct = (item) => {
     setReceivedProduct(item);
-
     toggleModalFormProdus();
+  };
+
+  const handleOpenDetails = (item) => {
+    setReceivedProduct(item);
+    toggleModalProductDetails();
   };
 
   return (
@@ -72,7 +82,15 @@ export default function Inventory() {
         tbody={inventory}
         listOrder={thead}
         editItem={handleEditProduct}
+        openDetails={handleOpenDetails}
       />
+
+      {openProductDetails && (
+        <ModalProductDetails
+          product={receivedProduct}
+          closeModal={toggleModalProductDetails}
+        />
+      )}
     </div>
   );
 }

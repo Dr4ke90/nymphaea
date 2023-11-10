@@ -19,6 +19,7 @@ const EventComponent = ({ event, view }) => {
             editItem={item.edit}
             cancelItem={item.cancel}
             finishItem={item.finish}
+            openDetails={item.openDetails}
           />
         }
         trigger={["contextMenu"]}
@@ -37,6 +38,7 @@ const EventComponent = ({ event, view }) => {
             editItem={item.edit}
             cancelItem={item.cancel}
             finishItem={item.finish}
+            openDetails={item.openDetails}
           />
         }
         trigger={["contextMenu"]}

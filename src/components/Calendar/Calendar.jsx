@@ -30,6 +30,7 @@ export default function BigCalendar({
   edit,
   cancel,
   finish,
+  openDetails,
   toggleModalFisa,
   setCurrentAppointment,
 }) {
@@ -99,6 +100,7 @@ export default function BigCalendar({
     edit: edit,
     cancel: cancel,
     finish: finish,
+    openDetails,
     description: event.descriere,
   }));
 
